@@ -1,6 +1,7 @@
 package AGOLWriter;
 
 import java.util.List;
+import Util.AGOLItem;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,4 +12,5 @@ import java.util.List;
  */
 public interface IWriter {
     public List<String> getResourceUrls();
+    public void addItem(AGOLItem agolItem);
 }

@@ -1,5 +1,6 @@
 package AGOLWriter;
 
+import Util.AGOLItem;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
@@ -77,9 +78,7 @@ public class AGOLService implements IWriter{
     private String getAccountId() {
         String selfUrl = _baseUrl + "/sharing/accounts/self";
 
-        List <NameValuePair> nameValuePairs = new ArrayList <NameValuePair>();
-        nameValuePairs.add(new BasicNameValuePair("f", "json"));
-        nameValuePairs.add(new BasicNameValuePair("token", _token));
+        List<NameValuePair> nameValuePairs = getStandardNameValuePairs();
         nameValuePairs.add(new BasicNameValuePair("culture", "de"));
 
         HttpClient httpclient = new DefaultHttpClient();
@@ -118,22 +117,17 @@ public class AGOLService implements IWriter{
         List <String> urlStrings = new ArrayList <String>();
 
         HttpClient httpclient = new DefaultHttpClient();
+        String searchUrl = _baseUrl + "/sharing/search";
 
         try {
-            String searchUrl = _baseUrl + "/sharing/search";
-
             HttpPost httppost = new HttpPost(searchUrl);
 
-            List <NameValuePair> nameValuePairs = new ArrayList <NameValuePair>();
-            nameValuePairs.add(new BasicNameValuePair("f", "json"));
+            List<NameValuePair> nameValuePairs = getStandardNameValuePairs();
 
             String searchString =  "(accountid:" + _accountId + " AND " + "access:public"+ " AND "+ "type:\"WMS\")";
-
-
             nameValuePairs.add(new BasicNameValuePair("q", searchString ));
             nameValuePairs.add(new BasicNameValuePair("num","100"));
-            nameValuePairs.add(new BasicNameValuePair("token", _token));
-            nameValuePairs.add(new BasicNameValuePair("referer", _referer));
+
 
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
@@ -162,5 +156,45 @@ public class AGOLService implements IWriter{
         }
 
         return urlStrings;
+    }
+
+    private List<NameValuePair> getStandardNameValuePairs() {
+        List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("f", "json"));
+        nameValuePairs.add(new BasicNameValuePair("token", _token));
+        return nameValuePairs;
+    }
+
+    @Override
+    public void addItem(AGOLItem agolItem) {
+
+        HttpClient httpclient = new DefaultHttpClient();
+        String userContentUrl = _baseUrl + "/sharing/content/users/" + _userName +"/addItem";
+
+        try {
+            HttpPost httppost = new HttpPost(userContentUrl);
+
+            List<NameValuePair> nameValuePairs = getStandardNameValuePairs();
+
+
+
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+
+            if (entity != null)
+            {
+
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
+        }
+
+
     }
 }
