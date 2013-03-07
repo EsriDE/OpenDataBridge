@@ -23,13 +23,14 @@ public class Transformer {
         List<String> resourceUrls = agolService.getResourceUrls();
 
         AGOLItem agolItem = new AGOLItem();
-        agolItem.getAttributes().put("agol.accessInformation", "Text zu Zugangsinformation");
-        agolItem.getAttributes().put("agol.description", "Produktbeschreibung");
+        agolItem.getAttributes().put("agol.accessInformation", "Text zu Credits");
+        agolItem.getAttributes().put("agol.licenseInfo", "Die Zugangsbeschränkungen");
+        agolItem.getAttributes().put("agol.description", "Die Beschreibung");
         agolItem.getAttributes().put("agol.extent", "5.725,50.1506,9.5315,52.602");
         agolItem.getAttributes().put("agol.tags", "NRW,DTK100");
-        agolItem.getAttributes().put("agol.text", "{\"title\":\"NW_DTK100\",\"url\":\"http://www.wms.nrw.de/geobasis/adv_dtk100\",\"mapUrl\":\"http://www.wms.nrw.de/geobasis/adv_dtk100?\",\"version\":\"1.1.1\",\"layers\":[{\"name\":\"DTK100\",\"title\":\"DTK-V 100\"}],\"copyright\":\"Text zu Nutzungsbedingungen\",\"maxHeight\":5000,\"maxWidth\":5000,\"spatialReferences\":[25832,31466,3034,3035,3043,3044,3045,4258,4326,25831,25833,28992,31467],\"format\":null}");
+        // agolItem.getAttributes().put("agol.text", "{\"title\":\"NW_DTK100\",\"url\":\"http://www.wms.nrw.de/geobasis/adv_dtk100\",\"mapUrl\":\"http://www.wms.nrw.de/geobasis/adv_dtk100?\",\"version\":\"1.1.1\",\"layers\":[{\"name\":\"DTK100\",\"title\":\"DTK-V 100\"}],\"copyright\":\"Text zu Nutzungsbedingungen\",\"maxHeight\":5000,\"maxWidth\":5000,\"spatialReferences\":[25832,31466,3034,3035,3043,3044,3045,4258,4326,25831,25833,28992,31467],\"format\":null}");
         agolItem.getAttributes().put("agol.thumbnailURL", "http://www.wms.nrw.de/geobasis/adv_dtk100?SERVICE=WMS&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&STYLES=&VERSION=1.1.1&LAYERS=DTK100&WIDTH=200&HEIGHT=133&SRS=EPSG:4326&BBOX=5.72499,50.1506,9.53154,52.602");
-        agolItem.getAttributes().put("agol.title","AGOL Titel");
+        agolItem.getAttributes().put("agol.title","Der Titel");
         agolItem.getAttributes().put("agol.type","WMS");
         agolItem.getAttributes().put("agol.typeKeywords","Data, Service, Web Map Service, OGC");
         agolItem.getAttributes().put("agol.url", "http://www.wms.nrw.de/geobasis/adv_dtk100");

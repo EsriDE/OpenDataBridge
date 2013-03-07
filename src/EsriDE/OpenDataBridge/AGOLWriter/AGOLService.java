@@ -162,7 +162,44 @@ public class AGOLService implements IWriter{
 
     @Override
     public void addItem(AGOLItem agolItem) {
+        String itemId = createItem(agolItem);
+        publishItem(itemId);
+    }
 
+    private void publishItem(String itemId) {
+
+        HttpClient httpclient = new DefaultHttpClient();
+        String userContentUrl = _baseUrl + "/sharing/content/users/" + _userName +"/shareItems";
+
+        try {
+            HttpPost httppost = new HttpPost(userContentUrl);
+
+            List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
+
+            agolAttributes.add(new BasicNameValuePair("items", itemId));
+            agolAttributes.add(new BasicNameValuePair("account", "false"));
+            agolAttributes.add(new BasicNameValuePair("everyone", "true"));
+
+            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
+
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+
+            if (entity != null)
+            {
+                String entities = EntityUtils.toString(entity);
+                System.out.println(entities);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
+        }
+    }
+
+    private String createItem(AGOLItem agolItem) {
         HttpClient httpclient = new DefaultHttpClient();
         String userContentUrl = _baseUrl + "/sharing/content/users/" + _userName +"/addItem";
 
@@ -188,7 +225,14 @@ public class AGOLService implements IWriter{
 
             if (entity != null)
             {
-                System.out.println(EntityUtils.toString(entity));
+                String entities = EntityUtils.toString(entity);
+                System.out.println(entities);
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode rootNode = objectMapper.readTree(entities);
+                JsonNode idNode = rootNode.get("id");
+                System.out.println(idNode.asText());
+                return idNode.asText();
             }
         }
         catch (Exception e) {
@@ -197,6 +241,7 @@ public class AGOLService implements IWriter{
         finally {
             httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
         }
+        return null;
     }
 
     private List<NameValuePair> getStandardAGOLAttributes() {
