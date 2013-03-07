@@ -32,7 +32,6 @@ local.properties
 ## IntelliJ
 #################
 .idea
-*.iml
 out/
 
 #################
