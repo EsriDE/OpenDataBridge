@@ -14,7 +14,11 @@ import AGOLWriter.AGOLService;
 public class Transformer {
 
     public static void main(String[] args) {
-        AGOLService agolService = new AGOLService("https://esri-de-1.maps.arcgis.com", "gerdatesride1", "gerdpwesride1", "http://www.esri.de");
+        String subscription  = args[0];
+        String user = args[1];
+        String password = args[2];
+
+        AGOLService agolService = new AGOLService(subscription, user, password, "http://www.esri.de");
         List<String> resourceUrls = agolService.getResourceUrls();
     }
 }
