@@ -46,13 +46,13 @@ public class AGOLService implements IWriter{
 
             HttpPost httppost = new HttpPost(generateTokenBaseUrl);
 
-            List <NameValuePair> nameValuePairs = new ArrayList <NameValuePair>();
-            nameValuePairs.add(new BasicNameValuePair("f", "json"));
-            nameValuePairs.add(new BasicNameValuePair("username", _userName));
-            nameValuePairs.add(new BasicNameValuePair("password", _password));
-            nameValuePairs.add(new BasicNameValuePair("referer", _referer));
+            List <NameValuePair> agolAttributes = new ArrayList <NameValuePair>();
+            agolAttributes.add(new BasicNameValuePair("f", "json"));
+            agolAttributes.add(new BasicNameValuePair("username", _userName));
+            agolAttributes.add(new BasicNameValuePair("password", _password));
+            agolAttributes.add(new BasicNameValuePair("referer", _referer));
 
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
 
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
@@ -78,13 +78,13 @@ public class AGOLService implements IWriter{
     private String getAccountId() {
         String selfUrl = _baseUrl + "/sharing/accounts/self";
 
-        List<NameValuePair> nameValuePairs = getStandardNameValuePairs();
-        nameValuePairs.add(new BasicNameValuePair("culture", "de"));
+        List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
+        agolAttributes.add(new BasicNameValuePair("culture", "de"));
 
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(selfUrl);
         try {
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
 
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
@@ -122,14 +122,14 @@ public class AGOLService implements IWriter{
         try {
             HttpPost httppost = new HttpPost(searchUrl);
 
-            List<NameValuePair> nameValuePairs = getStandardNameValuePairs();
+            List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
 
             String searchString =  "(accountid:" + _accountId + " AND " + "access:public"+ " AND "+ "type:\"WMS\")";
-            nameValuePairs.add(new BasicNameValuePair("q", searchString ));
-            nameValuePairs.add(new BasicNameValuePair("num","100"));
+            agolAttributes.add(new BasicNameValuePair("q", searchString));
+            agolAttributes.add(new BasicNameValuePair("num", "100"));
 
 
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
 
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
@@ -158,12 +158,7 @@ public class AGOLService implements IWriter{
         return urlStrings;
     }
 
-    private List<NameValuePair> getStandardNameValuePairs() {
-        List <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        nameValuePairs.add(new BasicNameValuePair("f", "json"));
-        nameValuePairs.add(new BasicNameValuePair("token", _token));
-        return nameValuePairs;
-    }
+
 
     @Override
     public void addItem(AGOLItem agolItem) {
@@ -174,18 +169,26 @@ public class AGOLService implements IWriter{
         try {
             HttpPost httppost = new HttpPost(userContentUrl);
 
-            List<NameValuePair> nameValuePairs = getStandardNameValuePairs();
+            List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
+            for (String key : agolItem.getAttributes().keySet() )
+            {
+                String agolKey = key;
+                if (key.startsWith("agol."))
+                {
+                    agolKey = key.substring(5);
+                }
 
+                agolAttributes.add(new BasicNameValuePair(agolKey, agolItem.getAttributes().get(key)));
+            }
 
-
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
 
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
 
             if (entity != null)
             {
-
+                System.out.println(EntityUtils.toString(entity));
             }
         }
         catch (Exception e) {
@@ -194,7 +197,12 @@ public class AGOLService implements IWriter{
         finally {
             httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
         }
+    }
 
-
+    private List<NameValuePair> getStandardAGOLAttributes() {
+        List <NameValuePair> agolAttributes = new ArrayList<NameValuePair>();
+        agolAttributes.add(new BasicNameValuePair("f", "json"));
+        agolAttributes.add(new BasicNameValuePair("token", _token));
+        return agolAttributes;
     }
 }
