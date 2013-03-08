@@ -17,7 +17,6 @@ import org.apache.http.util.EntityUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * User: gvs
  * Date: 06.03.13
