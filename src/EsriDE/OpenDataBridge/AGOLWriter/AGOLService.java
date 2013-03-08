@@ -158,8 +158,6 @@ public class AGOLService implements IWriter{
         return urlStrings;
     }
 
-
-
     @Override
     public void addItem(AGOLItem agolItem) {
         String itemId = createItem(agolItem);
