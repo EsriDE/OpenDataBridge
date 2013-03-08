@@ -19,11 +19,9 @@ import java.util.List;
 
 
 /**
- * Created with IntelliJ IDEA.
  * User: gvs
  * Date: 06.03.13
  * Time: 13:22
- * To change this template use File | Settings | File Templates.
  */
 public class AGOLService implements IWriter{
 
