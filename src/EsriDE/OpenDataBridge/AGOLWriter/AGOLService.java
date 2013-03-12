@@ -193,7 +193,7 @@ public class AGOLService implements IWriter{
             e.printStackTrace();
         }
         finally {
-            httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
+            httpclient.getConnectionManager().shutdown();
         }
     }
 
