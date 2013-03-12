@@ -14,6 +14,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import org.apache.http.util.EntityUtils;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,8 @@ public class AGOLService implements IWriter{
             agolAttributes.add(new BasicNameValuePair("password", _password));
             agolAttributes.add(new BasicNameValuePair("referer", _referer));
 
-            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
+            // TODO: Encoding funktioniert nicht richtig
+            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes, Charset.forName("UTF-8")));
 
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
@@ -172,6 +174,7 @@ public class AGOLService implements IWriter{
             List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
 
             agolAttributes.add(new BasicNameValuePair("items", itemId));
+            // TODO: Wofür braucht es dieses "account"
             agolAttributes.add(new BasicNameValuePair("account", "false"));
             agolAttributes.add(new BasicNameValuePair("everyone", "true"));
 
