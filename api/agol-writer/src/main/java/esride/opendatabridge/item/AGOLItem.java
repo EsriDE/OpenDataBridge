@@ -1,4 +1,7 @@
-package Util;
+package esride.opendatabridge.item;
+
+import java.util.HashMap;
+
 
 import java.util.HashMap;
 
@@ -22,3 +25,4 @@ public class AGOLItem {
         return _itemAttributes;
     }
 }
+

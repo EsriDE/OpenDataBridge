@@ -1,7 +1,9 @@
-package AGOLWriter;
+package esride.opendatabridge.agolwriter;
+
+import esride.opendatabridge.item.AGOLItem;
 
 import java.util.List;
-import Util.AGOLItem;
+
 
 /**
  * Created with IntelliJ IDEA.

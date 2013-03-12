@@ -1,9 +1,11 @@
-package Processing;
+package esride.opendatabridge.processing;
+
+import esride.opendatabridge.agolwriter.AGOLService;
+import esride.opendatabridge.item.AGOLItem;
 
 import java.util.List;
 
-import AGOLWriter.AGOLService;
-import Util.AGOLItem;
+
 
 /**
  * Created with IntelliJ IDEA.

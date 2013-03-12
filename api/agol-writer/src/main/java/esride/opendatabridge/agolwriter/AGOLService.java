@@ -1,8 +1,8 @@
-package AGOLWriter;
+package esride.opendatabridge.agolwriter;
 
-import Util.AGOLItem;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import esride.opendatabridge.item.AGOLItem;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -106,7 +106,7 @@ public class AGOLService implements IWriter{
         return null;
     }
 
-    @Override
+
     public List <String> getResourceUrls() {
         _token = createToken();
         System.out.println(_token);
@@ -157,7 +157,7 @@ public class AGOLService implements IWriter{
         return urlStrings;
     }
 
-    @Override
+
     public void addItem(AGOLItem agolItem) {
         String itemId = createItem(agolItem);
         publishItem(itemId);
