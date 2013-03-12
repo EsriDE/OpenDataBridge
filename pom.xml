@@ -106,6 +106,30 @@
 				<artifactId>httpclient</artifactId>
 				<version>4.2.3</version>
 			</dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <scope>test</scope>
+                <version>3.0.6.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <scope>test</scope>
+                <version>3.0.6.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <scope>test</scope>
+                <version>3.0.6.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <scope>test</scope>
+                <version>3.0.6.RELEASE</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
@@ -213,21 +237,6 @@
             </plugins>
         </pluginManagement>
     </build>
-    <properties>
-        <smarteditor.version>2.0.2</smarteditor.version>
-        <secman.version>4.0.0-9</secman.version>
-        <sdiSuite.terraCatalog.version>3.2.0-2</sdiSuite.terraCatalog.version>
-        <spring.version>3.0.6.RELEASE</spring.version>
-        <n52.version>2.2.5</n52.version>
-        <!--<logging.log4j.logger.root.level>WARN</logging.log4j.logger.root.level>
-        <logging.log4j.logger.ct.level>DEBUG</logging.log4j.logger.ct.level>
-        <logging.log4j.appender.console.level>WARN</logging.log4j.appender.console.level>-->
-        <!-- file appender only used in the web applications -->
-        <!--<logging.log4j.appender.file.level>INFO</logging.log4j.appender.file.level>
-        <logging.log4j.appender.file.path>${catalina.base}/logs</logging.log4j.appender.file.path>
-        <logging.log4j.appender.file.name>${project.artifactId}</logging.log4j.appender.file.name>
-        <logging.log4j.logger.root.level>WARN</logging.log4j.logger.root.level>-->
-    </properties>
     <profiles>
         <profile>
             <id>env-dev</id>

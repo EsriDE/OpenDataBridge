@@ -24,6 +24,44 @@
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>				
-			</dependency> 
+			</dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <scope>test</scope>
+            </dependency>
     </dependencies>
+    <build>
+    <testResources>
+        <testResource>
+            <directory>src/test/resources</directory>
+            <filtering>true</filtering>
+            <includes>
+                <include>**/IntegrationTest.properties</include>
+            </includes>
+        </testResource>
+        <testResource>
+            <directory>src/test/resources</directory>
+            <filtering>false</filtering>
+            <excludes>
+                <exclude>**/IntegrationTest.properties</exclude>
+            </excludes>
+        </testResource>
+    </testResources>
+    </build>
 </project>

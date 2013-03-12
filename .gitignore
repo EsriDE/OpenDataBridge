@@ -172,3 +172,4 @@ pip-log.txt
 ## Maven
 ############
 target/
+buildLocal.properties
