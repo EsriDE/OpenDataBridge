@@ -3,6 +3,7 @@ package esride.opendatabridge.processing;
 import esride.opendatabridge.agolwriter.AGOLService;
 import esride.opendatabridge.item.AGOLItem;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -22,7 +23,7 @@ public class Transformer {
         String password = args[2];
 
         AGOLService agolService = new AGOLService(subscription, user, password, "http://www.esri.de");
-        List<String> resourceUrls = agolService.getResourceUrls();
+        HashMap<String, AGOLItem> agolItems = agolService.getAllItems("WMS");
 
         AGOLItem agolItem = new AGOLItem();
         agolItem.getAttributes().put("agol.accessInformation", "Text zu Credits");
@@ -40,4 +41,39 @@ public class Transformer {
         agolService.addItem(agolItem);
 
     }
+
+    /*
+    Get External Items
+    @returns: HashMap<url, AGOLItem>
+     */
+
+    /*
+    Get AGOL Items
+    @returns: HashMap<url, AGOLItem>
+     */
+
+    /*
+    Compare Item Lists
+    @returns: CompareListContainer {
+        List<AGOLItem> addList;
+        List<AGOLItem> updateList;
+        List<AGOLItem> deleteList;
+    }
+     */
+
+    /*
+    public Write Comparison Results to AGOL {
+        private addAGOLItems(List<AGOLItem> addList);
+        private updateAGOLItems(List<AGOLItem> updateList);
+        private deleteAGOLItems(List<AGOLItem> deleteList);
+     }
+     */
+
+    /*
+    Synchronize Accounts
+    - get both listst
+    - compare
+    - write to AGOL
+     */
+
 }

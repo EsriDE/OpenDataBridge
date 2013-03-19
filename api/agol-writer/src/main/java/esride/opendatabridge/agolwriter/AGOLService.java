@@ -16,6 +16,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -107,7 +108,10 @@ public class AGOLService implements IWriter{
     }
 
 
-    public List <String> getResourceUrls() {
+    public HashMap<String, AGOLItem> getAllItems(String itemType) {
+        return getAllItems(itemType, "public");
+    }
+    public HashMap<String, AGOLItem> getAllItems(String itemType, String accessType) {
         _token = createToken();
         System.out.println(_token);
         _accountId = getAccountId();
@@ -116,6 +120,12 @@ public class AGOLService implements IWriter{
         List <String> urlStrings = new ArrayList <String>();
 
         HttpClient httpclient = new DefaultHttpClient();
+
+        /*
+        ToDo:
+        - Gesamtanzahl ermitteln
+        - Pagination implementieren
+         */
         String searchUrl = _baseUrl + "/sharing/search";
 
         try {
@@ -123,7 +133,7 @@ public class AGOLService implements IWriter{
 
             List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
 
-            String searchString =  "(accountid:" + _accountId + " AND " + "access:public"+ " AND "+ "type:\"WMS\")";
+            String searchString =  "(accountid:" + _accountId + " AND " + "access:public"+ " AND "+ "type:\"" + itemType + "\")";
             agolAttributes.add(new BasicNameValuePair("q", searchString));
             agolAttributes.add(new BasicNameValuePair("num", "100"));
 
@@ -154,13 +164,22 @@ public class AGOLService implements IWriter{
             httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
         }
 
-        return urlStrings;
-    }
+        HashMap<String,  AGOLItem> agolItems = new HashMap<String, AGOLItem>();
 
+        return agolItems;
+    }
 
     public void addItem(AGOLItem agolItem) {
         String itemId = createItem(agolItem);
         publishItem(itemId);
+    }
+
+    public void updateItem(AGOLItem agolItem) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void deleteItem(AGOLItem agolItem) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     private void publishItem(String itemId) {
