@@ -18,6 +18,11 @@
             <id>gvs</id>
             <email>g.vandesand@esri.de</email>
         </developer>
+        <developer>
+            <name>Niklas Köhn</name>
+            <id>nik</id>
+            <email>n.koehn@esri.de</email>
+        </developer>
     </developers>    
     <scm>
         <!-- Specification of the Source-Content-Managmentsystem -->
