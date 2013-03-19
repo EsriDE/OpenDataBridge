@@ -1,5 +1,7 @@
 package esride.opendatabridge.agolwriter;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esride.opendatabridge.item.AGOLItem;
@@ -15,9 +17,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: gvs
@@ -107,7 +107,6 @@ public class AGOLService implements IWriter{
         return null;
     }
 
-
     public HashMap<String, AGOLItem> getAllItems(String itemType) {
         return getAllItems(itemType, "public");
     }
@@ -117,7 +116,7 @@ public class AGOLService implements IWriter{
         _accountId = getAccountId();
         System.out.println(_accountId);
 
-        List <String> urlStrings = new ArrayList <String>();
+        HashMap<String,  AGOLItem> agolItems = new HashMap<String, AGOLItem>();
 
         HttpClient httpclient = new DefaultHttpClient();
 
@@ -147,14 +146,42 @@ public class AGOLService implements IWriter{
             {
                 String entities = EntityUtils.toString(entity);
                 ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(entities);
-                List<JsonNode> urlNodes = rootNode.findValues("url");
 
-                for ( JsonNode node : urlNodes )
-                {
-                    urlStrings.add(node.asText());
-                    System.out.println(node.asText());
+                JsonNode rootNode = objectMapper.readTree(entities);
+                JsonNode totalNode = rootNode.get("total");
+                JsonNode resultsNode = rootNode.get("results");
+
+                while (resultsNode.elements().hasNext()) {
+                    JsonNode result = resultsNode.elements().next();
+                    Map<String,Object> resultEntities = objectMapper.readValue(result.toString(), Map.class);
+                    System.out.println("");
                 }
+
+
+//                int numberOfEntries = Integer.valueOf(agolEntities.get("total").toString());
+//                int paginationNextStart = Integer.valueOf(agolEntities.get("nextStart").toString());
+//                Object agolResults = agolEntities.get("results");
+
+//                for ( String key : agolResults.keySet() ) {
+////                    agolItems.put()
+//
+//                    System.out.println("");
+//                }
+
+
+
+//                JsonNode rootNode = objectMapper.readTree(entities);
+//                Iterator<JsonNode> agolNodes = rootNode.elements();
+//                JsonParser agolParser = rootNode.traverse();
+//                JsonToken agolToken = agolParser.nextToken();
+//                agolToken.
+//
+//                agolNodes.next()
+//                while ( agolNodes.hasNext() )
+//                {
+//                    agolItems.put(node.asText(), );
+//                    System.out.println(node.asText());
+//                }
             }
         }
         catch (Exception e) {
@@ -163,8 +190,6 @@ public class AGOLService implements IWriter{
         finally {
             httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
         }
-
-        HashMap<String,  AGOLItem> agolItems = new HashMap<String, AGOLItem>();
 
         return agolItems;
     }
