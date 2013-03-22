@@ -12,5 +12,7 @@
 	<modules>
 		<module>agol-writer</module>		
 		<module>transformation</module>
+        <module>processinfo</module>
+        <module>catalog-reader</module>
 	</modules>
 </project>
