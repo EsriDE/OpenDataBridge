@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<WMS_Capabilities xmlns="http://www.opengis.net/wms" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.3.0" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd">
+    <Service>
+        <Name>WMS</Name>
+        <Title>DE_HH_WMS_INSPIRE_A3_2_Gebaeude</Title>
+        <Abstract>WMS</Abstract>
+        <KeywordList>
+            <Keyword/>
+        </KeywordList>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_2_Gebaeude.aspx"/>
+        <ContactInformation>
+            <ContactPersonPrimary>
+                <ContactPerson>Thomas Eichhorn</ContactPerson>
+                <ContactOrganization>Landesbetrieb Geoinformation und Vermessung</ContactOrganization>
+            </ContactPersonPrimary>
+            <ContactPosition/>
+            <ContactAddress>
+                <AddressType>postal</AddressType>
+                <Address>Sachsenkamp 4</Address>
+                <City>Hamburg</City>
+                <StateOrProvince>HH</StateOrProvince>
+                <PostCode>20097</PostCode>
+                <Country>Germany</Country>
+            </ContactAddress>
+            <ContactVoiceTelephone>+49 40 42826 5975</ContactVoiceTelephone>
+            <ContactFacsimileTelephone>+49 40 42826 5966</ContactFacsimileTelephone>
+            <ContactElectronicMailAddress>gvgeoportal@gv.hamburg.de</ContactElectronicMailAddress>
+        </ContactInformation>
+        <Fees>
+            DE: kostenfrei fuer die kommerzielle und nicht-kommerzielle Nutzung
+        </Fees>
+        <AccessConstraints>
+            Datenlizenz Deutschland - Namensnennung - Version 1.0; "https://github.com/fraunhoferfokus/ogd-metadata/blob/master/lizenzen/BMI/Datenlizenz_Deutschland_Namensnennung_V1.md" http://www.daten-deutschland.de/bibliothek/Datenlizenz_Deutschland/dl-de-by-1.0; dl-de-by-1.0; Namensnennung: "Freie und Hansestadt Hamburg, Landesbetrieb Geoinformation und Vermessung"
+        </AccessConstraints>
+        <MaxWidth>2048</MaxWidth>
+        <MaxHeight>2048</MaxHeight>
+    </Service>
+    <Capability>
+        <Request>
+            <GetCapabilities>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <Format>text/xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_2_Gebaeude.aspx"/>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetCapabilities>
+            <GetMap>
+                <Format>image/bmp</Format>
+                <Format>image/jpeg</Format>
+                <Format>image/tiff</Format>
+                <Format>image/png</Format>
+                <Format>image/png8</Format>
+                <Format>image/png24</Format>
+                <Format>image/png32</Format>
+                <Format>image/gif</Format>
+                <Format>image/svg+xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_2_Gebaeude.aspx"/>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetMap>
+            <GetFeatureInfo>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <Format>text/xml</Format>
+                <Format>text/html</Format>
+                <Format>text/plain</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_2_Gebaeude.aspx"/>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetFeatureInfo>
+        </Request>
+        <Exception>
+            <Format>XML</Format>
+            <Format>INIMAGE</Format>
+            <Format>BLANK</Format>
+        </Exception>
+        <inspire_vs:ExtendedCapabilities xmlns="" xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0" xsi:schemaLocation="http://inspire.ec.europa.eu/schemas/common/1.0 http://inspire.ec.europa.eu/schemas/common/1.0/common.xsd http://inspire.ec.europa.eu/schemas/inspire_vs/1.0 http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd">
+            <inspire_common:MetadataUrl>
+                <inspire_common:URL>
+                    http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?Service=CSW&amp;Request=GetRecordById&amp;Version=2.0.2&amp;id=4B1D9873-4BBA-4E8D-BD10-464B00FDA33E&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full
+                </inspire_common:URL>
+                <inspire_common:MediaType>application/vnd.ogc.csw.GetRecordByIdResponse_xml</inspire_common:MediaType>
+            </inspire_common:MetadataUrl>
+            <inspire_common:SupportedLanguages>
+                <inspire_common:DefaultLanguage>
+                    <inspire_common:Language>ger</inspire_common:Language>
+                </inspire_common:DefaultLanguage>
+            </inspire_common:SupportedLanguages>
+            <inspire_common:ResponseLanguage>
+                <inspire_common:Language>ger</inspire_common:Language>
+            </inspire_common:ResponseLanguage>
+        </inspire_vs:ExtendedCapabilities>
+        <Layer>
+            <Name/>
+            <Title>DE_HH_INSPIRE_A3_2_Gebaeude</Title>
+            <Abstract>
+                Vorläufige Datensätze zu dem INSPIRE Anhang Thema des Dienstes
+            </Abstract>
+            <CRS>CRS:84</CRS>
+            <CRS>EPSG:4326</CRS>
+            <CRS>EPSG:25832</CRS>
+            <CRS>EPSG:31467</CRS>
+            <CRS>EPSG:4258</CRS>
+            <CRS>EPSG:3034</CRS>
+            <CRS>EPSG:3035</CRS>
+            <CRS>EPSG:3044</CRS>
+            <EX_GeographicBoundingBox>
+                <westBoundLongitude>8.381650</westBoundLongitude>
+                <eastBoundLongitude>11.774765</eastBoundLongitude>
+                <southBoundLatitude>52.483444</southBoundLatitude>
+                <northBoundLatitude>54.489852</northBoundLatitude>
+            </EX_GeographicBoundingBox>
+            <BoundingBox CRS="CRS:84" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+            <BoundingBox CRS="EPSG:4326" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
+            <BoundingBox CRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6008999.99993544"/>
+            <BoundingBox CRS="EPSG:31467" minx="5810999.9999094" miny="3449000.00000584" maxx="6008999.99993544" maxy="3691000.00003476"/>
+            <BoundingBox CRS="EPSG:4258" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
+            <BoundingBox CRS="EPSG:3034" minx="2945804.87459234" miny="3892533.29101336" maxx="3016857.74296883" maxy="4027464.72585515"/>
+            <BoundingBox CRS="EPSG:3035" minx="3253902.54707165" miny="4201887.92726224" maxx="3499218.56676114" maxy="4447291.7005463"/>
+            <BoundingBox CRS="EPSG:3044" minx="5818109.090227" miny="459943.472376" maxx="6008999.99993544" maxy="679859.470778"/>
+            <AuthorityURL name="LGV">
+                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.hamburg.de/startseite-landesbetrieb-geoinformation-und-vermessung/"/>
+            </AuthorityURL>
+            <Identifier authority="LGV">HMDK#xxxxxxxxxxxxxxx</Identifier>
+            <MetadataURL type="ISO19115:2003">
+                <Format>application/xml</Format>
+                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=904476CB-D5CE-48BE-A1AE-604A6476AACB&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+            </MetadataURL>
+            <Layer>
+                <Name/>
+                <Title>DE_HH_INSPIRE_Gebaeude</Title>
+                <Abstract>DE_HH_INSPIRE_Gebaeude</Abstract>
+                <CRS>CRS:84</CRS>
+                <CRS>EPSG:4326</CRS>
+                <CRS>EPSG:25832</CRS>
+                <CRS>EPSG:31467</CRS>
+                <CRS>EPSG:4258</CRS>
+                <CRS>EPSG:3034</CRS>
+                <CRS>EPSG:3035</CRS>
+                <CRS>EPSG:3044</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>8.381650</westBoundLongitude>
+                    <eastBoundLongitude>11.774765</eastBoundLongitude>
+                    <southBoundLatitude>52.483444</southBoundLatitude>
+                    <northBoundLatitude>54.489852</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <BoundingBox CRS="CRS:84" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+                <BoundingBox CRS="EPSG:4326" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
+                <BoundingBox CRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6008999.99993544"/>
+                <BoundingBox CRS="EPSG:31467" minx="5810999.9999094" miny="3449000.00000584" maxx="6008999.99993544" maxy="3691000.00003476"/>
+                <BoundingBox CRS="EPSG:4258" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
+                <BoundingBox CRS="EPSG:3034" minx="2945804.87459234" miny="3892533.29101336" maxx="3016857.74296883" maxy="4027464.72585515"/>
+                <BoundingBox CRS="EPSG:3035" minx="3253902.54707165" miny="4201887.92726224" maxx="3499218.56676114" maxy="4447291.7005463"/>
+                <BoundingBox CRS="EPSG:3044" minx="5818109.090227" miny="459943.472376" maxx="6008999.99993544" maxy="679859.470778"/>
+                <AuthorityURL name="LGV">
+                    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.hamburg.de/startseite-landesbetrieb-geoinformation-und-vermessung/"/>
+                </AuthorityURL>
+                <Identifier authority="LGV">HMDK#xxxxxxxxxxxxxxx</Identifier>
+                <MetadataURL type="ISO19115:2003">
+                    <Format>application/xml</Format>
+                    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=AFBB937F-1B41-4EB2-8703-64844E487E51&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+                </MetadataURL>
+                <Layer queryable="1">
+                    <Name>1</Name>
+                    <Title>Bauteil</Title>
+                    <Abstract>Bauteil</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <CRS>EPSG:4326</CRS>
+                    <CRS>EPSG:25832</CRS>
+                    <CRS>EPSG:31467</CRS>
+                    <CRS>EPSG:4258</CRS>
+                    <CRS>EPSG:3034</CRS>
+                    <CRS>EPSG:3035</CRS>
+                    <CRS>EPSG:3044</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>8.381650</westBoundLongitude>
+                        <eastBoundLongitude>11.774765</eastBoundLongitude>
+                        <southBoundLatitude>52.483444</southBoundLatitude>
+                        <northBoundLatitude>54.489852</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="CRS:84" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+                    <BoundingBox CRS="EPSG:4326" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
+                    <BoundingBox CRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6008999.99993544"/>
+                    <BoundingBox CRS="EPSG:31467" minx="5810999.9999094" miny="3449000.00000584" maxx="6008999.99993544" maxy="3691000.00003476"/>
+                    <BoundingBox CRS="EPSG:4258" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
+                    <BoundingBox CRS="EPSG:3034" minx="2945804.87459234" miny="3892533.29101336" maxx="3016857.74296883" maxy="4027464.72585515"/>
+                    <BoundingBox CRS="EPSG:3035" minx="3253902.54707165" miny="4201887.92726224" maxx="3499218.56676114" maxy="4447291.7005463"/>
+                    <BoundingBox CRS="EPSG:3044" minx="5818109.090227" miny="459943.472376" maxx="6008999.99993544" maxy="679859.470778"/>
+                    <AuthorityURL name="LGV">
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.hamburg.de/startseite-landesbetrieb-geoinformation-und-vermessung/"/>
+                    </AuthorityURL>
+                    <Identifier authority="LGV">HMDK#AFBB937F-1B41-4EB2-8703-64844E487E51</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>application/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=AFBB937F-1B41-4EB2-8703-64844E487E51&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>1</Title>
+                        <LegendURL width="79" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_2_Gebaeude.aspx?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=1"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>2</Name>
+                    <Title>Gebaeude</Title>
+                    <Abstract>Gebaeude</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <CRS>EPSG:4326</CRS>
+                    <CRS>EPSG:25832</CRS>
+                    <CRS>EPSG:31467</CRS>
+                    <CRS>EPSG:4258</CRS>
+                    <CRS>EPSG:3034</CRS>
+                    <CRS>EPSG:3035</CRS>
+                    <CRS>EPSG:3044</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>8.381650</westBoundLongitude>
+                        <eastBoundLongitude>11.774765</eastBoundLongitude>
+                        <southBoundLatitude>52.483444</southBoundLatitude>
+                        <northBoundLatitude>54.489852</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="CRS:84" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+                    <BoundingBox CRS="EPSG:4326" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
+                    <BoundingBox CRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6008999.99993544"/>
+                    <BoundingBox CRS="EPSG:31467" minx="5810999.9999094" miny="3449000.00000584" maxx="6008999.99993544" maxy="3691000.00003476"/>
+                    <BoundingBox CRS="EPSG:4258" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
+                    <BoundingBox CRS="EPSG:3034" minx="2945804.87459234" miny="3892533.29101336" maxx="3016857.74296883" maxy="4027464.72585515"/>
+                    <BoundingBox CRS="EPSG:3035" minx="3253902.54707165" miny="4201887.92726224" maxx="3499218.56676114" maxy="4447291.7005463"/>
+                    <BoundingBox CRS="EPSG:3044" minx="5818109.090227" miny="459943.472376" maxx="6008999.99993544" maxy="679859.470778"/>
+                    <AuthorityURL name="LGV">
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.hamburg.de/startseite-landesbetrieb-geoinformation-und-vermessung/"/>
+                    </AuthorityURL>
+                    <Identifier authority="LGV">HMDK#AFBB937F-1B41-4EB2-8703-64844E487E51</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>application/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=AFBB937F-1B41-4EB2-8703-64844E487E51&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>2</Title>
+                        <LegendURL width="101" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_2_Gebaeude.aspx?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=2"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>3</Name>
+                    <Title>Besondere_Gebaeudelinie</Title>
+                    <Abstract>Besondere_Gebaeudelinie</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <CRS>EPSG:4326</CRS>
+                    <CRS>EPSG:25832</CRS>
+                    <CRS>EPSG:31467</CRS>
+                    <CRS>EPSG:4258</CRS>
+                    <CRS>EPSG:3034</CRS>
+                    <CRS>EPSG:3035</CRS>
+                    <CRS>EPSG:3044</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>8.381650</westBoundLongitude>
+                        <eastBoundLongitude>11.774765</eastBoundLongitude>
+                        <southBoundLatitude>52.483444</southBoundLatitude>
+                        <northBoundLatitude>54.489852</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="CRS:84" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+                    <BoundingBox CRS="EPSG:4326" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
+                    <BoundingBox CRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6008999.99993544"/>
+                    <BoundingBox CRS="EPSG:31467" minx="5810999.9999094" miny="3449000.00000584" maxx="6008999.99993544" maxy="3691000.00003476"/>
+                    <BoundingBox CRS="EPSG:4258" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
+                    <BoundingBox CRS="EPSG:3034" minx="2945804.87459234" miny="3892533.29101336" maxx="3016857.74296883" maxy="4027464.72585515"/>
+                    <BoundingBox CRS="EPSG:3035" minx="3253902.54707165" miny="4201887.92726224" maxx="3499218.56676114" maxy="4447291.7005463"/>
+                    <BoundingBox CRS="EPSG:3044" minx="5818109.090227" miny="459943.472376" maxx="6008999.99993544" maxy="679859.470778"/>
+                    <AuthorityURL name="LGV">
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.hamburg.de/startseite-landesbetrieb-geoinformation-und-vermessung/"/>
+                    </AuthorityURL>
+                    <Identifier authority="LGV">HMDK#AFBB937F-1B41-4EB2-8703-64844E487E51</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>application/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=AFBB937F-1B41-4EB2-8703-64844E487E51&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>3</Title>
+                        <LegendURL width="197" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_2_Gebaeude.aspx?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+            </Layer>
+        </Layer>
+    </Capability>
+</WMS_Capabilities>

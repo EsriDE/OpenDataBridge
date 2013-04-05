@@ -14,5 +14,6 @@
 		<module>transformation</module>
         <module>processinfo</module>
         <module>catalog-reader</module>
+        <module>jsontransform</module>
 	</modules>
 </project>
