@@ -3,9 +3,9 @@ package esride.opendatabridge.itemtransform;
 import java.util.List;
 
 /**
- * The class MetadataResource represents a bunch of metadata sets @see MetadataSet which are necessary to create an ArcGIS Online
+ * The class MetadataResource represents a bunch of MetadataSet which are necessary to create an ArcGIS Online
  * Item. Each MetadataResource has a fixed resourceType (like 'WMS', 'CSV' or 'Web Map', etc...). For the AGOL Item generation
- * one or more metadata sets are necessary to extract all information (like the keywords from the iso metadata set and from the capabilities
+ * one or more metadata sets are necessary to extract all information (like the keywords from the iso MetadataSet and from the capabilities
  * document the Width and Height information)
  * User: sma
  * Date: 05.04.13

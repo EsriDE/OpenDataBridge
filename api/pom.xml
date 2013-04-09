@@ -14,6 +14,8 @@
 		<module>transformation</module>
         <module>processinfo</module>
         <module>catalog-reader</module>
+        <module>csw-reader</module>
         <module>jsontransform</module>
+        <module>httptransport</module>
 	</modules>
 </project>

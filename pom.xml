@@ -104,6 +104,11 @@
                 <artifactId>jsontransform</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>httptransport</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- 3rd party Module dependencies ================================ -->
 			<dependency>
@@ -156,6 +161,11 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.14</version>
+            </dependency>
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>stringtemplate</artifactId>
+                <version>4.0.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
