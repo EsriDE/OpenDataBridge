@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -75,11 +76,11 @@ public class AppStarter {
                 
         //Auslesen der Process Informationen
         IProcessInfo processInfo = context.getBean("processinfo", IProcessInfo.class);
-        List<ProcessProperty> properties = processInfo.getProperties(pinfoValue);
+        HashMap<String, String> properties = processInfo.getProperties(pinfoValue);
 
         //ReaderFactory initialisieren
         CatalogReaderFactory factory = context.getBean("readerfactory", CatalogReaderFactory.class);
-        IReader reader = factory.newReaderInstance(readerValue, properties);
+        IReader reader = factory.newReaderInstance(readerValue, properties, pinfoValue);
 
         //ToDo: Transformer holen und Reader setzen
         //ITransformer lTransformer = context.getBean("transformer");

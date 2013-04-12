@@ -15,7 +15,7 @@
         <module>processinfo</module>
         <module>catalog-reader</module>
         <module>csw-reader</module>
-        <module>jsontransform</module>
+        <module>itemtransform</module>
         <module>httptransport</module>
 	</modules>
 </project>

@@ -1,7 +1,18 @@
 package esride.opendatabridge.reader.csw;
 
 
-import org.stringtemplate.v4.ST;
+
+import esride.opendatabridge.httptransport.IHTTPRequest;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,26 +22,69 @@ import org.stringtemplate.v4.ST;
  * To change this template use File | Settings | File Templates.
  */
 public class CSWGetRecordsRequest {
-    
-    private boolean isLastPage = false;
-    
-    private int nextStartPosition;
-    private int actualStartPosition;
-    private int maxRecordsSize;
-            
-    private String filter;
-    private String outputSchema;
-    private String typeNames;
 
-    private String numbOfRecordsReturnedXPath;
-    private String numbOfRecordsMatchedXPath;
-    
-    private String resourceType;
-    private String additionalMetadataUrlXPath;
-    private String additionalMetadataUrl;
+    private static Logger sLogger = Logger.getLogger(CSWGetRecordsRequest.class);
 
-    /*public void executeGetRecordsRequest(){
-        ST getRecTemplate = new ST()
-    } */
+
+    private CSWGetRecordsResponse getRecordsResponse;
+
+    private GetRecordsRequestGenerator requestGenerator;
+    private IHTTPRequest httpRequest;
+
+
+    private DocumentBuilder builder;
+
+    public void setGetRecordsResponse(CSWGetRecordsResponse getRecordsResponse) {
+        this.getRecordsResponse = getRecordsResponse;
+    }
+
+    public void setRequestGenerator(GetRecordsRequestGenerator requestGenerator) {
+        this.requestGenerator = requestGenerator;
+    }
+
+    public CSWGetRecordsResponse getGetRecordsResponse() {
+        return getRecordsResponse;
+    }
+
+    public GetRecordsRequestGenerator getRequestGenerator() {
+        return requestGenerator;
+    }
+
+    public void setHttpRequest(IHTTPRequest httpRequest) {
+        this.httpRequest = httpRequest;
+    }
+
+    public CSWGetRecordsRequest() throws ParserConfigurationException{
+        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        builderFactory.setNamespaceAware(false);
+        builderFactory.setIgnoringElementContentWhitespace(false);
+        builder = builderFactory.newDocumentBuilder();
+
+    }
+
+    public CSWResponseObj executeGetRecordsRequest(CSWRequestObj requestObj) throws IOException {
+
+        String getRecordsRequest = requestGenerator.generateGetRecordsTemplate(requestObj.getParameters());
+        InputStream stream = httpRequest.executePostRequest(requestObj.getCswUrl(), getRecordsRequest, "UTF-8", requestObj.getHeader());
+
+        Document responseDoc = this.createDocumentFromInputStream(stream);
+        return getRecordsResponse.createCSWResponse(responseDoc);
+    }
+    
+    private Document createDocumentFromInputStream(InputStream inputStream){
+        Document document = null;
+        try {
+            document = builder.parse(inputStream);
+        } catch (SAXException e) {
+            String message = "Could not build Document";
+            sLogger.error(message, e);
+
+        } catch (IOException e) {
+            String message = "Could not build Document";
+            sLogger.error(message, e);
+
+        }
+        return document;
+    }
     
 }

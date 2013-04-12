@@ -2,6 +2,7 @@ package esride.opendatabridge.reader;
 
 import esride.opendatabridge.processinfo.ProcessProperty;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -13,5 +14,5 @@ import java.util.List;
  */
 public interface IReaderFactory {
 
-    public void setProperties(List<ProcessProperty> properties);
+    public void setProperties(HashMap<String, String> properties, String processId);
 }

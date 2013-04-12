@@ -1,26 +1,23 @@
 package esride.opendatabridge.itemtransform;
 
-import com.fasterxml.jackson.core.JsonFactory;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+
 
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import java.io.*;
+
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * ToDo: JSON Bearbeitung herausnehmen und nur mit documents arbeiten (Modul umbennen von jsontransform nach agoltransform)
  * User: sma
  * Date: 02.04.13
  * Time: 14:14
@@ -29,7 +26,7 @@ import java.util.List;
 public class AgolItemTransformer implements IItemTransformer {
     private static Logger sLogger = Logger.getLogger(AgolItemTransformer.class);
     
-    private JsonFactory jsonFactory = new JsonFactory();
+    //private JsonFactory jsonFactory = new JsonFactory();
     
     private DocumentBuilderFactory builderFactory;
     private DocumentBuilder builder;
@@ -60,9 +57,9 @@ public class AgolItemTransformer implements IItemTransformer {
         HashMap<String, Document> docMap = new HashMap<String, Document>();
         List<MetadataSet> container = resource.getContainer();
         for(int i=0; i<container.size(); i++){
-            String metadataEncoding = container.get(i).getEncodingType();
-            Document doc;
-            if(metadataEncoding.equals("json")){
+            //String metadataEncoding = container.get(i).getEncodingType();
+            //Document doc;
+            /*if(metadataEncoding.equals("json")){
                 doc = transformJsonStream2Doc( container.get(i).getInputStream());                
             }else if(metadataEncoding.equals("xml")){
                 doc = transformXmlStream2Doc(container.get(i).getInputStream());
@@ -70,15 +67,15 @@ public class AgolItemTransformer implements IItemTransformer {
                 String message = "Wrong metadata encoding type: " + metadataEncoding;
                 sLogger.error(message);
                 throw new ItemTransformationException(message);
-            }
-            docMap.put(container.get(i).getMetadataType(), doc);
+            } */
+            docMap.put(container.get(i).getMetadataType(), container.get(i).getXmlDoc());
         }
 
         HashMap itemMap = mItemElemExtractor.getItemElementsFromDoc(docMap, processId, resource.getResourceType());
         return itemMap;
     }
 
-    private Document transformJsonStream2Doc(InputStream jsonInput) throws ItemTransformationException, ItemGenerationException {
+    /*private Document transformJsonStream2Doc(InputStream jsonInput) throws ItemTransformationException, ItemGenerationException {
 
         //1. JSON nach XML transformieren
         ByteArrayOutputStream jsonOutputStream = new ByteArrayOutputStream();
@@ -125,6 +122,7 @@ public class AgolItemTransformer implements IItemTransformer {
        
         
     }
+    */
 
     /**
     protected void createXmlFromJson(InputStream jsonInput, OutputStream xmlOutput) {

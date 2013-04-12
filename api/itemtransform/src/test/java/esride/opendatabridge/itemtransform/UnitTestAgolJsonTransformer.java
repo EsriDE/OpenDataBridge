@@ -5,7 +5,12 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,18 +38,47 @@ public class UnitTestAgolJsonTransformer extends AbstractJUnit4SpringContextTest
 
 
             InputStream capabilitiesStream = this.getClass().getResourceAsStream("/itemgenerator/test01/capabilities.xml");
-            
-            
+
+            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+            builderFactory.setNamespaceAware(false);
+            builderFactory.setIgnoringElementContentWhitespace(false);
+            DocumentBuilder builder = null;
+
+            try {
+                builder = builderFactory.newDocumentBuilder();
+            } catch (ParserConfigurationException e) {
+                Assert.fail(e.getMessage());
+            }
+
+
             MetadataSet container1 = new MetadataSet();
-            container1.setEncodingType("xml");
+            //container1.setEncodingType("xml");
             container1.setMetadataType("capabilities");
-            container1.setInputStream(capabilitiesStream);
+            try {
+                Document doc = builder.parse(capabilitiesStream);
+                container1.setXmlDoc(doc);
+            } catch (SAXException e) {
+                Assert.fail(e.getMessage());
+            } catch (IOException e) {
+                Assert.fail(e.getMessage());
+            }
+
 
             InputStream metadataStream = this.getClass().getResourceAsStream("/itemgenerator/test01/metadata.xml");
             MetadataSet container2 = new MetadataSet();
-            container2.setEncodingType("xml");
             container2.setMetadataType("csw");
-            container2.setInputStream(metadataStream);
+
+
+            try {
+                Document doc = builder.parse(metadataStream);
+                container2.setXmlDoc(doc);
+            } catch (SAXException e) {
+                Assert.fail(e.getMessage());
+            } catch (IOException e) {
+                Assert.fail(e.getMessage());
+            }
+
+
 
             List<MetadataSet> containerList = new ArrayList<MetadataSet>();
             containerList.add(container1);

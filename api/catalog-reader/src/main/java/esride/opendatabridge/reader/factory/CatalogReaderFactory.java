@@ -26,7 +26,7 @@ public class CatalogReaderFactory {
         mReaderPool = pReaderPool;
     }
 
-    public IReader newReaderInstance(String readerId, List<ProcessProperty> properties) throws ReaderFactoryException{
+    public IReader newReaderInstance(String readerId, HashMap<String, String> properties, String processId) throws ReaderFactoryException{
         if(sLogger.isDebugEnabled()){
             sLogger.debug("Get Reader Instance with Id: " + readerId);
         }
@@ -36,7 +36,7 @@ public class CatalogReaderFactory {
             throw new ReaderFactoryException("No Reader with ID: " + readerId + " is available");
         }
         //Initialize reader with the correct properties information
-        ((IReaderFactory)reader).setProperties(properties);
+        ((IReaderFactory)reader).setProperties(properties, processId);
         return reader;
     }
 }

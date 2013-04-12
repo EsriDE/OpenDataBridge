@@ -2,7 +2,7 @@ package esride.opendatabridge.itemtransform;
 
 import org.w3c.dom.Document;
 
-import java.io.InputStream;
+
 
 /**
  *
@@ -16,7 +16,7 @@ public class MetadataSet {
     /**
      * could be json or xml
      */
-    private String encodingType;
+    //private String encodingType;
 
     /**
      * could be csw, ckan, capabilities
@@ -24,25 +24,30 @@ public class MetadataSet {
     private String metadataType;
 
     /**
-     * the original metadata document (iso metadata set (xml), capabilities (xml), ckan (json), ...)
+     * the original metadata document (iso metadata set (xml), capabilities (xml), ckan (xml), ...)
      */
-    private InputStream inputStream;
+    //private InputStream inputStream;
 
-    public String getEncodingType() {
+    /**
+     * the original metadata document (iso metadata set (xml), capabilities (xml), ckan (tranformed from json to xml), ...)
+     */
+    private Document xmlDoc;
+
+    /*public String getEncodingType() {
         return encodingType;
     }
 
     public void setEncodingType(String encodingType) {
         this.encodingType = encodingType;
-    }
+    } */
 
-    public InputStream getInputStream() {
+    /*public InputStream getInputStream() {
         return inputStream;
     }
 
     public void setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
-    }
+    } */
 
     public String getMetadataType() {
         return metadataType;
@@ -52,5 +57,11 @@ public class MetadataSet {
         this.metadataType = metadataType;
     }
 
+    public Document getXmlDoc() {
+        return xmlDoc;
+    }
 
+    public void setXmlDoc(Document xmlDoc) {
+        this.xmlDoc = xmlDoc;
+    }
 }

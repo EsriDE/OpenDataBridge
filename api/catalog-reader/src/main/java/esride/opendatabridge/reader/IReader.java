@@ -9,6 +9,6 @@ package esride.opendatabridge.reader;
  */
 public interface IReader {
 
-    public void getItemsFromCatalog();
+    public void getItemsFromCatalog() throws ReaderException;
 
 }

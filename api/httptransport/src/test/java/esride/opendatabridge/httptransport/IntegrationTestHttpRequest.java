@@ -20,7 +20,7 @@ import java.util.HashMap;
 public class IntegrationTestHttpRequest extends AbstractJUnit4SpringContextTests {
 
     @Autowired
-    private HTTPRequest request;
+    private IHTTPRequest request;
 
     @Test
     public void testGetReq(){

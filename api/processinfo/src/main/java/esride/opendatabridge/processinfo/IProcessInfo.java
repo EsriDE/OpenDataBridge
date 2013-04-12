@@ -1,5 +1,6 @@
 package esride.opendatabridge.processinfo;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,5 +17,5 @@ public interface IProcessInfo {
      * @param processId the id for the process
      * @return
      */
-    public List<ProcessProperty> getProperties(String processId);
+    public HashMap<String, String> getProperties(String processId);
 }

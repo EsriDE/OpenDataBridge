@@ -1,7 +1,7 @@
 package esride.opendatabridge.processinfo.file;
 
 import esride.opendatabridge.processinfo.IProcessInfo;
-import esride.opendatabridge.processinfo.ProcessProperty;
+//import esride.opendatabridge.processinfo.ProcessProperty;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -25,13 +25,13 @@ public class FileSystemProcessInfo implements IProcessInfo {
         mPathInfo = pPathInfo;
     }
 
-    public List<ProcessProperty> getProperties(String processId)  {
+    public HashMap<String, String> getProperties(String processId)  {
         
         //Datei holen
         InputStream propertiesStream = this.getClass().getResourceAsStream(mPathInfo + processId + ".properties");
         Properties prop = new Properties();
 
-        List<ProcessProperty> lPropertyList= new ArrayList<ProcessProperty>();
+        HashMap<String, String> propertyMap= new HashMap<String, String>();
         
         try {
             prop.load(propertiesStream);
@@ -42,13 +42,13 @@ public class FileSystemProcessInfo implements IProcessInfo {
                 if(sLogger.isDebugEnabled()){
                     sLogger.debug("Property key: " + key);
                 }
-                ProcessProperty processProp = new ProcessProperty();
-                processProp.setPropertyKey((String)key);
-                processProp.setPropertyValue(prop.getProperty((String)key));
+                //ProcessProperty processProp = new ProcessProperty();
+                propertyMap.put((String)key, prop.getProperty((String)key));
+               // processProp.setPropertyValue(prop.getProperty((String)key));
                 if(sLogger.isDebugEnabled()){
                     sLogger.debug("Property value: " + prop.getProperty((String)key));
                 }
-                lPropertyList.add(processProp);
+                //lPropertyList.add(processProp);
             }
             
         } catch (IOException e) {
@@ -56,6 +56,6 @@ public class FileSystemProcessInfo implements IProcessInfo {
             return null;
         }
 
-        return lPropertyList;
+        return propertyMap;
     }
 }

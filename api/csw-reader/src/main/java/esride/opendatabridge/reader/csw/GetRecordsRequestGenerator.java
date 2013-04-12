@@ -19,7 +19,6 @@ import java.util.Set;
  */
 public class GetRecordsRequestGenerator {
 
-    //private InputStream getRecordsTemplate;
     private ST templateObj;
 
     public void setGetRecordsTemplate(InputStream getRecordsTemplate)  {

@@ -25,7 +25,7 @@ import java.util.Set;
  * Time: 18:47
  * To change this template use File | Settings | File Templates.
  */
-public class HTTPRequest {
+public class HTTPRequest implements IHTTPRequest{
     private static Logger sLogger = Logger.getLogger(HTTPRequest.class);
     
     private HttpClient client;
