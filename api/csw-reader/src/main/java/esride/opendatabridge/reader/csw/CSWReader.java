@@ -120,7 +120,7 @@ public class CSWReader implements IReader, IReaderFactory {
             setList.add(cswSet);
             if(metadataObjectList.get(i).getOgcCapabilitiesDoc() != null){
                 MetadataSet capabilitiesSet = new MetadataSet();
-                capabilitiesSet.setXmlDoc(metadataObjectList.get(i).getCswMetadataDoc());
+                capabilitiesSet.setXmlDoc(metadataObjectList.get(i).getOgcCapabilitiesDoc());
                 capabilitiesSet.setMetadataType("capabilities");
                 setList.add(capabilitiesSet);
             }
