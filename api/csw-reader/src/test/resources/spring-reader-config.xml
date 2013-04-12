@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <bean class="esride.opendatabridge.reader.csw.CSWReader" id="reader"
+            p:getRecordsRequest-ref="getRecordsRequest"
+            p:capabilitiesRequest-ref="capabilitiesRequest"
+            p:agolItemTransformer-ref="itemTransform"/>
+    
+    <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsRequest" id="getRecordsRequest"
+            p:httpRequest-ref="mockHttp"
+            p:requestGenerator-ref="generator"
+            p:getRecordsResponse-ref="getRecordsResponse"/>
+    
+    <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"/>
+
+    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
+            p:generatorConfiguration-ref="itemConfig"/>
+
+    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
+            p:itemElemExtractor-ref="itemGenerator"/>
+
+    <bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesRequest" id="capabilitiesRequest"
+            p:request-ref="mockHttp"/>
+    
+    <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsResponse" id="getRecordsResponse"/>
+    
+    <bean class="esride.opendatabridge.reader.mock.MockHTTPRequest" id="mockHttp"/>
+    
+    
+    <bean class="esride.opendatabridge.reader.csw.GetRecordsRequestGenerator" id="generator"/>
+
+
+</beans>

@@ -19,25 +19,27 @@ import java.util.Set;
  */
 public class GetRecordsRequestGenerator {
 
-    private ST templateObj;
+    //private ST templateObj;
+    private StringBuilder sb;
 
     public void setGetRecordsTemplate(InputStream getRecordsTemplate)  {
         BufferedReader br = new BufferedReader(new InputStreamReader(getRecordsTemplate));
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
         String line;
         try{
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
             br.close();
-            templateObj = new ST(sb.toString(), '$', '$');
+            
         }catch(IOException e){
-            templateObj = null;
+            br = null;
         }
 
     }
 
     public String generateGetRecordsTemplate(HashMap<String, String> template){
+        ST templateObj = new ST(sb.toString(), '$', '$');
         Set<String> templateKeys = template.keySet();
         Iterator<String> iter =  templateKeys.iterator();
         while(iter.hasNext()){

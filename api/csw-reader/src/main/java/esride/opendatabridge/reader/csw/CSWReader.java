@@ -3,9 +3,7 @@ package esride.opendatabridge.reader.csw;
 
 
 import esride.opendatabridge.itemtransform.*;
-import esride.opendatabridge.reader.IReader;
-import esride.opendatabridge.reader.IReaderFactory;
-import esride.opendatabridge.reader.ReaderException;
+import esride.opendatabridge.reader.*;
 import esride.opendatabridge.reader.capabilities.OGCCapabilitiesRequest;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
@@ -31,7 +29,7 @@ public class CSWReader implements IReader, IReaderFactory {
     private String processId;
     //private String httpMethod = null;
     
-    private int maxRecords;
+
     
     private CSWGetRecordsRequest getRecordsRequest;
 
@@ -60,18 +58,18 @@ public class CSWReader implements IReader, IReaderFactory {
         this.processId = processId;
     }
 
-    public void getItemsFromCatalog() throws ReaderException {
+    public ReaderItems getItemsFromCatalog() throws ReaderException {
         sLogger.info("------------------------------------------------ ");
         sLogger.info("CSW-Modul: Start Requesting Metadata from catalog");
 
 
         boolean pagination = true;
-        int maxRecords = Integer.valueOf(templateItems.get("csw.request.getrecords.template.maxRecords"));
+        int maxRecords = Integer.valueOf(templateItems.get("csw_request_getrecords_template_maxRecords"));
         int startPosition = 1;
         List<MetadataObject> metadataObjectList = new ArrayList<MetadataObject>();
 
         while(pagination){
-            templateItems.put("csw.request.getrecords.template.startPosition", String.valueOf(startPosition));
+            templateItems.put("csw_request_getrecords_template_startPosition", String.valueOf(startPosition));
             CSWRequestObj reqObj = new CSWRequestObj(cswUrl,templateItems, headerItems);
             try {
                 CSWResponseObj resonseObj = getRecordsRequest.executeGetRecordsRequest(reqObj);
@@ -95,15 +93,15 @@ public class CSWReader implements IReader, IReaderFactory {
 
         for(int i=0; i<metadataObjectList.size(); i++){
             MetadataObject object = metadataObjectList.get(i);
-            if(object.getOgcServiceUrl() != null || object.getOgcServiceUrl().trim().length() > 0){
+            if(object.getResourceUrl() != null || object.getResourceUrl().trim().length() > 0){
                 try {
-                    object.setOgcCapabilitiesDoc(capabilitiesRequest.getCapabilitiesDocument(object.getOgcServiceUrl()));
+                    object.setOgcCapabilitiesDoc(capabilitiesRequest.getCapabilitiesDocument(object.getResourceUrl()));
                 } catch (IOException e) {
-                    sLogger.error("The WMS (" + object.getOgcServiceUrl() + ") is not available. " +
+                    sLogger.error("The WMS (" + object.getResourceUrl() + ") is not available. " +
                             "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
                     metadataObjectList.remove(object);
                 } catch (SAXException e) {
-                    sLogger.error("The WMS (" + object.getOgcServiceUrl() + ") is not available. " +
+                    sLogger.error("The WMS (" + object.getResourceUrl() + ") is not available. " +
                             "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
                     metadataObjectList.remove(object);
                 }
@@ -111,7 +109,7 @@ public class CSWReader implements IReader, IReaderFactory {
         }
 
         //agolitems erzeugen
-        HashMap agolItems = null;
+        ReaderItems readerItems = new ReaderItems();
         for(int i=0;i<metadataObjectList.size(); i++){
             MetadataResource resource = new MetadataResource();
             resource.setResourceType(metadataObjectList.get(i).getMetadataResource());
@@ -128,7 +126,12 @@ public class CSWReader implements IReader, IReaderFactory {
             }
             resource.setContainer(setList);
             try {
-                agolItems = agolItemTransformer.transform2AgolItem(resource, processId);
+                HashMap agolItems = agolItemTransformer.transform2AgolItem(resource, processId);
+                ReaderItem item = new ReaderItem();
+                item.setItemElements(agolItems);
+                item.setResourceUrl(metadataObjectList.get(i).getResourceUrl());
+                readerItems.addItem(item);
+
             } catch (ItemTransformationException e) {
                 sLogger.error("The metadataset with the file Identifier: " + metadataObjectList.get(i).getMetadataFileIdentifier() + " cannot be transformed", e);
             } catch (ItemGenerationException e) {
@@ -138,7 +141,7 @@ public class CSWReader implements IReader, IReaderFactory {
         
         
 
-        //compute every metadataset, if wms or view get capabilities
+       return readerItems;
     }
 
     public void setProperties(HashMap<String, String> properties, String processId) {
@@ -147,8 +150,8 @@ public class CSWReader implements IReader, IReaderFactory {
         
         cswUrl = properties.get("csw.url");
         sLogger.info("Module property: csw.url=" + cswUrl);
-        /*httpMethod = properties.get("csw.request.method");
-        sLogger.info("Module property: csw.request.method=" + httpMethod);*/
+        /*httpMethod = properties.get("csw_request_method");
+        sLogger.info("Module property: csw_request_method=" + httpMethod);*/
         
         Set<String> keySet = properties.keySet();
         Iterator<String> iter = keySet.iterator();
@@ -157,13 +160,13 @@ public class CSWReader implements IReader, IReaderFactory {
             String value = properties.get(key);
 
             sLogger.info("Module property:" + key + "=" + value);
-            if(key.startsWith("csw.request.getrecords.header.")){
+            if(key.startsWith("csw_request_getrecords_header_")){
                 headerItems.put(key, value);
             }
-            if(key.startsWith("csw.request.getrecords.template.")){
+            if(key.startsWith("csw_request_getrecords_template_")){
                 templateItems.put(key, value);
             }
-            if(key.startsWith("csw.response.xpath.")){
+            if(key.startsWith("csw_response_xpath_")){
                 xPathItems.put(key, value);
             }
         }

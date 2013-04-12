@@ -2,11 +2,11 @@
 <!DOCTYPE WMT_MS_Capabilities SYSTEM "http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd">
 <WMT_MS_Capabilities version="1.1.1">
     <Service>
-        <Name>WMS</Name>
-        <Title>Bauwerke</Title>
+        <Name><![CDATA[WMS]]></Name>
+        <Title><![CDATA[Geobasisdaten]]></Title>
         <Abstract>OGC:WMS</Abstract>
-        <KeywordList><Keyword></Keyword></KeywordList>
-        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Brueckenbauwerke.aspx"/>
+        <KeywordList><Keyword><![CDATA[]]></Keyword></KeywordList>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Geobasisdaten.aspx"/>
         <ContactInformation>
             <ContactPersonPrimary>
                 <ContactPerson>Thomas Eichhorn</ContactPerson>
@@ -25,15 +25,15 @@
             <ContactFacsimileTelephone>+49 40 42826 5966</ContactFacsimileTelephone>
             <ContactElectronicMailAddress>gvgeoportal@gv.hamburg.de</ContactElectronicMailAddress>
         </ContactInformation>
-        <Fees>DE: kostenfrei fuer die nicht-kommerzielle Nutzung</Fees>
-        <AccessConstraints>DE: Die Daten sind gesetzlich geschuetzt. Eine kommerzielle Nutzung des Kartendienstes erfordert die schriftliche Zustimmung des Landesbetriebs Geoinformation und Vermessung Hamburg</AccessConstraints>
+        <Fees>kostenfrei fuer die kommerzielle und nicht-kommerzielle Nutzung</Fees>
+        <AccessConstraints>Datenlizenz Deutschland - Namensnennung - Version 1.0; "https://github.com/fraunhoferfokus/ogd-metadata/blob/master/lizenzen/BMI/Datenlizenz_Deutschland_Namensnennung_V1.md" http://www.daten-deutschland.de/bibliothek/Datenlizenz_Deutschland/dl-de-by-1.0; dl-de-by-1.0; Namensnennung: "Freie und Hansestadt Hamburg, Landesbetrieb Geoinformation und Vermessung"</AccessConstraints>
     </Service>
     <Capability>
         <Request>
             <GetCapabilities>
                 <Format>application/vnd.ogc.wms_xml</Format>
                 <DCPType>
-                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Brueckenbauwerke.aspx"/></Get></HTTP>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Geobasisdaten.aspx"/></Get></HTTP>
                 </DCPType>
             </GetCapabilities>
             <GetMap>
@@ -47,18 +47,26 @@
                 <Format>image/gif</Format>
                 <Format>image/svg+xml</Format>
                 <DCPType>
-                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Brueckenbauwerke.aspx"/></Get></HTTP>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Geobasisdaten.aspx"/></Get></HTTP>
                 </DCPType>
             </GetMap>
             <GetFeatureInfo>
+                <Format>application/vnd.esri.wms_raw_xml</Format>
+                <Format>application/vnd.esri.wms_featureinfo_xml</Format>
                 <Format>application/vnd.ogc.wms_xml</Format>
                 <Format>text/xml</Format>
                 <Format>text/html</Format>
                 <Format>text/plain</Format>
                 <DCPType>
-                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Brueckenbauwerke.aspx"/></Get></HTTP>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Geobasisdaten.aspx"/></Get></HTTP>
                 </DCPType>
             </GetFeatureInfo>
+            <GetStyles>
+                <Format>application/vnd.ogc.sld+xml</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Geobasisdaten.aspx"/></Get></HTTP>
+                </DCPType>
+            </GetStyles>
         </Request>
         <Exception>
             <Format>application/vnd.ogc.se_xml</Format>
@@ -66,124 +74,131 @@
             <Format>application/vnd.ogc.se_blank</Format>
         </Exception>
         <Layer>
-            <Title>Alle Bauwerke</Title>
+            <Title><![CDATA[Layers]]></Title>
             <SRS>EPSG:4326</SRS>
             <SRS>EPSG:25832</SRS>
             <SRS>EPSG:31467</SRS>
             <LatLonBoundingBox minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+            <BoundingBox SRS="EPSG:4326" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
             <BoundingBox SRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6038025.088625"/>
             <BoundingBox SRS="EPSG:31467" minx="3449000.00000584" miny="5810999.9999094" maxx="3691000.00003476" maxy="6008999.99993544"/>
-            <Layer queryable="1">
+            <Layer>
                 <Name>0</Name>
-                <Title>Stuetzwaende</Title>
-                <Abstract>Stuetzwaende</Abstract>
+                <Title><![CDATA[DK5 Neuwerk]]></Title>
+                <Abstract><![CDATA[DK5 Neuwerk]]></Abstract>
                 <SRS>EPSG:4326</SRS>
                 <SRS>EPSG:25832</SRS>
                 <SRS>EPSG:31467</SRS>
                 <LatLonBoundingBox minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
                 <BoundingBox SRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6038025.088625"/>
                 <BoundingBox SRS="EPSG:31467" minx="3449000.00000584" miny="5810999.9999094" maxx="3691000.00003476" maxy="6008999.99993544"/>
                 <Style>
                     <Name>default</Name>
-                    <Title>Stuetzwaende</Title>
-                    <LegendURL width="100" height="13">
+                    <Title>0</Title>
+                    <LegendURL width="66" height="21">
                         <Format>image/png</Format>
-                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Brueckenbauwerke.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=0" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Geobasisdaten.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=0" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
                     </LegendURL>
                 </Style>
             </Layer>
-            <Layer queryable="1">
+            <Layer>
                 <Name>1</Name>
-                <Title>Schilderbruecken</Title>
-                <Abstract>Schilderbruecken</Abstract>
+                <Title><![CDATA[DK5]]></Title>
+                <Abstract><![CDATA[DK5]]></Abstract>
                 <SRS>EPSG:4326</SRS>
                 <SRS>EPSG:25832</SRS>
                 <SRS>EPSG:31467</SRS>
                 <LatLonBoundingBox minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
                 <BoundingBox SRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6038025.088625"/>
                 <BoundingBox SRS="EPSG:31467" minx="3449000.00000584" miny="5810999.9999094" maxx="3691000.00003476" maxy="6008999.99993544"/>
                 <Style>
                     <Name>default</Name>
-                    <Title>Schilderbruecken</Title>
-                    <LegendURL width="100" height="11">
+                    <Title>0</Title>
+                    <LegendURL width="66" height="21">
                         <Format>image/png</Format>
-                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Brueckenbauwerke.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=1" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Geobasisdaten.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=0" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
                     </LegendURL>
                 </Style>
             </Layer>
-            <Layer queryable="1">
+            <Layer>
                 <Name>2</Name>
-                <Title>Laermschutzwaende</Title>
-                <Abstract>Laermschutzwaende</Abstract>
+                <Title><![CDATA[DISK20]]></Title>
+                <Abstract><![CDATA[DISK20]]></Abstract>
                 <SRS>EPSG:4326</SRS>
                 <SRS>EPSG:25832</SRS>
                 <SRS>EPSG:31467</SRS>
                 <LatLonBoundingBox minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
                 <BoundingBox SRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6038025.088625"/>
                 <BoundingBox SRS="EPSG:31467" minx="3449000.00000584" miny="5810999.9999094" maxx="3691000.00003476" maxy="6008999.99993544"/>
                 <Style>
                     <Name>default</Name>
-                    <Title>Laermschutzwaende</Title>
-                    <LegendURL width="100" height="10">
+                    <Title>1</Title>
+                    <LegendURL width="66" height="21">
                         <Format>image/png</Format>
-                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Brueckenbauwerke.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=2" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Geobasisdaten.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=1" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
                     </LegendURL>
                 </Style>
             </Layer>
-            <Layer queryable="1">
+            <Layer>
                 <Name>3</Name>
-                <Title>Tunnel</Title>
-                <Abstract>Tunnel</Abstract>
+                <Title><![CDATA[DISK60]]></Title>
+                <Abstract><![CDATA[DISK60]]></Abstract>
                 <SRS>EPSG:4326</SRS>
                 <SRS>EPSG:25832</SRS>
                 <SRS>EPSG:31467</SRS>
                 <LatLonBoundingBox minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
                 <BoundingBox SRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6038025.088625"/>
                 <BoundingBox SRS="EPSG:31467" minx="3449000.00000584" miny="5810999.9999094" maxx="3691000.00003476" maxy="6008999.99993544"/>
                 <Style>
                     <Name>default</Name>
-                    <Title>Tunnel</Title>
-                    <LegendURL width="100" height="20">
+                    <Title>2</Title>
+                    <LegendURL width="66" height="21">
                         <Format>image/png</Format>
-                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Brueckenbauwerke.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=3" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Geobasisdaten.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=2" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
                     </LegendURL>
                 </Style>
             </Layer>
-            <Layer queryable="1">
+            <Layer>
                 <Name>4</Name>
-                <Title>Fussgaengerbruecken</Title>
-                <Abstract>Fussgaengerbruecken</Abstract>
+                <Title><![CDATA[DIRK150]]></Title>
+                <Abstract><![CDATA[DIRK150]]></Abstract>
                 <SRS>EPSG:4326</SRS>
                 <SRS>EPSG:25832</SRS>
                 <SRS>EPSG:31467</SRS>
                 <LatLonBoundingBox minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
                 <BoundingBox SRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6038025.088625"/>
                 <BoundingBox SRS="EPSG:31467" minx="3449000.00000584" miny="5810999.9999094" maxx="3691000.00003476" maxy="6008999.99993544"/>
                 <Style>
                     <Name>default</Name>
-                    <Title>Fussgaengerbruecken</Title>
-                    <LegendURL width="100" height="9">
+                    <Title>3</Title>
+                    <LegendURL width="66" height="21">
                         <Format>image/png</Format>
-                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Brueckenbauwerke.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=4" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Geobasisdaten.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=3" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
                     </LegendURL>
                 </Style>
             </Layer>
-            <Layer queryable="1">
+            <Layer>
                 <Name>5</Name>
-                <Title>Strassenbruecken</Title>
-                <Abstract>Strassenbruecken</Abstract>
+                <Title><![CDATA[DIRK600]]></Title>
+                <Abstract><![CDATA[DIRK600]]></Abstract>
                 <SRS>EPSG:4326</SRS>
                 <SRS>EPSG:25832</SRS>
                 <SRS>EPSG:31467</SRS>
                 <LatLonBoundingBox minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
                 <BoundingBox SRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6038025.088625"/>
                 <BoundingBox SRS="EPSG:31467" minx="3449000.00000584" miny="5810999.9999094" maxx="3691000.00003476" maxy="6008999.99993544"/>
                 <Style>
                     <Name>default</Name>
-                    <Title>Strassenbruecken</Title>
-                    <LegendURL width="100" height="11">
+                    <Title>4</Title>
+                    <LegendURL width="66" height="21">
                         <Format>image/png</Format>
-                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Brueckenbauwerke.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=5" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Geobasisdaten.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=4" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
                     </LegendURL>
                 </Style>
             </Layer>

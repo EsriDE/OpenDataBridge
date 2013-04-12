@@ -2,12 +2,12 @@
 <WMS_Capabilities xmlns="http://www.opengis.net/wms" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.3.0" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd">
     <Service>
         <Name>WMS</Name>
-        <Title>DE_HH_WMS_INSPIRE_A1_6_Flurstueck</Title>
+        <Title>DE_HH_WMS_INSPIRE_A3_1_Statistische_Einheiten</Title>
         <Abstract>WMS</Abstract>
         <KeywordList>
             <Keyword></Keyword>
         </KeywordList>
-        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A1_6_Flurstueck.aspx"/>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_1_StatistischeEinheiten.aspx"/>
         <ContactInformation>
             <ContactPersonPrimary>
                 <ContactPerson>Thomas Eichhorn</ContactPerson>
@@ -39,7 +39,7 @@
                 <DCPType>
                     <HTTP>
                         <Get>
-                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A1_6_Flurstueck.aspx"/>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_1_StatistischeEinheiten.aspx"/>
                         </Get>
                     </HTTP>
                 </DCPType>
@@ -57,7 +57,7 @@
                 <DCPType>
                     <HTTP>
                         <Get>
-                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A1_6_Flurstueck.aspx"/>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_1_StatistischeEinheiten.aspx"/>
                         </Get>
                     </HTTP>
                 </DCPType>
@@ -70,7 +70,7 @@
                 <DCPType>
                     <HTTP>
                         <Get>
-                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A1_6_Flurstueck.aspx"/>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_1_StatistischeEinheiten.aspx"/>
                         </Get>
                     </HTTP>
                 </DCPType>
@@ -83,7 +83,7 @@
         </Exception>
         <inspire_vs:ExtendedCapabilities xmlns="" xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0" xsi:schemaLocation="http://inspire.ec.europa.eu/schemas/common/1.0 http://inspire.ec.europa.eu/schemas/common/1.0/common.xsd http://inspire.ec.europa.eu/schemas/inspire_vs/1.0 http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd">
             <inspire_common:MetadataUrl>
-                <inspire_common:URL>http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?Service=CSW&amp;Request=GetRecordById&amp;Version=2.0.2&amp;id=4DE5A407-647F-4BBA-B0D0-4DFBFE6CB5FB&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full</inspire_common:URL>
+                <inspire_common:URL>http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?Service=CSW&amp;Request=GetRecordById&amp;Version=2.0.2&amp;id=198CDE7B-A22C-42AB-B340-3F7683780BD8&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full</inspire_common:URL>
                 <inspire_common:MediaType>application/vnd.ogc.csw.GetRecordByIdResponse_xml</inspire_common:MediaType>
             </inspire_common:MetadataUrl>
             <inspire_common:SupportedLanguages>
@@ -97,7 +97,7 @@
         </inspire_vs:ExtendedCapabilities>
         <Layer>
             <Name></Name>
-            <Title>DE_HH_INSPIRE_A1_6_Flurstueck</Title>
+            <Title>DE_HH_INSPIRE_A3_1_Statistische Einheiten</Title>
             <Abstract>Vorläufige Datensätze zu dem INSPIRE Anhang Thema des Dienstes</Abstract>
             <CRS>CRS:84</CRS>
             <CRS>EPSG:4326</CRS>
@@ -127,12 +127,12 @@
             <Identifier authority="LGV">HMDK#xxxxxxxxxxxxxxx</Identifier>
             <MetadataURL type="ISO19115:2003">
                 <Format>application/xml</Format>
-                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=25940C1A-BE43-47D2-9C48-698566D1E81D&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=51AD642A-4017-4499-8F45-A865FFFE5BB3&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
             </MetadataURL>
             <Layer>
                 <Name></Name>
-                <Title>DE_HH_INSPIRE_Flurstueck</Title>
-                <Abstract>DE_HH_INSPIRE_Flurstueck</Abstract>
+                <Title>DE_HH_INSPIRE_Statistische_Einheiten</Title>
+                <Abstract>DE_HH_INSPIRE_Statistische_Einheiten</Abstract>
                 <CRS>CRS:84</CRS>
                 <CRS>EPSG:4326</CRS>
                 <CRS>EPSG:25832</CRS>
@@ -161,12 +161,12 @@
                 <Identifier authority="LGV">HMDK#xxxxxxxxxxxxxxx</Identifier>
                 <MetadataURL type="ISO19115:2003">
                     <Format>application/xml</Format>
-                    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=C515FB49-7F79-468F-9717-E2D731ACD3AD&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+                    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=2668899F-06C9-4A96-9052-FC5A570F5E5B&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
                 </MetadataURL>
                 <Layer queryable="1">
                     <Name>1</Name>
-                    <Title>Flurstueck</Title>
-                    <Abstract>Flurstueck</Abstract>
+                    <Title>Stadtteile</Title>
+                    <Abstract>Stadtteile</Abstract>
                     <CRS>CRS:84</CRS>
                     <CRS>EPSG:4326</CRS>
                     <CRS>EPSG:25832</CRS>
@@ -192,59 +192,24 @@
                     <AuthorityURL name="LGV">
                         <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.hamburg.de/startseite-landesbetrieb-geoinformation-und-vermessung/"/>
                     </AuthorityURL>
-                    <Identifier authority="LGV">HMDK#C515FB49-7F79-468F-9717-E2D731ACD3AD</Identifier>
+                    <Identifier authority="LGV">HMDK#2668899F-06C9-4A96-9052-FC5A570F5E5B</Identifier>
                     <MetadataURL type="ISO19115:2003">
                         <Format>application/xml</Format>
-                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=C515FB49-7F79-468F-9717-E2D731ACD3AD&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=2668899F-06C9-4A96-9052-FC5A570F5E5B&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
                     </MetadataURL>
                     <Style>
                         <Name>default</Name>
                         <Title>1</Title>
-                        <LegendURL width="100" height="16">
+                        <LegendURL width="94" height="16">
                             <Format>image/png</Format>
-                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A1_6_Flurstueck.aspx?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=1"/>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_1_StatistischeEinheiten.aspx?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=1"/>
                         </LegendURL>
                     </Style>
                 </Layer>
-            </Layer>
-            <Layer>
-                <Name></Name>
-                <Title>DE_HH_INSPIRE_Gemarkungsgrenze</Title>
-                <Abstract>DE_HH_INSPIRE_Gemarkungsgrenze</Abstract>
-                <CRS>CRS:84</CRS>
-                <CRS>EPSG:4326</CRS>
-                <CRS>EPSG:25832</CRS>
-                <CRS>EPSG:31467</CRS>
-                <CRS>EPSG:4258</CRS>
-                <CRS>EPSG:3034</CRS>
-                <CRS>EPSG:3035</CRS>
-                <CRS>EPSG:3044</CRS>
-                <EX_GeographicBoundingBox>
-                    <westBoundLongitude>8.381650</westBoundLongitude>
-                    <eastBoundLongitude>11.774765</eastBoundLongitude>
-                    <southBoundLatitude>52.483444</southBoundLatitude>
-                    <northBoundLatitude>54.489852</northBoundLatitude>
-                </EX_GeographicBoundingBox>
-                <BoundingBox CRS="CRS:84" minx="8.381650" miny="52.483444" maxx="11.774765" maxy="54.489852"/>
-                <BoundingBox CRS="EPSG:4326" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
-                <BoundingBox CRS="EPSG:25832" minx="459943.472376" miny="5818109.090227" maxx="679859.470778" maxy="6008999.99993544"/>
-                <BoundingBox CRS="EPSG:31467" minx="5810999.9999094" miny="3449000.00000584" maxx="6008999.99993544" maxy="3691000.00003476"/>
-                <BoundingBox CRS="EPSG:4258" minx="52.483444" miny="8.381650" maxx="54.489852" maxy="11.774765"/>
-                <BoundingBox CRS="EPSG:3034" minx="2945804.87459234" miny="3892533.29101336" maxx="3016857.74296883" maxy="4027464.72585515"/>
-                <BoundingBox CRS="EPSG:3035" minx="3253902.54707165" miny="4201887.92726224" maxx="3499218.56676114" maxy="4447291.7005463"/>
-                <BoundingBox CRS="EPSG:3044" minx="5818109.090227" miny="459943.472376" maxx="6008999.99993544" maxy="679859.470778"/>
-                <AuthorityURL name="LGV">
-                    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.hamburg.de/startseite-landesbetrieb-geoinformation-und-vermessung/"/>
-                </AuthorityURL>
-                <Identifier authority="LGV">HMDK#xxxxxxxxxxxxxxx</Identifier>
-                <MetadataURL type="ISO19115:2003">
-                    <Format>application/xml</Format>
-                    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=E0719AE2-7604-4072-88B7-E6277D7FFA40&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
-                </MetadataURL>
                 <Layer queryable="1">
-                    <Name>3</Name>
-                    <Title>Gemarkungsgrenze</Title>
-                    <Abstract>Gemarkungsgrenze</Abstract>
+                    <Name>2</Name>
+                    <Title>Statistisches_Gebiet</Title>
+                    <Abstract>Statistisches_Gebiet</Abstract>
                     <CRS>CRS:84</CRS>
                     <CRS>EPSG:4326</CRS>
                     <CRS>EPSG:25832</CRS>
@@ -270,17 +235,17 @@
                     <AuthorityURL name="LGV">
                         <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.hamburg.de/startseite-landesbetrieb-geoinformation-und-vermessung/"/>
                     </AuthorityURL>
-                    <Identifier authority="LGV">HMDK#E0719AE2-7604-4072-88B7-E6277D7FFA40</Identifier>
+                    <Identifier authority="LGV">HMDK#2668899F-06C9-4A96-9052-FC5A570F5E5B</Identifier>
                     <MetadataURL type="ISO19115:2003">
                         <Format>application/xml</Format>
-                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=E0719AE2-7604-4072-88B7-E6277D7FFA40&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=2668899F-06C9-4A96-9052-FC5A570F5E5B&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
                     </MetadataURL>
                     <Style>
                         <Name>default</Name>
-                        <Title>3</Title>
-                        <LegendURL width="156" height="16">
+                        <Title>2</Title>
+                        <LegendURL width="160" height="16">
                             <Format>image/png</Format>
-                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A1_6_Flurstueck.aspx?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3"/>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/DE_HH_WMS_INSPIRE_A3_1_StatistischeEinheiten.aspx?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=2"/>
                         </LegendURL>
                     </Style>
                 </Layer>

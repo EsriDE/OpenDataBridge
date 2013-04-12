@@ -1,0 +1,344 @@
+<?xml version="1.0"?>
+<!DOCTYPE WMT_MS_Capabilities SYSTEM "http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd">
+<WMT_MS_Capabilities version="1.1.1">
+    <Service>
+        <Name><![CDATA[WMS]]></Name>
+        <Title><![CDATA[MetroKarte]]></Title>
+        <Abstract>OGC:WMS</Abstract>
+        <KeywordList><Keyword><![CDATA[]]></Keyword></KeywordList>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx"/>
+        <ContactInformation>
+            <ContactPersonPrimary>
+                <ContactPerson><![CDATA[]]>Thomas Eichhorn</ContactPerson>
+                <ContactOrganization><![CDATA[]]>Landesbetrieb Geoinformation und Vermessung</ContactOrganization>
+            </ContactPersonPrimary>
+            <ContactPosition><![CDATA[]]></ContactPosition>
+            <ContactAddress>
+                <AddressType><![CDATA[]]>postal</AddressType>
+                <Address><![CDATA[]]>Sachsenkamp 4</Address>
+                <City><![CDATA[]]>Hamburg</City>
+                <StateOrProvince><![CDATA[]]>HH</StateOrProvince>
+                <PostCode><![CDATA[]]>20097</PostCode>
+                <Country><![CDATA[]]>Germany</Country>
+            </ContactAddress>
+            <ContactVoiceTelephone><![CDATA[]]>+49 40 42826 5975</ContactVoiceTelephone>
+            <ContactFacsimileTelephone><![CDATA[]]>+49 40 42826 5966</ContactFacsimileTelephone>
+            <ContactElectronicMailAddress><![CDATA[]]>gvgeoportal@gv.hamburg.de</ContactElectronicMailAddress>
+        </ContactInformation>
+        <Fees><![CDATA[]]>DE: kostenfrei fuer die nicht-kommerzielle Nutzung</Fees>
+        <AccessConstraints><![CDATA[]]>DE: Die Daten sind gesetzlich geschuetzt. Eine kommerzielle Nutzung des Kartendienstes erfordert die schriftliche Zustimmung des Landesbetriebs Geoinformation und Vermessung Hamburg</AccessConstraints>
+    </Service>
+    <Capability>
+        <Request>
+            <GetCapabilities>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx"/></Get></HTTP>
+                </DCPType>
+            </GetCapabilities>
+            <GetMap>
+                <Format>image/bmp</Format>
+                <Format>image/jpeg</Format>
+                <Format>image/tiff</Format>
+                <Format>image/png</Format>
+                <Format>image/png8</Format>
+                <Format>image/png24</Format>
+                <Format>image/png32</Format>
+                <Format>image/gif</Format>
+                <Format>image/svg+xml</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx"/></Get></HTTP>
+                </DCPType>
+            </GetMap>
+            <GetFeatureInfo>
+                <Format>application/vnd.esri.wms_raw_xml</Format>
+                <Format>application/vnd.esri.wms_featureinfo_xml</Format>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <Format>text/xml</Format>
+                <Format>text/html</Format>
+                <Format>text/plain</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx"/></Get></HTTP>
+                </DCPType>
+            </GetFeatureInfo>
+            <GetStyles>
+                <Format>application/vnd.ogc.sld+xml</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx"/></Get></HTTP>
+                </DCPType>
+            </GetStyles>
+        </Request>
+        <Exception>
+            <Format>application/vnd.ogc.se_xml</Format>
+            <Format>application/vnd.ogc.se_inimage</Format>
+            <Format>application/vnd.ogc.se_blank</Format>
+        </Exception>
+        <Layer>
+            <Title><![CDATA[Layer]]></Title>
+            <SRS>EPSG:4326</SRS>
+            <SRS>EPSG:25832</SRS>
+            <SRS>EPSG:31467</SRS>
+            <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+            <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+            <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+            <Layer queryable="1">
+                <Name>0</Name>
+                <Title><![CDATA[Flächen außerhalb Metropolregion]]></Title>
+                <Abstract><![CDATA[Flächen außerhalb Metropolregion]]></Abstract>
+                <SRS>EPSG:4326</SRS>
+                <SRS>EPSG:25832</SRS>
+                <SRS>EPSG:31467</SRS>
+                <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                <Style>
+                    <Name>default</Name>
+                    <Title>0</Title>
+                    <LegendURL width="32" height="16">
+                        <Format>image/png</Format>
+                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=0" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                    </LegendURL>
+                </Style>
+            </Layer>
+            <Layer queryable="1">
+                <Name>1</Name>
+                <Title><![CDATA[Verwaltung_Kreise]]></Title>
+                <Abstract><![CDATA[Verwaltung_Kreise]]></Abstract>
+                <SRS>EPSG:4326</SRS>
+                <SRS>EPSG:25832</SRS>
+                <SRS>EPSG:31467</SRS>
+                <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                <Style>
+                    <Name>default</Name>
+                    <Title>1</Title>
+                    <LegendURL width="32" height="368">
+                        <Format>image/png</Format>
+                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=1" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                    </LegendURL>
+                </Style>
+            </Layer>
+            <Layer queryable="1">
+                <Name>2</Name>
+                <Title><![CDATA[Gewässer]]></Title>
+                <Abstract><![CDATA[Gewässer]]></Abstract>
+                <SRS>EPSG:4326</SRS>
+                <SRS>EPSG:25832</SRS>
+                <SRS>EPSG:31467</SRS>
+                <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                <Style>
+                    <Name>default</Name>
+                    <Title>2</Title>
+                    <LegendURL width="32" height="16">
+                        <Format>image/png</Format>
+                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=2" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                    </LegendURL>
+                </Style>
+            </Layer>
+            <Layer queryable="1">
+                <Title><![CDATA[Verwaltungsgrenzen]]></Title>
+                <Abstract><![CDATA[Verwaltungsgrenzen]]></Abstract>
+                <SRS>EPSG:4326</SRS>
+                <SRS>EPSG:25832</SRS>
+                <SRS>EPSG:31467</SRS>
+                <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                <Layer queryable="1">
+                    <Name>4</Name>
+                    <Title><![CDATA[Verwaltung_Kreise_LI]]></Title>
+                    <Abstract><![CDATA[Verwaltung_Kreise_LI]]></Abstract>
+                    <SRS>EPSG:4326</SRS>
+                    <SRS>EPSG:25832</SRS>
+                    <SRS>EPSG:31467</SRS>
+                    <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                    <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                    <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>4</Title>
+                        <LegendURL width="32" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=4" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>5</Name>
+                    <Title><![CDATA[Verwaltung_Laender_LI]]></Title>
+                    <Abstract><![CDATA[Verwaltung_Laender_LI]]></Abstract>
+                    <SRS>EPSG:4326</SRS>
+                    <SRS>EPSG:25832</SRS>
+                    <SRS>EPSG:31467</SRS>
+                    <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                    <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                    <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>5</Title>
+                        <LegendURL width="32" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=5" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+            </Layer>
+            <Layer queryable="1">
+                <Title><![CDATA[Verkehr]]></Title>
+                <Abstract><![CDATA[Verkehr]]></Abstract>
+                <SRS>EPSG:4326</SRS>
+                <SRS>EPSG:25832</SRS>
+                <SRS>EPSG:31467</SRS>
+                <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                <Layer queryable="1">
+                    <Name>7</Name>
+                    <Title><![CDATA[VER_BAB_Neu]]></Title>
+                    <Abstract><![CDATA[VER_BAB_Neu]]></Abstract>
+                    <SRS>EPSG:4326</SRS>
+                    <SRS>EPSG:25832</SRS>
+                    <SRS>EPSG:31467</SRS>
+                    <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                    <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                    <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>7</Title>
+                        <LegendURL width="32" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=7" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>8</Name>
+                    <Title><![CDATA[Verkehr_Bahn_Neu]]></Title>
+                    <Abstract><![CDATA[Verkehr_Bahn_Neu]]></Abstract>
+                    <SRS>EPSG:4326</SRS>
+                    <SRS>EPSG:25832</SRS>
+                    <SRS>EPSG:31467</SRS>
+                    <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                    <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                    <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>8</Title>
+                        <LegendURL width="32" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=8" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+            </Layer>
+            <Layer queryable="1">
+                <Title><![CDATA[Orte]]></Title>
+                <Abstract><![CDATA[Orte]]></Abstract>
+                <SRS>EPSG:4326</SRS>
+                <SRS>EPSG:25832</SRS>
+                <SRS>EPSG:31467</SRS>
+                <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                <Layer queryable="1">
+                    <Name>10</Name>
+                    <Title><![CDATA[ORT_G100K]]></Title>
+                    <Abstract><![CDATA[ORT_G100K]]></Abstract>
+                    <SRS>EPSG:4326</SRS>
+                    <SRS>EPSG:25832</SRS>
+                    <SRS>EPSG:31467</SRS>
+                    <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                    <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                    <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>10</Title>
+                        <LegendURL width="32" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=10" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>11</Name>
+                    <Title><![CDATA[ORT_50K_100K_Kreis]]></Title>
+                    <Abstract><![CDATA[ORT_50K_100K_Kreis]]></Abstract>
+                    <SRS>EPSG:4326</SRS>
+                    <SRS>EPSG:25832</SRS>
+                    <SRS>EPSG:31467</SRS>
+                    <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                    <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                    <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>11</Title>
+                        <LegendURL width="32" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=11" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>12</Name>
+                    <Title><![CDATA[ORT_50K_100K]]></Title>
+                    <Abstract><![CDATA[ORT_50K_100K]]></Abstract>
+                    <SRS>EPSG:4326</SRS>
+                    <SRS>EPSG:25832</SRS>
+                    <SRS>EPSG:31467</SRS>
+                    <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                    <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                    <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>12</Title>
+                        <LegendURL width="32" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=12" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>13</Name>
+                    <Title><![CDATA[ORT_10K_50K_Kreis]]></Title>
+                    <Abstract><![CDATA[ORT_10K_50K_Kreis]]></Abstract>
+                    <SRS>EPSG:4326</SRS>
+                    <SRS>EPSG:25832</SRS>
+                    <SRS>EPSG:31467</SRS>
+                    <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                    <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                    <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>13</Title>
+                        <LegendURL width="32" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=13" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>14</Name>
+                    <Title><![CDATA[ORT_10K_50K]]></Title>
+                    <Abstract><![CDATA[ORT_10K_50K]]></Abstract>
+                    <SRS>EPSG:4326</SRS>
+                    <SRS>EPSG:25832</SRS>
+                    <SRS>EPSG:31467</SRS>
+                    <LatLonBoundingBox minx="6" miny="50" maxx="15" maxy="56"/>
+                    <BoundingBox SRS="EPSG:25832" minx="285500" miny="5519000" maxx="799999" maxy="6300000"/>
+                    <BoundingBox SRS="EPSG:31467" minx="3330500" miny="5659700" maxx="3855980" maxy="6104360"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>14</Title>
+                        <LegendURL width="32" height="16">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Metrokarte.aspx?request=GetLegendGraphic%26version=1.1.1%26format=image/png%26layer=14" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                </Layer>
+            </Layer>
+        </Layer>
+    </Capability>
+</WMT_MS_Capabilities>

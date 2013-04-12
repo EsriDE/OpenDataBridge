@@ -3,10 +3,10 @@
 <WMT_MS_Capabilities version="1.1.1">
     <Service>
         <Name>WMS</Name>
-        <Title>DIRK150</Title>
+        <Title>DIRK600</Title>
         <Abstract>OGC:WMS</Abstract>
         <KeywordList><Keyword></Keyword></KeywordList>
-        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_DIRK150.aspx"/>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_DIRK600.aspx"/>
         <ContactInformation>
             <ContactPersonPrimary>
                 <ContactPerson>Thomas Eichhorn</ContactPerson>
@@ -33,7 +33,7 @@
             <GetCapabilities>
                 <Format>application/vnd.ogc.wms_xml</Format>
                 <DCPType>
-                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_DIRK150.aspx"/></Get></HTTP>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_DIRK600.aspx"/></Get></HTTP>
                 </DCPType>
             </GetCapabilities>
             <GetMap>
@@ -45,13 +45,13 @@
                 <Format>image/png32</Format>
                 <Format>image/svg</Format>
                 <DCPType>
-                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_DIRK150.aspx"/></Get></HTTP>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_DIRK600.aspx"/></Get></HTTP>
                 </DCPType>
             </GetMap>
             <GetStyles>
                 <Format>application/vnd.ogc.sld+xml</Format>
                 <DCPType>
-                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_DIRK150.aspx"/></Get></HTTP>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_DIRK600.aspx"/></Get></HTTP>
                 </DCPType>
             </GetStyles>
         </Request>
@@ -62,8 +62,8 @@
         </Exception>
         <Layer>
             <Name>0</Name>
-            <Title>DIRK150</Title>
-            <Abstract>DIRK150</Abstract>
+            <Title>DIRK600</Title>
+            <Abstract>DIRK600</Abstract>
             <SRS>EPSG:4326</SRS>
             <SRS>EPSG:25832</SRS>
             <SRS>EPSG:31467</SRS>

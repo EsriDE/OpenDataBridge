@@ -15,7 +15,7 @@ public class MetadataObject {
     
     private String metadataResource;
     
-    private String ogcServiceUrl;
+    private String resourceUrl;
     
     private Document cswMetadataDoc;
     
@@ -29,12 +29,12 @@ public class MetadataObject {
         this.metadataFileIdentifier = metadataFileIdentifier;
     }
 
-    public String getOgcServiceUrl() {
-        return ogcServiceUrl;
+    public String getResourceUrl() {
+        return resourceUrl;
     }
 
-    public void setOgcServiceUrl(String wmsUrl) {
-        this.ogcServiceUrl = wmsUrl;
+    public void setResourceUrl(String wmsUrl) {
+        this.resourceUrl = wmsUrl;
     }
 
     public Document getCswMetadataDoc() {
