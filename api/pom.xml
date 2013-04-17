@@ -17,5 +17,7 @@
         <module>csw-reader</module>
         <module>itemtransform</module>
         <module>httptransport</module>
+        <module>resource-reader</module>
+        <module>capabilities-reader</module>
 	</modules>
 </project>

@@ -14,5 +14,5 @@ import java.util.List;
  */
 public interface IReaderFactory {
 
-    public void setProperties(HashMap<String, String> properties, String processId);
+    public void setProperties(HashMap<String, String> properties, String processId) throws ReaderException;
 }

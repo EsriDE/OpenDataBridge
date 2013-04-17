@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -19,17 +20,21 @@ import java.util.HashMap;
 public class UnitTestCSWGetRecordsRequestGenerator extends AbstractJUnit4SpringContextTests {
 
     @Autowired
-    private GetRecordsRequestGenerator reqGenerator;
+    private GetRecordsRequestTemplate reqTemplate;
     
     @Test
     public void testGenerator(){
-        InputStream stream = this.getClass().getResourceAsStream("/getRecordTemplates/Template01.xml");
-        reqGenerator.setGetRecordsTemplate(stream);
+        //InputStream stream = this.getClass().getResourceAsStream("/getRecordTemplates/Template01.xml");
+        try {
+            reqTemplate.setGetRecordsTemplate("Test000");
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("TYPE_NAMES", "gmd:MD_Metadata");
-        String lRequest = reqGenerator.generateGetRecordsTemplate(map);
-        System.out.print(lRequest);
+        String lRequest = reqTemplate.generateGetRecordsTemplate(map);
+        //System.out.print(lRequest);
     }
 
 }

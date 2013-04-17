@@ -3,6 +3,7 @@ package esride.opendatabridge.reader.factory;
 import esride.opendatabridge.processinfo.ProcessProperty;
 import esride.opendatabridge.reader.IReader;
 import esride.opendatabridge.reader.IReaderFactory;
+import esride.opendatabridge.reader.ReaderException;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class CatalogReaderFactory {
         mReaderPool = pReaderPool;
     }
 
-    public IReader newReaderInstance(String readerId, HashMap<String, String> properties, String processId) throws ReaderFactoryException{
+    public IReader newReaderInstance(String readerId, HashMap<String, String> properties, String processId) throws ReaderFactoryException, ReaderException {
         if(sLogger.isDebugEnabled()){
             sLogger.debug("Get Reader Instance with Id: " + readerId);
         }

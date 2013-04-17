@@ -11,12 +11,12 @@
 
     <bean class="esride.opendatabridge.reader.csw.CSWReader" id="reader"
             p:getRecordsRequest-ref="getRecordsRequest"
-            p:capabilitiesRequest-ref="capabilitiesRequest"
+            p:capabilitiesResource-ref="capabilitiesRequest"
             p:agolItemTransformer-ref="itemTransform"/>
     
     <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsRequest" id="getRecordsRequest"
             p:httpRequest-ref="mockHttp"
-            p:requestGenerator-ref="generator"
+            p:requestTemplate-ref="generator"
             p:getRecordsResponse-ref="getRecordsResponse"/>
     
     <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"/>
@@ -27,7 +27,7 @@
     <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
             p:itemElemExtractor-ref="itemGenerator"/>
 
-    <bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesRequest" id="capabilitiesRequest"
+    <bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesResource" id="capabilitiesRequest"
             p:request-ref="mockHttp"/>
     
     <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsResponse" id="getRecordsResponse"/>
@@ -35,7 +35,10 @@
     <bean class="esride.opendatabridge.reader.mock.MockHTTPRequest" id="mockHttp"/>
     
     
-    <bean class="esride.opendatabridge.reader.csw.GetRecordsRequestGenerator" id="generator"/>
+    <bean class="esride.opendatabridge.reader.csw.GetRecordsRequestTemplate" id="generator"
+            p:templateLocation-ref="templateLocation"/>
+
+    <bean class="esride.opendatabridge.reader.csw.templatefile.FileSysGetRecordsTemplateLocation" id="templateLocation"/>
 
 
 </beans>

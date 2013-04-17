@@ -3,6 +3,7 @@ package esride.opendatabridge.application;
 import esride.opendatabridge.processinfo.IProcessInfo;
 import esride.opendatabridge.processinfo.ProcessProperty;
 import esride.opendatabridge.reader.IReader;
+import esride.opendatabridge.reader.ReaderException;
 import esride.opendatabridge.reader.factory.CatalogReaderFactory;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -80,7 +81,12 @@ public class AppStarter {
 
         //ReaderFactory initialisieren
         CatalogReaderFactory factory = context.getBean("readerfactory", CatalogReaderFactory.class);
-        IReader reader = factory.newReaderInstance(readerValue, properties, pinfoValue);
+        try {
+            IReader reader = factory.newReaderInstance(readerValue, properties, pinfoValue);
+        } catch (ReaderException e) {
+            //ToDo exception handling
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         //ToDo: Transformer holen und Reader setzen
         //ITransformer lTransformer = context.getBean("transformer");

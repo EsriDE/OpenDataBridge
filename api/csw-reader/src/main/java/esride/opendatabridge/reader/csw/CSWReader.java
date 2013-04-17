@@ -4,19 +4,30 @@ package esride.opendatabridge.reader.csw;
 
 import esride.opendatabridge.itemtransform.*;
 import esride.opendatabridge.reader.*;
-import esride.opendatabridge.reader.capabilities.OGCCapabilitiesRequest;
+
 import org.apache.log4j.Logger;
-import org.xml.sax.SAXException;
+
 
 import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * THe CSWReader implements the IReader interface. The CSWReader class collects metadata from CSW metadata catalogues
+ * and transforms the metadata into an AGOL Item compatible data model. For running an CSWReader component the following resources must be
+ * available:
+ * - the <p>csw.url</p> (HTTP POST endpoint for the CSW GetRecords endpoint)
+ * - 0..* <p>csw_request_getrecords_header_{*}</p> properties for overwriting the HTTP Header
+ * - 0..* <p>csw_request_getrecords_template_{*}</p> placeholder for overwriting the GetRecords POST request
+ * - 0..* <p>csw_response_xpath_{*}</p> XPath values if you don't use the ISO metadata model (like Dublin Core)
+ *
+ * The GetRecords request is build by an XML Template. The template could be injected from a classpath path.
+ *
+ * For the AGOL Item transformation an <p>itemelement_{*}.properties</p> files must be available. For each CSW Metadata resource
+ * (like WMS, Shapefile, CSV file) one property file must be created.
+ *
  * User: sma
  * Date: 05.04.13
  * Time: 15:02
- * To change this template use File | Settings | File Templates.
  */
 public class CSWReader implements IReader, IReaderFactory {
     private static Logger sLogger = Logger.getLogger(CSWReader.class);
@@ -32,8 +43,7 @@ public class CSWReader implements IReader, IReaderFactory {
 
     
     private CSWGetRecordsRequest getRecordsRequest;
-
-    private OGCCapabilitiesRequest capabilitiesRequest;
+    private IResource capabilitiesResource;
     
     private IItemTransformer agolItemTransformer;
 
@@ -42,8 +52,8 @@ public class CSWReader implements IReader, IReaderFactory {
         this.getRecordsRequest = getRecordsRequest;
     }
 
-    public void setCapabilitiesRequest(OGCCapabilitiesRequest capabilitiesRequest) {
-        this.capabilitiesRequest = capabilitiesRequest;
+    public void setCapabilitiesResource(IResource capabilitiesResource) {
+        this.capabilitiesResource = capabilitiesResource;
     }
 
     public void setAgolItemTransformer(IItemTransformer agolItemTransformer) {
@@ -91,22 +101,26 @@ public class CSWReader implements IReader, IReaderFactory {
         
         //Besonderheit, nun werden die WMS Capabilities herausgeholt
 
+        List<Integer> failureList = new ArrayList<Integer>();
         for(int i=0; i<metadataObjectList.size(); i++){
             MetadataObject object = metadataObjectList.get(i);
             if(object.getResourceUrl() != null || object.getResourceUrl().trim().length() > 0){
                 try {
-                    object.setOgcCapabilitiesDoc(capabilitiesRequest.getCapabilitiesDocument(object.getResourceUrl()));
-                } catch (IOException e) {
+                    object.setOgcCapabilitiesDoc(capabilitiesResource.getRecourceMetadata(object.getResourceUrl()));
+                } catch (ResourceException e) {
                     sLogger.error("The WMS (" + object.getResourceUrl() + ") is not available. " +
                             "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
-                    metadataObjectList.remove(object);
-                } catch (SAXException e) {
-                    sLogger.error("The WMS (" + object.getResourceUrl() + ") is not available. " +
-                            "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
-                    metadataObjectList.remove(object);
+                    failureList.add(i);
                 }
             }
         }
+        if(failureList.size() > 0){
+            for(int k=0; k<failureList.size(); k++){
+                metadataObjectList.remove(failureList.get(k));
+            }
+
+        }
+
 
         //agolitems erzeugen
         ReaderItems readerItems = new ReaderItems();
@@ -144,11 +158,14 @@ public class CSWReader implements IReader, IReaderFactory {
        return readerItems;
     }
 
-    public void setProperties(HashMap<String, String> properties, String processId) {
+    public void setProperties(HashMap<String, String> properties, String processId) throws ReaderException {
         sLogger.info("------------------------------------------------ ");
         sLogger.info("CSW-Modul: Prepare CSW Module. Set Module properties");
         
         cswUrl = properties.get("csw.url");
+        if(cswUrl == null || cswUrl.trim().length() == 0){
+            throw new ReaderException("The property csw.url is missing");
+        }
         sLogger.info("Module property: csw.url=" + cswUrl);
         /*httpMethod = properties.get("csw_request_method");
         sLogger.info("Module property: csw_request_method=" + httpMethod);*/
@@ -174,9 +191,13 @@ public class CSWReader implements IReader, IReaderFactory {
         sLogger.info("CSW-Modul: Prepare CSW Module (CSWGetRecordsResponse). Set XPath Values");
         getRecordsRequest.getGetRecordsResponse().setXPathValues(xPathItems);
 
-        sLogger.info("CSW-Modul: Prepare CSW Module (GetRecordsRequestGenerator). Set XPath Values");
-        getRecordsRequest.getRequestGenerator().setGetRecordsTemplate(this.getClass().getResourceAsStream("/templates/" + processId + ".xml"));
-                
+        sLogger.info("CSW-Modul: Prepare CSW Module (GetRecordsRequestTemplate). Set XPath Values");
+        try {
+            getRecordsRequest.getRequestTemplate().setGetRecordsTemplate(processId);
+        } catch (IOException e) {
+            throw new ReaderException("Cannot load template for the getRecords request", e);
+        }
+
         this.processId = processId;
 
     }

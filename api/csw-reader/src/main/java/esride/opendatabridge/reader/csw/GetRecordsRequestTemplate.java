@@ -17,25 +17,26 @@ import java.util.Set;
  * Time: 15:44
  * To change this template use File | Settings | File Templates.
  */
-public class GetRecordsRequestGenerator {
+public class GetRecordsRequestTemplate {
 
     //private ST templateObj;
     private StringBuilder sb;
+    
+    private IGetRecordsTemplateLocation templateLocation;
 
-    public void setGetRecordsTemplate(InputStream getRecordsTemplate)  {
-        BufferedReader br = new BufferedReader(new InputStreamReader(getRecordsTemplate));
+    public void setTemplateLocation(IGetRecordsTemplateLocation templateLocation) {
+        this.templateLocation = templateLocation;
+    }
+
+    public void setGetRecordsTemplate(String pocessId) throws IOException {
+        InputStream stream = templateLocation.getTemplateFile(pocessId);
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
         sb = new StringBuilder();
         String line;
-        try{
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-            br.close();
-            
-        }catch(IOException e){
-            br = null;
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
         }
-
+        br.close();
     }
 
     public String generateGetRecordsTemplate(HashMap<String, String> template){

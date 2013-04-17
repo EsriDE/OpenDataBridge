@@ -1,7 +1,9 @@
 package esride.opendatabridge.reader.capabilities;
 
-
 import esride.opendatabridge.httptransport.IHTTPRequest;
+import esride.opendatabridge.reader.IResource;
+import esride.opendatabridge.reader.ResourceException;
+import org.apache.xml.resolver.tools.CatalogResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -14,11 +16,11 @@ import java.io.InputStream;
 /**
  * Created by IntelliJ IDEA.
  * User: sma
- * Date: 11.04.13
- * Time: 08:22
+ * Date: 17.04.13
+ * Time: 10:47
  * To change this template use File | Settings | File Templates.
  */
-public class OGCCapabilitiesRequest {
+public class OGCCapabilitiesResource implements IResource{
 
     private IHTTPRequest request;
 
@@ -32,15 +34,24 @@ public class OGCCapabilitiesRequest {
         this.request = request;
     }
 
-    public OGCCapabilitiesRequest() throws ParserConfigurationException {
+    public OGCCapabilitiesResource() throws ParserConfigurationException {
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+
         builderFactory.setNamespaceAware(false);
         builderFactory.setIgnoringElementContentWhitespace(false);
         builder = builderFactory.newDocumentBuilder();
+        builder.setEntityResolver(new CatalogResolver());
     }
-    
-    public Document getCapabilitiesDocument(String capabilitiesUrl) throws IOException, SAXException{
-        InputStream inputStream = getRequest().executeGetRequest(capabilitiesUrl, null);
-        return builder.parse(inputStream);
+
+    public Document getRecourceMetadata(String url) throws ResourceException {
+        InputStream inputStream = null;
+        try {
+            inputStream = getRequest().executeGetRequest(url, null);
+            return builder.parse(inputStream);
+        } catch (IOException e) {
+            throw new ResourceException("No Capabilities from Resource with the url : " + url + " is availabe", e);
+        } catch (SAXException e) {
+            throw new ResourceException("No Capabilities from Resource with the url : " + url + " is availabe", e);
+        }       
     }
 }

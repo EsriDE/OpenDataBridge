@@ -28,7 +28,7 @@ public class CSWGetRecordsRequest {
 
     private CSWGetRecordsResponse getRecordsResponse;
 
-    private GetRecordsRequestGenerator requestGenerator;
+    private GetRecordsRequestTemplate requestTemplate;
     private IHTTPRequest httpRequest;
 
 
@@ -38,16 +38,16 @@ public class CSWGetRecordsRequest {
         this.getRecordsResponse = getRecordsResponse;
     }
 
-    public void setRequestGenerator(GetRecordsRequestGenerator requestGenerator) {
-        this.requestGenerator = requestGenerator;
+    public void setRequestTemplate(GetRecordsRequestTemplate requestTemplate) {
+        this.requestTemplate = requestTemplate;
     }
 
     public CSWGetRecordsResponse getGetRecordsResponse() {
         return getRecordsResponse;
     }
 
-    public GetRecordsRequestGenerator getRequestGenerator() {
-        return requestGenerator;
+    public GetRecordsRequestTemplate getRequestTemplate() {
+        return requestTemplate;
     }
 
     public void setHttpRequest(IHTTPRequest httpRequest) {
@@ -64,7 +64,7 @@ public class CSWGetRecordsRequest {
 
     public CSWResponseObj executeGetRecordsRequest(CSWRequestObj requestObj) throws IOException {
 
-        String getRecordsRequest = requestGenerator.generateGetRecordsTemplate(requestObj.getParameters());
+        String getRecordsRequest = requestTemplate.generateGetRecordsTemplate(requestObj.getParameters());
         InputStream stream = httpRequest.executePostRequest(requestObj.getCswUrl(), getRecordsRequest, "UTF-8", requestObj.getHeader());
 
         Document responseDoc = this.createDocumentFromInputStream(stream);
