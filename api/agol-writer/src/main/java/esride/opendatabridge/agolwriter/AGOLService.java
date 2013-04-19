@@ -142,21 +142,30 @@ public class AGOLService implements IWriter{
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
 
+            String sampleKey = "";
+            
             if (entity != null)
             {
                 String entities = EntityUtils.toString(entity);
                 ObjectMapper objectMapper = new ObjectMapper();
 
                 JsonNode rootNode = objectMapper.readTree(entities);
-                JsonNode totalNode = rootNode.get("total");
                 JsonNode resultsNode = rootNode.get("results");
 
-                while (resultsNode.elements().hasNext()) {
-                    JsonNode result = resultsNode.elements().next();
-                    Map<String,Object> resultEntities = objectMapper.readValue(result.toString(), Map.class);
-                    System.out.println("");
+                Iterator resultsIterator = resultsNode.elements();
+                while (resultsIterator.hasNext()) {
+                    JsonNode result = (JsonNode) resultsIterator.next();
+                    sampleKey = result.findValue("url").toString();
+
+                    System.out.println(result.toString());
+
+                    agolItems.put(result.findValue("url").toString(), new AGOLItem(result.toString()));
                 }
 
+                AGOLItem oneAGOLItem = agolItems.get(sampleKey);
+                String strAgolItem = oneAGOLItem.toJson();
+
+                System.out.println(strAgolItem);
 
 //                int numberOfEntries = Integer.valueOf(agolEntities.get("total").toString());
 //                int paginationNextStart = Integer.valueOf(agolEntities.get("nextStart").toString());
@@ -257,7 +266,7 @@ public class AGOLService implements IWriter{
                     agolKey = key.substring(5);
                 }
 
-                agolAttributes.add(new BasicNameValuePair(agolKey, agolItem.getAttributes().get(key)));
+                agolAttributes.add(new BasicNameValuePair(agolKey, agolItem.getAttributes().get(key).toString()));
             }
 
             httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));

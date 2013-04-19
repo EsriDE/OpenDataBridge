@@ -16,7 +16,10 @@
         <constructor-arg type="java.lang.String" value="${test.service.username}"/>
         <constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
         <constructor-arg type="java.lang.String" value="${test.service.referer}"/>
+    </bean>
 
+    <bean class="esride.opendatabridge.item.AGOLItem" id="agolitem">
+        <constructor-arg type="java.lang.String" value="${test.service.jsonItem1}"/>
     </bean>
 
 </beans>

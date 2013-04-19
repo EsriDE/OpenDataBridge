@@ -1,23 +1,21 @@
 package esride.opendatabridge.agolwriter;
 
 import esride.opendatabridge.item.AGOLItem;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
- * User: sma
- * Date: 12.03.13
- * Time: 17:10
+ * Created with IntelliJ IDEA.
+ * User: nik
+ * Date: 19.04.13
+ * Time: 14:09
  * To change this template use File | Settings | File Templates.
  */
 @ContextConfiguration(locations = {"classpath:spring-config.xml"})
-public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests {
+public class UnitTestsAgolService {
 
     @Autowired
     private AGOLService agolService;
