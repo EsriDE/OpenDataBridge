@@ -43,7 +43,8 @@ public class CSWReader implements IReader, IReaderFactory {
 
     
     private CSWGetRecordsRequest getRecordsRequest;
-    private IResource capabilitiesResource;
+    
+    private HashMap<String, IResource> resourceMap;
     
     private IItemTransformer agolItemTransformer;
 
@@ -52,8 +53,8 @@ public class CSWReader implements IReader, IReaderFactory {
         this.getRecordsRequest = getRecordsRequest;
     }
 
-    public void setCapabilitiesResource(IResource capabilitiesResource) {
-        this.capabilitiesResource = capabilitiesResource;
+    public void setResourceMap(HashMap<String, IResource> resourceMap) {
+        this.resourceMap = resourceMap;
     }
 
     public void setAgolItemTransformer(IItemTransformer agolItemTransformer) {
@@ -100,11 +101,24 @@ public class CSWReader implements IReader, IReaderFactory {
         }
         
         //Besonderheit, nun werden die WMS Capabilities herausgeholt
+        
 
         List<Integer> failureList = new ArrayList<Integer>();
         for(int i=0; i<metadataObjectList.size(); i++){
             MetadataObject object = metadataObjectList.get(i);
-            if(object.getResourceUrl() != null || object.getResourceUrl().trim().length() > 0){
+            IResource resource = resourceMap.get(object.getMetadataResource());
+            if(resource != null){
+                try {
+                    object.setCapabilitiesDoc(resource.getRecourceMetadata(object.getResourceUrl(), object.getMetadataResource()));
+                } catch (ResourceException e) {
+                    sLogger.error("The Resource (" + object.getResourceUrl() + ") is not available. " +
+                            "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
+                    failureList.add(i);
+                }
+            }
+
+            //object.getMetadataResource();
+            /*if(object.getResourceUrl() != null || object.getResourceUrl().trim().length() > 0){
                 try {
                     object.setCapabilitiesDoc(capabilitiesResource.getRecourceMetadata(object.getResourceUrl(), object.getMetadataResource()));
                 } catch (ResourceException e) {
@@ -112,7 +126,7 @@ public class CSWReader implements IReader, IReaderFactory {
                             "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
                     failureList.add(i);
                 }
-            }
+            } */
         }
         if(failureList.size() > 0){
             for(int k=0; k<failureList.size(); k++){
