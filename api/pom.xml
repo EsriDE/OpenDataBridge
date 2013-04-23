@@ -19,5 +19,6 @@
         <module>httptransport</module>
         <module>resource-reader</module>
         <module>capabilities-reader</module>
+        <module>ckan-reader</module>
 	</modules>
 </project>

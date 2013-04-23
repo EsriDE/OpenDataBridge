@@ -11,5 +11,5 @@ import org.w3c.dom.Document;
  */
 public interface IResource {
     
-    public Document getRecourceMetadata(String url) throws ResourceException;
+    public Document getRecourceMetadata(String url, String serviceType) throws ResourceException;
 }

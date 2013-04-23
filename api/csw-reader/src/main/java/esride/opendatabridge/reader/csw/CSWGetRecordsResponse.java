@@ -11,9 +11,11 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
+import java.util.Properties;
 
 
 /**
@@ -33,13 +35,17 @@ public class CSWGetRecordsResponse {
     
     private String metadataXPath = "/GetRecordsResponse/SearchResults/MD_Metadata";
 
-    private String resourceTypeXPath = "/MD_Metadata/identificationInfo/SV_ServiceIdentification/serviceType/LocalName";
-    private String fileIdentifierXPath = "/MD_Metadata/fileIdentifier/CharacterString/text()";
 
-    private String wmsUrlXPath = "/MD_Metadata/identificationInfo/SV_ServiceIdentification/containsOperations[SV_OperationMetadata/operationName/CharacterString = 'GetCapabilities']/SV_OperationMetadata/connectPoint/CI_OnlineResource/linkage/URL/text()";
+    //private String fileIdentifierXPath = "/MD_Metadata/fileIdentifier/CharacterString/text()";
+
+    Properties xpathValue;
+    //rivate String capabilitiesXPath = "";
+
+    //private String resourceTypeXPath = "/MD_Metadata/identificationInfo/SV_ServiceIdentification/serviceType/LocalName";
+    //private String resourceUrlXPath = "/MD_Metadata/identificationInfo/SV_ServiceIdentification/containsOperations[SV_OperationMetadata/operationName/CharacterString = 'GetCapabilities']/SV_OperationMetadata/connectPoint/CI_OnlineResource/linkage/URL/text()";
 
 
-    public void setXPathValues(HashMap<String, String> xPathMap){
+    /*public void setXPathValues(HashMap<String, String> xPathMap){
         if(xPathMap.containsKey("csw_response_xpath_numbOfRecordsReturnedXPath")){
             numbOfRecordsReturnedXPath = xPathMap.get("csw_response_xpath_numbOfRecordsReturnedXPath");
         }
@@ -58,14 +64,18 @@ public class CSWGetRecordsResponse {
         if(xPathMap.containsKey("csw_response_xpath_wmsUrlXPath")){
             wmsUrlXPath = xPathMap.get("csw_response_xpath_wmsUrlXPath");
         }
-    }
+    } */
 
-    public CSWGetRecordsResponse() throws ParserConfigurationException {
+    public CSWGetRecordsResponse() throws ParserConfigurationException, IOException {
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         builderFactory.setNamespaceAware(false);
         builderFactory.setIgnoringElementContentWhitespace(false);
         builder = builderFactory.newDocumentBuilder();
 
+        xpathValue = new Properties();
+        xpathValue.load(this.getClass().getResourceAsStream("/isoxpath.properties"));
+        
+        
         XPathFactory xPathFactory = XPathFactory.newInstance();
         xPath = xPathFactory.newXPath();
     }
@@ -86,10 +96,21 @@ public class CSWGetRecordsResponse {
                     Node importedNode = metaDocument.importNode(documentList.item(i), true);
                     metaDocument.appendChild(importedNode);
                     object.setCswMetadataDoc(metaDocument);
+                    //get ResourceType (WMS, ...)
+                    String resourceTypeXPath = xpathValue.getProperty("resourcetype.xpath");
+                    String resourceType = xPath.evaluate(resourceTypeXPath, metaDocument);
+
+                    String resourceUrl = xpathValue.getProperty(resourceType + ".resourceurl.xpath");
                     //fileIdentifier
-                    object.setMetadataFileIdentifier(xPath.evaluate(fileIdentifierXPath, metaDocument));
-                    //wmsUrl
-                    object.setResourceUrl(xPath.evaluate(wmsUrlXPath, metaDocument));
+                    object.setMetadataFileIdentifier(xPath.evaluate(xpathValue.getProperty("fileidentifier.xpath"), metaDocument));
+                    //resourceUrl
+                    object.setResourceUrl(xPath.evaluate(resourceUrl, metaDocument));
+                    //capabilitiesUrl
+                    String capabilitiesXPath = xpathValue.getProperty(resourceTypeXPath + ".capbilitiesurl.xpath");
+                    if(capabilitiesXPath != null && capabilitiesXPath.trim().length() > 0){
+                        object.setCapabilitiesUrl(xPath.evaluate(capabilitiesXPath, metaDocument));
+                    }
+
                     //resourceType
                     object.setMetadataResource(xPath.evaluate(resourceTypeXPath, metaDocument));
 

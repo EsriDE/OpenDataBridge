@@ -17,9 +17,11 @@ public class MetadataObject {
     
     private String resourceUrl;
     
+    private String capabilitiesUrl;
+    
     private Document cswMetadataDoc;
     
-    private Document ogcCapabilitiesDoc;
+    private Document capabilitiesDoc;
 
     public String getMetadataFileIdentifier() {
         return metadataFileIdentifier;
@@ -37,6 +39,14 @@ public class MetadataObject {
         this.resourceUrl = wmsUrl;
     }
 
+    public String getCapabilitiesUrl() {
+        return capabilitiesUrl;
+    }
+
+    public void setCapabilitiesUrl(String capabilitiesUrl) {
+        this.capabilitiesUrl = capabilitiesUrl;
+    }
+
     public Document getCswMetadataDoc() {
         return cswMetadataDoc;
     }
@@ -45,12 +55,12 @@ public class MetadataObject {
         this.cswMetadataDoc = cswMetadataDoc;
     }
 
-    public Document getOgcCapabilitiesDoc() {
-        return ogcCapabilitiesDoc;
+    public Document getCapabilitiesDoc() {
+        return capabilitiesDoc;
     }
 
-    public void setOgcCapabilitiesDoc(Document wmsCapabilitiesDoc) {
-        this.ogcCapabilitiesDoc = wmsCapabilitiesDoc;
+    public void setCapabilitiesDoc(Document capabilitiesDoc) {
+        this.capabilitiesDoc = capabilitiesDoc;
     }
 
     public String getMetadataResource() {

@@ -106,7 +106,7 @@ public class CSWReader implements IReader, IReaderFactory {
             MetadataObject object = metadataObjectList.get(i);
             if(object.getResourceUrl() != null || object.getResourceUrl().trim().length() > 0){
                 try {
-                    object.setOgcCapabilitiesDoc(capabilitiesResource.getRecourceMetadata(object.getResourceUrl()));
+                    object.setCapabilitiesDoc(capabilitiesResource.getRecourceMetadata(object.getResourceUrl(), object.getMetadataResource()));
                 } catch (ResourceException e) {
                     sLogger.error("The WMS (" + object.getResourceUrl() + ") is not available. " +
                             "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
@@ -132,9 +132,9 @@ public class CSWReader implements IReader, IReaderFactory {
             cswSet.setXmlDoc(metadataObjectList.get(i).getCswMetadataDoc());
             cswSet.setMetadataType("csw");
             setList.add(cswSet);
-            if(metadataObjectList.get(i).getOgcCapabilitiesDoc() != null){
+            if(metadataObjectList.get(i).getCapabilitiesDoc() != null){
                 MetadataSet capabilitiesSet = new MetadataSet();
-                capabilitiesSet.setXmlDoc(metadataObjectList.get(i).getOgcCapabilitiesDoc());
+                capabilitiesSet.setXmlDoc(metadataObjectList.get(i).getCapabilitiesDoc());
                 capabilitiesSet.setMetadataType("capabilities");
                 setList.add(capabilitiesSet);
             }
@@ -188,8 +188,8 @@ public class CSWReader implements IReader, IReaderFactory {
             }
         }
 
-        sLogger.info("CSW-Modul: Prepare CSW Module (CSWGetRecordsResponse). Set XPath Values");
-        getRecordsRequest.getGetRecordsResponse().setXPathValues(xPathItems);
+        //sLogger.info("CSW-Modul: Prepare CSW Module (CSWGetRecordsResponse). Set XPath Values");
+        //getRecordsRequest.getGetRecordsResponse().setXPathValues(xPathItems);
 
         sLogger.info("CSW-Modul: Prepare CSW Module (GetRecordsRequestTemplate). Set XPath Values");
         try {
