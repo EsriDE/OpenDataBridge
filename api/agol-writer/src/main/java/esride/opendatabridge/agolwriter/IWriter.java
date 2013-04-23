@@ -1,9 +1,9 @@
 package esride.opendatabridge.agolwriter;
 
-import esride.opendatabridge.item.AGOLItem;
+import esride.opendatabridge.item.AgolItem;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 
 /**
@@ -14,9 +14,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface IWriter {
-    public HashMap<String, AGOLItem> getAllItems(String itemType);
-    public HashMap<String, AGOLItem> getAllItems(String itemType, String accessType);
-    public void addItem(AGOLItem agolItem);
-    public void updateItem(AGOLItem agolItem);
-    public void deleteItem(AGOLItem agolItem);
+    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType);
+    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType);
+    public void addItem(AgolItem agolItem);
+    public void updateItem(AgolItem agolItem);
+    public void deleteItem(AgolItem agolItem);
 }

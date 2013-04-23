@@ -1,11 +1,6 @@
 package esride.opendatabridge.processing;
 
-import esride.opendatabridge.agolwriter.AGOLService;
-import esride.opendatabridge.item.AGOLItem;
-
-import java.util.HashMap;
-import java.util.List;
-
+import esride.opendatabridge.agolwriter.AgolService;
 
 
 /**
@@ -21,35 +16,36 @@ public class Transformer {
         String subscription  = args[0];
         String user = args[1];
         String password = args[2];
+        String logpath = args[3];
 
-        AGOLService agolService = new AGOLService(subscription, user, password, "http://www.esri.de");
+        AgolService agolService = new AgolService(subscription, user, password, "http://www.esri.de", logpath);
 
     }
 
     /*
     Get External Items
-    @returns: HashMap<url, AGOLItem>
+    @returns: HashMap<url, AgolItem>
      */
 
     /*
     Get AGOL Items
-    @returns: HashMap<url, AGOLItem>
+    @returns: HashMap<url, AgolItem>
      */
 
     /*
     Compare Item Lists
     @returns: CompareListContainer {
-        List<AGOLItem> addList;
-        List<AGOLItem> updateList;
-        List<AGOLItem> deleteList;
+        List<AgolItem> addList;
+        List<AgolItem> updateList;
+        List<AgolItem> deleteList;
     }
      */
 
     /*
     public Write Comparison Results to AGOL {
-        private addAGOLItems(List<AGOLItem> addList);
-        private updateAGOLItems(List<AGOLItem> updateList);
-        private deleteAGOLItems(List<AGOLItem> deleteList);
+        private addAGOLItems(List<AgolItem> addList);
+        private updateAGOLItems(List<AgolItem> updateList);
+        private deleteAGOLItems(List<AgolItem> deleteList);
      }
      */
 

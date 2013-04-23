@@ -11,15 +11,22 @@
 
     <context:property-placeholder location="classpath:IntegrationTest.properties"/>
 
-    <bean class="esride.opendatabridge.agolwriter.AGOLService" id="agolservice">
+    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:agolItemFactory-ref="agolitemfactory">
         <constructor-arg type="java.lang.String" value="${test.service.url}"/>
         <constructor-arg type="java.lang.String" value="${test.service.username}"/>
         <constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
         <constructor-arg type="java.lang.String" value="${test.service.referer}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.logpath}"/>
     </bean>
 
-    <bean class="esride.opendatabridge.item.AGOLItem" id="agolitem">
-        <constructor-arg type="java.lang.String" value="${test.service.jsonItem1}"/>
-    </bean>
+    <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory" />
+
+    <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String" id="jsonMap">
+        <entry key="test01" value="${test.service.jsonItem1}" />
+    </util:map>
+
+    <!--<bean class="esride.opendatabridge.item.AgolItem" id="agolitem">-->
+        <!--<constructor-arg type="java.lang.String" value="${test.service.jsonItem1}"/>-->
+    <!--</bean>-->
 
 </beans>

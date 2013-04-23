@@ -1,5 +1,6 @@
 package esride.opendatabridge.item;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esride.opendatabridge.agolwriter.IWriter;
 
@@ -9,6 +10,7 @@ import java.util.HashMap;
 
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -18,44 +20,16 @@ import java.util.Map;
  * Time: 14:10
  * To change this template use File | Settings | File Templates.
  */
-public class AGOLItem implements IItem {
+public class AgolItem {
     private HashMap _itemAttributes;
 
-    public AGOLItem()
+    // Constructors
+    public AgolItem(HashMap itemAttributes)
     {
-        _itemAttributes = new HashMap();
+        _itemAttributes = itemAttributes;
     }
 
-    public AGOLItem(String jsonAGOLItem)
-    {
-        fromJson(jsonAGOLItem);
-    }
-
-    public void fromJson(String jsonAGOLItem)
-    {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            _itemAttributes = objectMapper.readValue(jsonAGOLItem, HashMap.class);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public String toJson()
-    {
-        ObjectMapper objectMapper = new ObjectMapper();
-        StringWriter  strWriter = new StringWriter();
-        try {
-            objectMapper.writeValue(strWriter, getAttributes());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return strWriter.toString();
-    }
-
-    public HashMap<String, Object>  getAttributes()
+    public HashMap<String, Object> getAttributes()
     {
         return _itemAttributes;
     }
