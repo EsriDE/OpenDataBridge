@@ -72,6 +72,8 @@ public class AgolItemFactory {
             }
             iteCounter++;
         }
+<<<<<<< Updated upstream
+=======
         Iterator updatePropertiesIterator = updateAgolItemProperties.entrySet().iterator();
         while (updatePropertiesIterator.hasNext()) {
             Map.Entry updateProperty = (Map.Entry) updatePropertiesIterator.next();
@@ -79,6 +81,7 @@ public class AgolItemFactory {
             agolItemProperties.put(updateProperty.getKey(), updateProperty.getValue());
             iteCounter++;
         }
+>>>>>>> Stashed changes
         log.info(iteCounter + " iterations performed in " + (System.currentTimeMillis()-startTime) + " ms.");
         return agolItemProperties;
     }
