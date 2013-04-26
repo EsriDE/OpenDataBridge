@@ -44,20 +44,26 @@ public class AgolItemFactory {
         catch (Exception e) {
             e.printStackTrace();
         }
+        HashMap deleteAgolItemProperties = new HashMap();
         HashMap updateAgolItemProperties = new HashMap();
 
-        // Altering objects in a HashMap while iterating through it is dangerous - so we get a fresh iterator (restart the loop) after each change.
-        Iterator removeNullItemsIterator = agolItemProperties.entrySet().iterator();
+        // Altering objects in a HashMap while iterating through it is dangerous - so we do everything in single loops.
+        Iterator findNullItemsIterator = agolItemProperties.entrySet().iterator();
         int iteCounter = 0;
         long startTime = System.currentTimeMillis();
-        while (removeNullItemsIterator.hasNext()) {
-            Map.Entry property = (Map.Entry) removeNullItemsIterator.next();
+        while (findNullItemsIterator.hasNext()) {
+            Map.Entry property = (Map.Entry) findNullItemsIterator.next();
             Object propertyValue = property.getValue();
             if (propertyValue == null) {
-                agolItemProperties.remove(property.getKey());
-                log.info("Entry \"" + property.getKey() + "\" with null value removed.");
-                removeNullItemsIterator = agolItemProperties.entrySet().iterator();
+                deleteAgolItemProperties.put(property.getKey(), propertyValue);
             }
+            iteCounter++;
+        }
+        Iterator removeNullItemsIterator = deleteAgolItemProperties.entrySet().iterator();
+        while (removeNullItemsIterator.hasNext()) {
+            Map.Entry property = (Map.Entry) removeNullItemsIterator.next();
+            agolItemProperties.remove(property.getKey());
+            log.info("Entry \"" + property.getKey() + "\" with null value removed.");
             iteCounter++;
         }
         Iterator findUpdatePropertiesIterator = agolItemProperties.entrySet().iterator();
