@@ -1,5 +1,7 @@
 package esride.opendatabridge.reader;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: sma
@@ -9,6 +11,6 @@ package esride.opendatabridge.reader;
  */
 public interface IReader {
 
-    public ReaderItems getItemsFromCatalog() throws ReaderException;
+    public List<TransformedItem> getItemsFromCatalog() throws ReaderException;
 
 }

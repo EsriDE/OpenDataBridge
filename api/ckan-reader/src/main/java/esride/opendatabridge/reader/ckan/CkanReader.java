@@ -1,67 +1,52 @@
-package esride.opendatabridge.reader.csw;
-
-
+package esride.opendatabridge.reader.ckan;
 
 import esride.opendatabridge.itemtransform.*;
 import esride.opendatabridge.reader.*;
-
 import esride.opendatabridge.reader.request.CatalogRequestObj;
 import esride.opendatabridge.reader.request.CatalogResponseObj;
 import org.apache.log4j.Logger;
-
 
 import java.io.IOException;
 import java.util.*;
 
 /**
- * THe CSWReader implements the IReader interface. The CSWReader class collects metadata from CSW metadata catalogues
- * and transforms the metadata into an AGOL Item compatible data model. For running an CSWReader component the following resources must be
- * available:
- * - the <p>csw.url</p> (HTTP POST endpoint for the CSW GetRecords endpoint)
- * - 0..* <p>csw_request_getrecords_header_{*}</p> properties for overwriting the HTTP Header
- * - 0..* <p>csw_request_getrecords_template_{*}</p> placeholder for overwriting the GetRecords POST request
- * - 0..* <p>csw_response_xpath_{*}</p> XPath values if you don't use the ISO metadata model (like Dublin Core)
- *
- * The GetRecords request is build by an XML Template. The template could be injected from a classpath path.
- *
- * For the AGOL Item transformation an <p>itemelement_{*}.properties</p> files must be available. For each CSW Metadata resource
- * (like WMS, Shapefile, CSV file) one property file must be created.
- *
+ * Created by IntelliJ IDEA.
  * User: sma
- * Date: 05.04.13
- * Time: 15:02
+ * Date: 23.04.13
+ * Time: 16:18
+ * To change this template use File | Settings | File Templates.
  */
-public class CSWReader implements IReader, IReaderFactory {
-    private static Logger sLogger = Logger.getLogger(CSWReader.class);
-    
+public class CkanReader implements IReader, IReaderFactory {
+    private static Logger sLogger = Logger.getLogger(CkanReader.class);
+
     private HashMap<String, String> templateItems = new HashMap<String, String>();
     private HashMap<String, String> headerItems = new HashMap<String, String>();
     private Properties propertyItems = new Properties();
-    //private HashMap<String, String> xPathItems = new HashMap<String, String>();
     
-    private String cswUrl = null;
-    private String processId;
-    //private String httpMethod = null;
-    
+    private String ckanUrl;
 
-    
-    private CSWGetRecordsRequest getRecordsRequest;
-    
-    private HashMap<String, IResource> resourceMap;
-    
+    private String processId;
+
+    private CkanSearchRequest searchRequest;
+
     private IItemTransformer agolItemTransformer;
 
+    private HashMap<String, IResource> resourceMap;
 
-    public void setGetRecordsRequest(CSWGetRecordsRequest getRecordsRequest) {
-        this.getRecordsRequest = getRecordsRequest;
+    public void setAgolItemTransformer(IItemTransformer agolItemTransformer) {
+        this.agolItemTransformer = agolItemTransformer;
     }
 
     public void setResourceMap(HashMap<String, IResource> resourceMap) {
         this.resourceMap = resourceMap;
     }
 
-    public void setAgolItemTransformer(IItemTransformer agolItemTransformer) {
-        this.agolItemTransformer = agolItemTransformer;
+    public CkanSearchRequest getSearchRequest() {
+        return searchRequest;
+    }
+
+    public void setSearchRequest(CkanSearchRequest searchRequest) {
+        this.searchRequest = searchRequest;
     }
 
     public String getProcessId() {
@@ -74,26 +59,29 @@ public class CSWReader implements IReader, IReaderFactory {
 
     public List<TransformedItem> getItemsFromCatalog() throws ReaderException {
         sLogger.info("------------------------------------------------ ");
-        sLogger.info("CSW-Modul: Start Requesting Metadata from catalog");
-
+        sLogger.info("Ckan-Modul: Start Requesting Metadata from ckan-catalog");
 
         boolean pagination = true;
-        int maxRecords = Integer.valueOf(templateItems.get("csw_request_getrecords_template_maxRecords"));
-        int startPosition = 1;
+        int maxRecords = Integer.valueOf(templateItems.get("limit"));
+        int startPosition = 0;
         List<MetadataObject> metadataObjectList = new ArrayList<MetadataObject>();
 
         while(pagination){
-            templateItems.put("csw_request_getrecords_template_startPosition", String.valueOf(startPosition));
-            CatalogRequestObj reqObj = new CatalogRequestObj(cswUrl,templateItems, headerItems);
+            sLogger.info("Ckan-Modul: Start request with startPosition: " + startPosition);
+            templateItems.put("offset", String.valueOf(startPosition));
+            CatalogRequestObj reqObj = new CatalogRequestObj(ckanUrl,templateItems, headerItems);
             try {
-                CatalogResponseObj resonseObj = getRecordsRequest.executeGetRecordsRequest(reqObj);
+                CatalogResponseObj resonseObj = searchRequest.executeCkanRequest(reqObj);
                 metadataObjectList.addAll(resonseObj.getMetadataDocuments());
                 int matchedRecords = resonseObj.getNumbersOfRecordMatched();
                 int returnedRecords = resonseObj.getNumbersOfRecordReturned();
-                if(matchedRecords >= returnedRecords + startPosition){
+                sLogger.info("Ckan-Modul: Number of matched records: " + matchedRecords);
+                if(matchedRecords > returnedRecords + startPosition){
                     startPosition = startPosition + maxRecords;
+                    sLogger.info("Ckan-Modul: Next start position: " + startPosition);
                 }else{
                     pagination = false;
+                    sLogger.info("Ckan-Modul: No further request");
                 }
             } catch (IOException e) {
                 String message = "CSW Request failed at startPosition: " + startPosition;
@@ -102,9 +90,6 @@ public class CSWReader implements IReader, IReaderFactory {
             }
 
         }
-        
-        //Besonderheit, nun werden die WMS Capabilities herausgeholt
-        
 
         List<Integer> failureList = new ArrayList<Integer>();
         for(int i=0; i<metadataObjectList.size(); i++){
@@ -120,16 +105,6 @@ public class CSWReader implements IReader, IReaderFactory {
                 }
             }
 
-            //object.getResourceType();
-            /*if(object.getResourceUrl() != null || object.getResourceUrl().trim().length() > 0){
-                try {
-                    object.setCapabilitiesDoc(capabilitiesResource.getRecourceMetadata(object.getResourceUrl(), object.getResourceType()));
-                } catch (ResourceException e) {
-                    sLogger.error("The WMS (" + object.getResourceUrl() + ") is not available. " +
-                            "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
-                    failureList.add(i);
-                }
-            } */
         }
         if(failureList.size() > 0){
             for(int k=0; k<failureList.size(); k++){
@@ -137,8 +112,6 @@ public class CSWReader implements IReader, IReaderFactory {
             }
 
         }
-
-
         //agolitems erzeugen
         //ReaderItems lTransformedItems = new ReaderItems();
         List<TransformedItem> lTransformedItems = new ArrayList<TransformedItem>();
@@ -148,7 +121,7 @@ public class CSWReader implements IReader, IReaderFactory {
             List<MetadataSet> setList = new ArrayList<MetadataSet>();
             MetadataSet cswSet = new MetadataSet();
             cswSet.setXmlDoc(metadataObjectList.get(i).getMetadataDoc());
-            cswSet.setMetadataType("csw");
+            cswSet.setMetadataType("ckan");
             setList.add(cswSet);
             if(metadataObjectList.get(i).getCapabilitiesDoc() != null){
                 MetadataSet capabilitiesSet = new MetadataSet();
@@ -170,24 +143,23 @@ public class CSWReader implements IReader, IReaderFactory {
                 sLogger.error("The metadataset with the file Identifier: " + metadataObjectList.get(i).getMetadataFileIdentifier() + " cannot be transformed", e);
             }
         }
-        
-        
 
-       return lTransformedItems;
+
+
+        return lTransformedItems;
+
     }
 
     public void setProperties(HashMap<String, String> properties, String processId) throws ReaderException {
         sLogger.info("------------------------------------------------ ");
-        sLogger.info("CSW-Modul: Prepare CSW Module. Set Module properties");
-        
-        cswUrl = properties.get("csw.url");
-        if(cswUrl == null || cswUrl.trim().length() == 0){
-            throw new ReaderException("The property csw.url is missing");
+        sLogger.info("Ckan-Modul: Prepare Ckan Module. Set Module properties");
+
+        ckanUrl = properties.get("ckan.url");
+        if(ckanUrl == null || ckanUrl.trim().length() == 0){
+            throw new ReaderException("The property ckan.url is missing");
         }
-        sLogger.info("Module property: csw.url=" + cswUrl);
-        /*httpMethod = properties.get("csw_request_method");
-        sLogger.info("Module property: csw_request_method=" + httpMethod);*/
-        
+        sLogger.info("Module property: ckan.url=" + ckanUrl);
+
         Set<String> keySet = properties.keySet();
         Iterator<String> iter = keySet.iterator();
         while(iter.hasNext()){
@@ -195,30 +167,22 @@ public class CSWReader implements IReader, IReaderFactory {
             String value = properties.get(key);
 
             sLogger.info("Module property:" + key + "=" + value);
-            if(key.startsWith("csw_request_getrecords_header_")){
+            if(key.startsWith("ckan_request_search_header_")){
                 headerItems.put(key, value);
             }
-            if(key.startsWith("csw_request_getrecords_template_")){
-                templateItems.put(key, value);
+            if(key.startsWith("ckan_request_search_param_")){
+                templateItems.put(key.substring(26), value);
             }
-            if(key.startsWith("csw.reader.")){
+            if(key.startsWith("csw_response_xpath_")){
                 propertyItems.put(key, value);
             }
         }
 
         if(propertyItems.size() > 0){
-            sLogger.info("CSW-Modul: Prepare CSW Module (CSWGetRecordsResponse). Overwrite XPath Values");
-            getRecordsRequest.getGetRecordsResponse().setXpathValue(propertyItems);
-        }
-
-        sLogger.info("CSW-Modul: Prepare CSW Module (GetRecordsRequestTemplate). Set XPath Values");
-        try {
-            getRecordsRequest.getRequestTemplate().setGetRecordsTemplate(processId);
-        } catch (IOException e) {
-            throw new ReaderException("Cannot load template for the getRecords request", e);
+            sLogger.info("Ckan-Modul: Prepare Ckan Module (SearchRequest). Overwrite XPath Values");
+            searchRequest.getSearchResponse().setXpathValue(propertyItems);
         }
 
         this.processId = processId;
-
     }
 }

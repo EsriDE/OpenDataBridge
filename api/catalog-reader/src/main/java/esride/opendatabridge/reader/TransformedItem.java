@@ -9,7 +9,7 @@ import java.util.HashMap;
  * Time: 15:22
  * To change this template use File | Settings | File Templates.
  */
-public class ReaderItem {
+public class TransformedItem {
     
     private HashMap<String, String> itemElements;
     

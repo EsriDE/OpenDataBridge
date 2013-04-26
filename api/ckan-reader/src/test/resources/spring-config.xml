@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <context:property-placeholder location="classpath:application.properties"/>
+
+    <bean class="esride.opendatabridge.reader.ckan.CkanSearchResponse" id="ckanResponse"
+            p:supportedResourceTypes-ref="supportedTypeList"/>
+
+    <bean class="esride.opendatabridge.httptransport.HTTPRequest" id="httpRequest"/>
+
+
+    <bean class="esride.opendatabridge.reader.ckan.CkanSearchRequest" id="searchRequest"
+          p:searchResponse-ref="ckanResponse"
+          p:httpRequest-ref="httpRequest"/>
+
+    <bean name="requestObj1" class="esride.opendatabridge.reader.request.CatalogRequestObj">
+        <constructor-arg type="java.lang.String" value="http://www.govdata.de/ckan/api/search/dataset"/>
+        <constructor-arg type="java.util.HashMap" ref="paramMap"/>
+    </bean>
+
+    <util:map key-type="java.lang.String" value-type="java.lang.String" id="paramMap">
+        <entry key="q" value="res_format:WMS"/>
+        <entry key="all_fields" value="1"/>
+        <entry key="offset" value="0"/>
+        <entry key="limit" value="20"/>
+    </util:map>
+
+    <util:list value-type="java.lang.String" id="supportedTypeList">
+        <value>WMS</value>
+        <value>KML</value>
+        <value>CSV</value>
+    </util:list>
+
+
+</beans>

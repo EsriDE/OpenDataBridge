@@ -2,7 +2,8 @@ package esride.opendatabridge.reader.csw;
 
 import esride.opendatabridge.reader.ReaderException;
 
-import esride.opendatabridge.reader.ReaderItems;
+
+import esride.opendatabridge.reader.TransformedItem;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,8 +42,8 @@ public class UnitTestCSWReader extends AbstractJUnit4SpringContextTests {
         }
 
         try {
-            ReaderItems items = reader.getItemsFromCatalog();
-            int size = items.getItems().size();
+            List<TransformedItem> items = reader.getItemsFromCatalog();
+            int size = items.size();
             Assert.assertEquals(size, 26);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
@@ -63,8 +65,8 @@ public class UnitTestCSWReader extends AbstractJUnit4SpringContextTests {
         }
 
         try {
-            ReaderItems items = reader.getItemsFromCatalog();
-            int size = items.getItems().size();
+            List<TransformedItem> items = reader.getItemsFromCatalog();
+            int size = items.size();
             Assert.assertEquals(size, 11);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
@@ -86,8 +88,8 @@ public class UnitTestCSWReader extends AbstractJUnit4SpringContextTests {
         }
 
         try {
-            ReaderItems items = reader.getItemsFromCatalog();
-            int size = items.getItems().size();
+            List<TransformedItem> items = reader.getItemsFromCatalog();
+            int size = items.size();
             Assert.assertEquals(size, 10);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
@@ -109,8 +111,8 @@ public class UnitTestCSWReader extends AbstractJUnit4SpringContextTests {
         }
 
         try {
-            ReaderItems items = reader.getItemsFromCatalog();
-            int size = items.getItems().size();
+            List<TransformedItem> items = reader.getItemsFromCatalog();
+            int size = items.size();
             Assert.assertEquals(size, 9);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
@@ -132,8 +134,8 @@ public class UnitTestCSWReader extends AbstractJUnit4SpringContextTests {
         }
 
         try {
-            ReaderItems items = reader.getItemsFromCatalog();
-            int size = items.getItems().size();
+            List<TransformedItem> items = reader.getItemsFromCatalog();
+            int size = items.size();
             Assert.assertEquals(size, 8);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());

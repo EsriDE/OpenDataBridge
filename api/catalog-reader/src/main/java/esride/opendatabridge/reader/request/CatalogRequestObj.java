@@ -1,4 +1,4 @@
-package esride.opendatabridge.reader.csw;
+package esride.opendatabridge.reader.request;
 
 import java.util.HashMap;
 
@@ -9,18 +9,23 @@ import java.util.HashMap;
  * Time: 13:50
  * To change this template use File | Settings | File Templates.
  */
-public class CSWRequestObj {
+public class CatalogRequestObj {
 
-    public CSWRequestObj(String cswUrl, HashMap<String, String> parameters, HashMap<String, String> header) {
-        this.cswUrl = cswUrl;
+    public CatalogRequestObj(String catalogUrl, HashMap<String, String> parameters, HashMap<String, String> header) {
+        this.catalogUrl = catalogUrl;
         this.parameters = parameters;
         this.header = header;
+    }
+
+    public CatalogRequestObj(String catalogUrl, HashMap<String, String> parameters) {
+        this.catalogUrl = catalogUrl;
+        this.parameters = parameters;
     }
 
     /**
      * the csw url for the request
      */
-    private String cswUrl;
+    private String catalogUrl;
 
     /**
      * the parameters (templateItems for post template, get request parameter)
@@ -32,12 +37,12 @@ public class CSWRequestObj {
      */
     private HashMap<String, String> header;
 
-    public String getCswUrl() {
-        return cswUrl;
+    public String getCatalogUrl() {
+        return catalogUrl;
     }
 
-    public void setCswUrl(String cswUrl) {
-        this.cswUrl = cswUrl;
+    public void setCatalogUrl(String catalogUrl) {
+        this.catalogUrl = catalogUrl;
     }
 
     public HashMap<String, String> getParameters() {

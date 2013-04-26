@@ -9,41 +9,41 @@
 			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-    <bean class="esride.opendatabridge.reader.csw.CSWReader" id="reader"
-            p:getRecordsRequest-ref="getRecordsRequest"
-            p:resourceMap-ref="resourceMap"
-            p:agolItemTransformer-ref="itemTransform"/>
+<bean class="esride.opendatabridge.reader.csw.CSWReader" id="reader"
+      p:getRecordsRequest-ref="getRecordsRequest"
+      p:resourceMap-ref="resourceMap"
+      p:agolItemTransformer-ref="itemTransform"/>
 
-    <util:map id="resourceMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IResource">
-        <entry key="view" value-ref="capabilitiesRequest"/>
-        <entry key="wms" value-ref="capabilitiesRequest"/>
-    </util:map>
-    
-    <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsRequest" id="getRecordsRequest"
-            p:httpRequest-ref="mockHttp"
-            p:requestTemplate-ref="generator"
-            p:getRecordsResponse-ref="getRecordsResponse"/>
-    
-    <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"/>
+<util:map id="resourceMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IResource">
+    <entry key="view" value-ref="capabilitiesRequest"/>
+    <entry key="wms" value-ref="capabilitiesRequest"/>
+</util:map>
 
-    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
-            p:generatorConfiguration-ref="itemConfig"/>
+<bean class="esride.opendatabridge.reader.csw.CSWGetRecordsRequest" id="getRecordsRequest"
+      p:httpRequest-ref="mockHttp"
+      p:requestTemplate-ref="generator"
+      p:getRecordsResponse-ref="getRecordsResponse"/>
 
-    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
-            p:itemElemExtractor-ref="itemGenerator"/>
+<bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"/>
 
-    <bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesResource" id="capabilitiesRequest"
-            p:request-ref="mockHttp"/>
-    
-    <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsResponse" id="getRecordsResponse"/>
-    
-    <bean class="esride.opendatabridge.reader.mock.MockHTTPRequest" id="mockHttp"/>
-    
-    
-    <bean class="esride.opendatabridge.reader.csw.GetRecordsRequestTemplate" id="generator"
-            p:templateLocation-ref="templateLocation"/>
+<bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
+      p:generatorConfiguration-ref="itemConfig"/>
 
-    <bean class="esride.opendatabridge.reader.csw.templatefile.FileSysGetRecordsTemplateLocation" id="templateLocation"/>
+<bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
+      p:itemElemExtractor-ref="itemGenerator"/>
+
+<bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesResource" id="capabilitiesRequest"
+      p:request-ref="mockHttp"/>
+
+<bean class="esride.opendatabridge.reader.csw.CSWGetRecordsResponse" id="getRecordsResponse"/>
+
+<bean class="esride.opendatabridge.reader.mock.MockHTTPRequest" id="mockHttp"/>
+
+
+<bean class="esride.opendatabridge.reader.csw.GetRecordsRequestTemplate" id="generator"
+      p:templateLocation-ref="templateLocation"/>
+
+<bean class="esride.opendatabridge.reader.csw.templatefile.FileSysGetRecordsTemplateLocation" id="templateLocation"/>
 
 
 </beans>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <bean class="esride.opendatabridge.reader.ckan.CkanReader" id="reader"
+          p:searchRequest-ref="searchRequest"
+          p:resourceMap-ref="resourceMap"
+          p:agolItemTransformer-ref="itemTransform"/>
+
+    <util:map id="resourceMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IResource">
+        <entry key="wms" value-ref="capabilitiesRequest"/>
+    </util:map>
+
+    <bean class="esride.opendatabridge.reader.ckan.CkanSearchRequest" id="searchRequest"
+          p:httpRequest-ref="httpRequest"
+          p:searchResponse-ref="searchResponse"/>
+
+    <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"/>
+
+    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
+          p:generatorConfiguration-ref="itemConfig"/>
+
+    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
+          p:itemElemExtractor-ref="itemGenerator"/>
+
+    <bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesResource" id="capabilitiesRequest"
+          p:request-ref="httpRequest"/>
+
+    <bean class="esride.opendatabridge.reader.ckan.CkanSearchResponse" id="searchResponse"
+            p:supportedResourceTypes-ref="supportedTypeList"/>
+
+    <util:list value-type="java.lang.String" id="supportedTypeList">
+        <value>WMS</value>
+        <value>KML</value>
+        <value>CSV</value>
+    </util:list>
+
+    <bean class="esride.opendatabridge.httptransport.HTTPRequest" id="httpRequest"/>
+
+
+</beans>

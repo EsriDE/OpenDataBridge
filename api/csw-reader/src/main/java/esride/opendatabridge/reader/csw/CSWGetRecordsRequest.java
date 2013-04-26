@@ -3,6 +3,8 @@ package esride.opendatabridge.reader.csw;
 
 
 import esride.opendatabridge.httptransport.IHTTPRequest;
+import esride.opendatabridge.reader.request.CatalogRequestObj;
+import esride.opendatabridge.reader.request.CatalogResponseObj;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -62,24 +64,27 @@ public class CSWGetRecordsRequest {
 
     }
 
-    public CSWResponseObj executeGetRecordsRequest(CSWRequestObj requestObj) throws IOException {
+    public CatalogResponseObj executeGetRecordsRequest(CatalogRequestObj requestObj) throws IOException {
 
         String getRecordsRequest = requestTemplate.generateGetRecordsTemplate(requestObj.getParameters());
-        InputStream stream = httpRequest.executePostRequest(requestObj.getCswUrl(), getRecordsRequest, "UTF-8", requestObj.getHeader());
+        InputStream stream = httpRequest.executePostRequest(requestObj.getCatalogUrl(), getRecordsRequest, "UTF-8", requestObj.getHeader());
 
         Document responseDoc = this.createDocumentFromInputStream(stream);
+        stream.close();
         return getRecordsResponse.createCSWResponse(responseDoc);
     }
     
-    private Document createDocumentFromInputStream(InputStream inputStream){
+    private Document createDocumentFromInputStream(InputStream inputStream) throws IOException {
         Document document = null;
         try {
             document = builder.parse(inputStream);
         } catch (SAXException e) {
+            inputStream.close();
             String message = "Could not build Document";
             sLogger.error(message, e);
 
         } catch (IOException e) {
+            inputStream.close();
             String message = "Could not build Document";
             sLogger.error(message, e);
 

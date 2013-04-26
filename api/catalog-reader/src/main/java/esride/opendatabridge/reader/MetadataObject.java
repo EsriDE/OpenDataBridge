@@ -1,4 +1,4 @@
-package esride.opendatabridge.reader.csw;
+package esride.opendatabridge.reader;
 
 import org.w3c.dom.Document;
 
@@ -10,17 +10,35 @@ import org.w3c.dom.Document;
  * To change this template use File | Settings | File Templates.
  */
 public class MetadataObject {
-    
+
+    /**
+     * the internal file identifier of this metadata set
+     */
     private String metadataFileIdentifier;
-    
-    private String metadataResource;
-    
+
+    /**
+     * the resource type of the resource (like WMS, view, ....)
+     */
+    private String resourceType;
+
+    /**
+     * The URL of the resource
+     */
     private String resourceUrl;
-    
+
+    /**
+     * the URL for the resource capabilities (WMS)
+     */
     private String capabilitiesUrl;
-    
-    private Document cswMetadataDoc;
-    
+
+    /**
+     * the metadata document
+     */
+    private Document metadataDoc;
+
+    /**
+     * the capabilities document (like for WMS)
+     */
     private Document capabilitiesDoc;
 
     public String getMetadataFileIdentifier() {
@@ -47,12 +65,12 @@ public class MetadataObject {
         this.capabilitiesUrl = capabilitiesUrl;
     }
 
-    public Document getCswMetadataDoc() {
-        return cswMetadataDoc;
+    public Document getMetadataDoc() {
+        return metadataDoc;
     }
 
-    public void setCswMetadataDoc(Document cswMetadataDoc) {
-        this.cswMetadataDoc = cswMetadataDoc;
+    public void setMetadataDoc(Document cswMetadataDoc) {
+        this.metadataDoc = cswMetadataDoc;
     }
 
     public Document getCapabilitiesDoc() {
@@ -63,11 +81,11 @@ public class MetadataObject {
         this.capabilitiesDoc = capabilitiesDoc;
     }
 
-    public String getMetadataResource() {
-        return metadataResource;
+    public String getResourceType() {
+        return resourceType;
     }
 
-    public void setMetadataResource(String metadataResource) {
-        this.metadataResource = metadataResource;
+    public void setResourceType(String resourceType) {
+        this.resourceType = resourceType;
     }
 }

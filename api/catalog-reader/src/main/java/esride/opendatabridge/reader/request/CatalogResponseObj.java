@@ -1,4 +1,6 @@
-package esride.opendatabridge.reader.csw;
+package esride.opendatabridge.reader.request;
+
+import esride.opendatabridge.reader.MetadataObject;
 
 import java.util.List;
 
@@ -9,7 +11,7 @@ import java.util.List;
  * Time: 15:47
  * To change this template use File | Settings | File Templates.
  */
-public class CSWResponseObj {
+public class CatalogResponseObj {
 
     private int numbOfRecordsMatchedInt;
     private int numbOfRecordsReturnedInt;

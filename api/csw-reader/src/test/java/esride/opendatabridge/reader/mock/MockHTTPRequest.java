@@ -76,6 +76,10 @@ public class MockHTTPRequest implements IHTTPRequest {
         return null;
     }
 
+    public InputStream executeGetRequest(String baseUrl, HashMap<String, String> requestParamMap, HashMap<String, String> header) throws IOException {
+        return null;
+    }
+
     public InputStream executePostRequest(String url, String reqBody, String reqBodyChar, HashMap<String, String> header) throws IOException {
         if(url.equals("http://hmdk.de/csw/26items")){
             if(reqBody.contains("startPosition=\"1\"")){

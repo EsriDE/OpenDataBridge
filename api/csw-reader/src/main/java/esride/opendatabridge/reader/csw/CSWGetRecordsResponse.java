@@ -1,5 +1,7 @@
 package esride.opendatabridge.reader.csw;
 
+import esride.opendatabridge.reader.MetadataObject;
+import esride.opendatabridge.reader.request.CatalogResponseObj;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -30,41 +32,16 @@ public class CSWGetRecordsResponse {
     private XPath xPath;
     private DocumentBuilder builder;
 
-    private String numbOfRecordsReturnedXPath = "/GetRecordsResponse/SearchResults/@numberOfRecordsReturned";
-    private String numbOfRecordsMatchedXPath = "/GetRecordsResponse/SearchResults/@numberOfRecordsMatched";
+    //private String numbOfRecordsReturnedXPath = "/GetRecordsResponse/SearchResults/@numberOfRecordsReturned";
+    //private String numbOfRecordsMatchedXPath = "/GetRecordsResponse/SearchResults/@numberOfRecordsMatched";
     
-    private String metadataXPath = "/GetRecordsResponse/SearchResults/MD_Metadata";
-
-
-    //private String fileIdentifierXPath = "/MD_Metadata/fileIdentifier/CharacterString/text()";
+    //private String metadataXPath = "/GetRecordsResponse/SearchResults/MD_Metadata";
 
     Properties xpathValue;
-    //rivate String capabilitiesXPath = "";
 
-    //private String resourceTypeXPath = "/MD_Metadata/identificationInfo/SV_ServiceIdentification/serviceType/LocalName";
-    //private String resourceUrlXPath = "/MD_Metadata/identificationInfo/SV_ServiceIdentification/containsOperations[SV_OperationMetadata/operationName/CharacterString = 'GetCapabilities']/SV_OperationMetadata/connectPoint/CI_OnlineResource/linkage/URL/text()";
-
-
-    /*public void setXPathValues(HashMap<String, String> xPathMap){
-        if(xPathMap.containsKey("csw_response_xpath_numbOfRecordsReturnedXPath")){
-            numbOfRecordsReturnedXPath = xPathMap.get("csw_response_xpath_numbOfRecordsReturnedXPath");
-        }
-        if(xPathMap.containsKey("csw_response_xpath_numbOfRecordsMatchedXPath")){
-            numbOfRecordsMatchedXPath = xPathMap.get("csw_response_xpath_numbOfRecordsMatchedXPath");
-        }
-        if(xPathMap.containsKey("csw_response_xpath_metadataXPath")){
-            metadataXPath = xPathMap.get("csw_response_xpath_metadataXPath");
-        }
-        if(xPathMap.containsKey("csw.response.xpath.resourceTypeXPath")){
-            resourceTypeXPath = xPathMap.get("csw.response.xpath.resourceTypeXPath");
-        }
-        if(xPathMap.containsKey("csw_response_xpath_fileIdentifierXPath")){
-            fileIdentifierXPath = xPathMap.get("csw_response_xpath_fileIdentifierXPath");
-        }
-        if(xPathMap.containsKey("csw_response_xpath_wmsUrlXPath")){
-            wmsUrlXPath = xPathMap.get("csw_response_xpath_wmsUrlXPath");
-        }
-    } */
+    public void setXpathValue(Properties xpathValue) {
+        this.xpathValue = xpathValue;
+    }
 
     public CSWGetRecordsResponse() throws ParserConfigurationException, IOException {
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -80,10 +57,10 @@ public class CSWGetRecordsResponse {
         xPath = xPathFactory.newXPath();
     }
     
-    public CSWResponseObj createCSWResponse(Document responseDoc){
-        CSWResponseObj responseObj = new CSWResponseObj();
+    public CatalogResponseObj createCSWResponse(Document responseDoc){
+        CatalogResponseObj responseObj = new CatalogResponseObj();
         try {
-            NodeList documentList = (NodeList)xPath.evaluate(metadataXPath, responseDoc, XPathConstants.NODESET);
+            NodeList documentList = (NodeList)xPath.evaluate(xpathValue.getProperty("csw.reader.metadata.xpath"), responseDoc, XPathConstants.NODESET);
             int nodelListLength = documentList.getLength();
             if(nodelListLength != 0){
                 List<MetadataObject> metadataObjectList = new ArrayList<MetadataObject>(nodelListLength);
@@ -95,24 +72,24 @@ public class CSWGetRecordsResponse {
                     Document metaDocument = builder.newDocument();
                     Node importedNode = metaDocument.importNode(documentList.item(i), true);
                     metaDocument.appendChild(importedNode);
-                    object.setCswMetadataDoc(metaDocument);
+                    object.setMetadataDoc(metaDocument);
                     //get ResourceType (WMS, ...)
-                    String resourceTypeXPath = xpathValue.getProperty("resourcetype.xpath");
+                    String resourceTypeXPath = xpathValue.getProperty("csw.reader.resourcetype.xpath");
                     String resourceType = xPath.evaluate(resourceTypeXPath, metaDocument);
 
-                    String resourceUrl = xpathValue.getProperty(resourceType + ".resourceurl.xpath");
+                    String resourceUrl = xpathValue.getProperty("csw.reader." + resourceType + ".resourceurl.xpath");
                     //fileIdentifier
-                    object.setMetadataFileIdentifier(xPath.evaluate(xpathValue.getProperty("fileidentifier.xpath"), metaDocument));
+                    object.setMetadataFileIdentifier(xPath.evaluate(xpathValue.getProperty("csw.reader.fileidentifier.xpath"), metaDocument));
                     //resourceUrl
                     object.setResourceUrl(xPath.evaluate(resourceUrl, metaDocument));
                     //capabilitiesUrl
-                    String capabilitiesXPath = xpathValue.getProperty(resourceTypeXPath + ".capbilitiesurl.xpath");
+                    String capabilitiesXPath = xpathValue.getProperty("csw.reader." + resourceTypeXPath + ".capbilitiesurl.xpath");
                     if(capabilitiesXPath != null && capabilitiesXPath.trim().length() > 0){
                         object.setCapabilitiesUrl(xPath.evaluate(capabilitiesXPath, metaDocument));
                     }
 
                     //resourceType
-                    object.setMetadataResource(xPath.evaluate(resourceTypeXPath, metaDocument));
+                    object.setResourceType(xPath.evaluate(resourceTypeXPath, metaDocument));
 
                     metadataObjectList.add(object);
                 }
@@ -123,7 +100,7 @@ public class CSWGetRecordsResponse {
         }
 
         try {
-            String numbOfRecordsMatched = xPath.evaluate(numbOfRecordsMatchedXPath, responseDoc);
+            String numbOfRecordsMatched = xPath.evaluate(xpathValue.getProperty("csw.reader.numbOfRecordsMatched.xpath"), responseDoc);
             responseObj.setNumbOfRecordsMatchedInt(Integer.parseInt(numbOfRecordsMatched));
 
         } catch (XPathExpressionException e) {
@@ -131,7 +108,7 @@ public class CSWGetRecordsResponse {
         }
 
         try {
-            String numbOfRecordsReturned = xPath.evaluate(numbOfRecordsReturnedXPath, responseDoc);
+            String numbOfRecordsReturned = xPath.evaluate(xpathValue.getProperty("csw.reader.numbOfRecordsReturned.xpath"), responseDoc);
             responseObj.setNumbOfRecordsReturnedInt(Integer.parseInt(numbOfRecordsReturned));
 
         } catch (XPathExpressionException e) {

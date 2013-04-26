@@ -53,12 +53,28 @@ public class OGCCapabilitiesResource implements IResource{
         InputStream inputStream = null;
         try {
             inputStream = getRequest().executeGetRequest(lCheckedUrl, null);
-            return builder.parse(inputStream);
+            Document document = builder.parse(inputStream);
+            inputStream.close();
+            return document;
         } catch (IOException e) {
+            try {
+                if(inputStream != null){
+                    inputStream.close();
+                }
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
             throw new ResourceException("No Capabilities from Resource with the url : " + url + " is available", e);
         } catch (SAXException e) {
+            try {
+                if(inputStream != null){
+                    inputStream.close();
+                }
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
             throw new ResourceException("No Capabilities from Resource with the url : " + url + " is available", e);
-        }       
+        } 
     }
 
     private String checkAndAppendParameter(String url, String serviceType){        

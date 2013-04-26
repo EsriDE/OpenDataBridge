@@ -17,5 +17,7 @@ public interface IHTTPRequest {
 
     public InputStream executeGetRequest(String baseUrl, String requestParam, HashMap<String, String> header) throws IOException;
 
+    public InputStream executeGetRequest(String baseUrl, HashMap<String, String> requestParamMap, HashMap<String, String> header) throws IOException;
+
     public InputStream executePostRequest(String url, String reqBody, String reqBodyChar, HashMap<String, String> header) throws IOException ;
 }
