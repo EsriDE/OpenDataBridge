@@ -15,11 +15,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import org.apache.http.util.EntityUtils;
+import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 /**
@@ -47,6 +49,7 @@ public class AgolService implements IAgolService {
         _password = password;
         _referer = referer;
 
+        // Log Settings
         try {
             handler = new FileHandler(logPath, true);
         }
@@ -54,6 +57,7 @@ public class AgolService implements IAgolService {
             e.printStackTrace();
         }
         log.addHandler(handler);
+        Handler[] handlers = log.getHandlers();
     }
 
     // ToDo: examine usages => think it through. How about an expiration check??
@@ -128,7 +132,9 @@ public class AgolService implements IAgolService {
     }
 
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType) {
+        long startTime = System.currentTimeMillis();
         fillAgolItems(itemType, "public", 0);
+        log.info(agolItems.size() + " AgolItems created in " + (System.currentTimeMillis() - startTime) + " ms.");
         return agolItems;
     }
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType) {
@@ -146,6 +152,9 @@ public class AgolService implements IAgolService {
         System.out.println(_accountId);
 
         int agolItemsPaginationNextStart;
+        int totalItemsCount;
+        int retrievedItemsCount;
+        int duplicateUrlsCount = 0;
 
         HttpClient httpclient = new DefaultHttpClient();
 
@@ -177,10 +186,13 @@ public class AgolService implements IAgolService {
 
                 // General information
                 agolItemsPaginationNextStart = Integer.valueOf(rootNode.get("nextStart").toString());
+                totalItemsCount = Integer.valueOf(rootNode.get("total").toString());
+                retrievedItemsCount = Integer.valueOf(rootNode.get("num").toString());
 
                 // Results
                 JsonNode resultsNode = rootNode.get("results");
                 Iterator resultsIterator = resultsNode.elements();
+
                 while (resultsIterator.hasNext()) {
                     JsonNode result = (JsonNode) resultsIterator.next();
                     String strUrl = result.findValue("url").toString();
@@ -192,6 +204,7 @@ public class AgolService implements IAgolService {
                         ArrayList<AgolItem> agolItemArrayList = agolItems.get(strUrl);
                         agolItemArrayList.add(oneItem);
                         log.info("Duplicate entry in ArcGIS Online detected for URL " + strUrl);
+                        duplicateUrlsCount++;
                     }
                     else
                     {
@@ -200,6 +213,7 @@ public class AgolService implements IAgolService {
                         agolItems.put(strUrl, agolItemArrayList);
                     }
                 }
+                log.info(retrievedItemsCount + "/" + totalItemsCount + " retrieved. " + duplicateUrlsCount + " duplicate URLs found. " + agolItems.size() + " agolItems with different URLs found.");
 
                 // Recursive call: Items are limited to 100 - if more than that are available, call again
                 // ToDo: remove recursive call, use only 1 HttpClient

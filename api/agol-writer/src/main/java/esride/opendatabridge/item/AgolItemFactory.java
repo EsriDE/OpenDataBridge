@@ -1,9 +1,12 @@
 package esride.opendatabridge.item;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import sun.rmi.runtime.Log;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.*;
+import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 /**
@@ -17,9 +20,22 @@ public class AgolItemFactory {
 
     ObjectMapper objectMapper;
     private static final Logger log = Logger.getLogger(AgolItemFactory.class.getName());
+    FileHandler handler;
+    Boolean _propertiesToStrings;
 
-    public AgolItemFactory() {
+    public AgolItemFactory(String logPath, Boolean propertiesToStrings) {
+        _propertiesToStrings = propertiesToStrings;
         objectMapper = new ObjectMapper();
+
+        // Log Settings
+        try {
+            handler = new FileHandler(logPath, true);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        log.addHandler(handler);
+        log.setLevel(Log.BRIEF);
     }
 
     public AgolItem createAgolItem(String agolJsonItem)
@@ -44,6 +60,15 @@ public class AgolItemFactory {
         catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (_propertiesToStrings) {
+            agolItemProperties = allAgolItemPropertiesToString(agolItemProperties);
+        }
+
+        return agolItemProperties;
+    }
+
+    private HashMap allAgolItemPropertiesToString(HashMap agolItemProperties) {
         HashMap deleteAgolItemProperties = new HashMap();
         HashMap updateAgolItemProperties = new HashMap();
 
@@ -70,11 +95,13 @@ public class AgolItemFactory {
         while (findUpdatePropertiesIterator.hasNext()) {
             Map.Entry property = (Map.Entry) findUpdatePropertiesIterator.next();
             Object propertyValue = property.getValue();
-            Class propertyValueClass = propertyValue.getClass();
-            if (!propertyValueClass.equals(String.class)) {
-                String stringPropertyValue = propertyValue.toString().replaceAll("\\[", "").replaceAll("\\]", "");
-                updateAgolItemProperties.put(property.getKey(), stringPropertyValue);
-                log.info(propertyValueClass.toString() + " value of key \"" + property.getKey() + "\" transformed to String value \"" + stringPropertyValue + "\"");
+            if (propertyValue!=null) {
+                Class propertyValueClass = propertyValue.getClass();
+                if (!propertyValueClass.equals(String.class)) {
+                    String stringPropertyValue = propertyValue.toString().replaceAll("\\[", "").replaceAll("\\]", "");
+                    updateAgolItemProperties.put(property.getKey(), stringPropertyValue);
+                    log.info(propertyValueClass.toString() + " value of key \"" + property.getKey() + "\" transformed to String value \"" + stringPropertyValue + "\"");
+                }
             }
             iteCounter++;
         }
@@ -86,6 +113,7 @@ public class AgolItemFactory {
             iteCounter++;
         }
         log.info(iteCounter + " iterations performed in " + (System.currentTimeMillis()-startTime) + " ms.");
+
         return agolItemProperties;
     }
 

@@ -19,7 +19,10 @@
         <constructor-arg type="java.lang.String" value="${test.service.logpath}"/>
     </bean>
 
-    <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory" />
+    <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory">
+        <constructor-arg type="java.lang.String" value="${test.service.logpathFactory}"/>
+        <constructor-arg type="java.lang.Boolean" value="${test.service.propertiesToStrings}"/>
+    </bean>
 
     <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String" id="jsonMap">
         <entry key="test01" value="${test.service.jsonItem1}" />
