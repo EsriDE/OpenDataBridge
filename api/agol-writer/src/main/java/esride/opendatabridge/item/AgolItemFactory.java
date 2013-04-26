@@ -52,6 +52,7 @@ public class AgolItemFactory {
 
         Iterator removeNullItemsIterator = agolItemProperties.entrySet().iterator();
         int iteCounter = 0;
+        long startTime = System.currentTimeMillis();
         while (removeNullItemsIterator.hasNext()) {
             Map.Entry property = (Map.Entry) removeNullItemsIterator.next();
             Object propertyValue = property.getValue();
@@ -73,7 +74,7 @@ public class AgolItemFactory {
             }
             iteCounter++;
         }
-        log.info(iteCounter + " iterations performed.");
+        log.info(iteCounter + " iterations performed in " + (System.currentTimeMillis()-startTime) + " ms.");
         return agolItemProperties;
     }
 
