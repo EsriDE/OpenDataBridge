@@ -13,7 +13,9 @@ import java.util.Map;
  * Time: 15:20
  * To change this template use File | Settings | File Templates.
  */
-public interface IWriter {
+
+//ToDo: Umbenennen und vervollständigen
+public interface IAgolService {
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType);
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType);
     public void addItem(AgolItem agolItem);

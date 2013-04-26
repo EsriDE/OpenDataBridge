@@ -1,6 +1,12 @@
 package esride.opendatabridge.processing;
 
 import esride.opendatabridge.agolwriter.AgolService;
+import esride.opendatabridge.item.AgolItem;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -19,6 +25,7 @@ public class Transformer {
         String logpath = args[3];
 
         AgolService agolService = new AgolService(subscription, user, password, "http://www.esri.de", logpath);
+        Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems("WMS");
 
     }
 
@@ -43,9 +50,9 @@ public class Transformer {
 
     /*
     public Write Comparison Results to AGOL {
-        private addAGOLItems(List<AgolItem> addList);
-        private updateAGOLItems(List<AgolItem> updateList);
-        private deleteAGOLItems(List<AgolItem> deleteList);
+        private addAgolItems(List<AgolItem> addList);
+        private updateAgolItems(List<AgolItem> updateList);
+        private deleteAgolItems(List<AgolItem> deleteList);
      }
      */
 

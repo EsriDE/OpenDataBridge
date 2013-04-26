@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  * Date: 06.03.13
  * Time: 13:22
  */
-public class AgolService implements IWriter{
+public class AgolService implements IAgolService {
 
     private String _userName, _password,_referer, _baseUrl;
     private String _token, _accountId;

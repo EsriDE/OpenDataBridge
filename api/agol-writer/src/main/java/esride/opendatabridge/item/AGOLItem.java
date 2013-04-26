@@ -1,17 +1,6 @@
 package esride.opendatabridge.item;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import esride.opendatabridge.agolwriter.IWriter;
-
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.HashMap;
-
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,7 +10,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class AgolItem {
-    private HashMap _itemAttributes;
+    private HashMap<String,String> _itemAttributes;
 
     // Constructors
     public AgolItem(HashMap itemAttributes)
@@ -29,7 +18,7 @@ public class AgolItem {
         _itemAttributes = itemAttributes;
     }
 
-    public HashMap<String, Object> getAttributes()
+    public HashMap<String,String> getAttributes()
     {
         return _itemAttributes;
     }
