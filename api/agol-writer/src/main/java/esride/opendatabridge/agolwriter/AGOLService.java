@@ -15,13 +15,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import org.apache.http.util.EntityUtils;
-import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -33,13 +33,14 @@ public class AgolService implements IAgolService {
 
     private String _userName, _password,_referer, _baseUrl;
     private String _token, _accountId;
+    private Long _tokenExpires;
     private static final Logger log = Logger.getLogger(AgolService.class.getName());
-    private AgolItemFactory agolItemFactory;
+    private AgolItemFactory _agolItemFactory;
     FileHandler handler;
     private Map<String, ArrayList<AgolItem>> agolItems = new HashMap<String, ArrayList<AgolItem>>();
 
     public void setAgolItemFactory(AgolItemFactory agolItemFactory) {
-        this.agolItemFactory = agolItemFactory;
+        this._agolItemFactory = agolItemFactory;
     }
 
     public AgolService(String baseUrl, String userName, String password, String referer, String logPath)
@@ -60,8 +61,7 @@ public class AgolService implements IAgolService {
         Handler[] handlers = log.getHandlers();
     }
 
-    // ToDo: examine usages => think it through. How about an expiration check??
-    private String createToken() {
+    private void createToken() {
         HttpClient httpclient = new DefaultHttpClient();
 
         try {
@@ -87,7 +87,9 @@ public class AgolService implements IAgolService {
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode rootNode = objectMapper.readTree(entities);
                 JsonNode tokenNode = rootNode.get("token");
-                return tokenNode.asText();
+                _token = tokenNode.asText();
+                String tokenExpires = rootNode.get("expires").toString();
+                _tokenExpires = Long.valueOf(tokenExpires);
             }
         }
         catch (Exception e) {
@@ -96,13 +98,12 @@ public class AgolService implements IAgolService {
         finally {
             httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
         }
-        return null;
     }
 
-    private String getAccountId() {
+    private void fillSelfDetails() {
         String selfUrl = _baseUrl + "/sharing/accounts/self";
 
-        List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
+        List<NameValuePair> agolAttributes = getStandardAgolAttributes();
         agolAttributes.add(new BasicNameValuePair("culture", "de"));
 
         HttpClient httpclient = new DefaultHttpClient();
@@ -119,7 +120,7 @@ public class AgolService implements IAgolService {
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode rootNode = objectMapper.readTree(entities);
                 JsonNode idNode = rootNode.get("id");
-                return idNode.asText();
+                _accountId = idNode.asText();
             }
         }
         catch (Exception e) {
@@ -128,13 +129,12 @@ public class AgolService implements IAgolService {
         finally {
             httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
         }
-        return null;
     }
 
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType) {
         long startTime = System.currentTimeMillis();
         fillAgolItems(itemType, "public", 0);
-        log.info(agolItems.size() + " AgolItems created in " + (System.currentTimeMillis() - startTime) + " ms.");
+        log.info(agolItems.size() + " AgolItem objects created in " + (System.currentTimeMillis() - startTime) + " ms.");
         return agolItems;
     }
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType) {
@@ -146,11 +146,6 @@ public class AgolService implements IAgolService {
         return agolItems;
     }
     private void fillAgolItems(String itemType, String accessType, int startWithItemNumber) {
-        _token = createToken();
-        System.out.println(_token);
-        _accountId = getAccountId();
-        System.out.println(_accountId);
-
         int agolItemsPaginationNextStart;
         int totalItemsCount;
         int retrievedItemsCount;
@@ -163,10 +158,16 @@ public class AgolService implements IAgolService {
         try {
             HttpPost httppost = new HttpPost(searchUrl);
 
-            List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
+            List<NameValuePair> agolAttributes = getStandardAgolAttributes();
 
+            // get ALL public WMS items that are owned by logged-in user
+            String searchString =  "(owner:" + _userName + " AND " + "access:" + accessType + " AND "+ "type:\"" + itemType + "\")";
+
+            // get ALL public WMS items in the organization (accountId)
 //            String searchString =  "(accountid:" + _accountId + " AND " + "access:" + accessType + " AND "+ "type:\"" + itemType + "\")";
-            String searchString =  "(access:" + accessType + " AND "+ "type:\"" + itemType + "\")"; // get ALL public WMS items
+
+            // get ALL public WMS items
+//            String searchString =  "(access:" + accessType + " AND "+ "type:\"" + itemType + "\")";
 
             agolAttributes.add(new BasicNameValuePair("q", searchString));
             agolAttributes.add(new BasicNameValuePair("num", "100"));  // Maximum value: 100
@@ -187,7 +188,13 @@ public class AgolService implements IAgolService {
                 // General information
                 agolItemsPaginationNextStart = Integer.valueOf(rootNode.get("nextStart").toString());
                 totalItemsCount = Integer.valueOf(rootNode.get("total").toString());
-                retrievedItemsCount = Integer.valueOf(rootNode.get("num").toString());
+                if (agolItemsPaginationNextStart != -1) {
+                    retrievedItemsCount = agolItemsPaginationNextStart-1;
+                }
+                else
+                {
+                    retrievedItemsCount = Integer.valueOf(rootNode.get("total").toString());
+                }
 
                 // Results
                 JsonNode resultsNode = rootNode.get("results");
@@ -197,7 +204,7 @@ public class AgolService implements IAgolService {
                     JsonNode result = (JsonNode) resultsIterator.next();
                     String strUrl = result.findValue("url").toString();
 
-                    AgolItem oneItem = agolItemFactory.createAgolItem(result.toString()); // fromAgolJson
+                    AgolItem oneItem = _agolItemFactory.createAgolItem(result.toString()); // fromAgolJson
 
                     boolean contains = agolItems.containsKey(strUrl);
                     if(contains){
@@ -232,7 +239,9 @@ public class AgolService implements IAgolService {
 
     public void addItem(AgolItem agolItem) {
         String itemId = createItem(agolItem);
-        publishItem(itemId);
+        if (itemId!=null) {
+            publishItem(itemId);
+        }
     }
 
     public void updateItem(AgolItem agolItem) {
@@ -250,23 +259,8 @@ public class AgolService implements IAgolService {
         try {
             HttpPost httppost = new HttpPost(userContentUrl);
 
-            List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
-            for (String key : agolItem.getAttributes().keySet())
-            {
-                // ToDo: Move this to AgolItemFactory
-                String agolKey = key;
-                if (key.startsWith("agol."))
-                {
-                    agolKey = key.substring(5);
-                }
-
-                Object agolValue = agolItem.getAttributes().get(key);
-                if (agolValue==null)
-                {
-                    agolValue = "";
-                }
-                agolAttributes.add(new BasicNameValuePair(agolKey, agolValue.toString()));
-            }
+            List<NameValuePair> agolAttributes = getStandardAgolAttributes();
+            agolAttributes.addAll(_agolItemFactory.getAgolItemAttributesAsList(agolItem));
 
             httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
 
@@ -282,13 +276,15 @@ public class AgolService implements IAgolService {
                 JsonNode rootNode = objectMapper.readTree(entities);
 
                 String strRN = rootNode.toString();
-                if (rootNode.toString().equals("error"))
+                JsonNode errorNode = rootNode.get("error");
+                if (errorNode != null)
                 {
-                    JsonNode idNode = rootNode.get("id");
-                    System.out.println(idNode.asText());
-                    return idNode.asText();
+                    log.log(Level.SEVERE, "Error " + errorNode.get("code") + ". Create Item failed. " + errorNode.get("message"));
+                    return null;
                 }
-                return "error " + rootNode.get("code");
+                JsonNode idNode = rootNode.get("id");
+                System.out.println(idNode.asText());
+                return idNode.asText();
             }
         }
         catch (Exception e) {
@@ -307,7 +303,7 @@ public class AgolService implements IAgolService {
         try {
             HttpPost httppost = new HttpPost(userContentUrl);
 
-            List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
+            List<NameValuePair> agolAttributes = getStandardAgolAttributes();
 
             agolAttributes.add(new BasicNameValuePair("items", itemId));
             // TODO: Wofür braucht es dieses "account"
@@ -333,9 +329,18 @@ public class AgolService implements IAgolService {
         }
     }
 
-    private List<NameValuePair> getStandardAGOLAttributes() {
+    private List<NameValuePair> getStandardAgolAttributes() {
         List <NameValuePair> agolAttributes = new ArrayList<NameValuePair>();
         agolAttributes.add(new BasicNameValuePair("f", "json"));
+
+//        ToDo: Do we need this? Only gets accountId.
+//        fillSelfDetails();
+
+        if ((_token == null) || (System.currentTimeMillis() >= _tokenExpires))
+        {
+            log.info("Creating new token.");
+            createToken();
+        }
         agolAttributes.add(new BasicNameValuePair("token", _token));
         return agolAttributes;
     }

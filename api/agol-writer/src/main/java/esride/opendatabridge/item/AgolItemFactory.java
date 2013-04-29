@@ -1,6 +1,8 @@
 package esride.opendatabridge.item;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import sun.rmi.runtime.Log;
 
 import java.io.IOException;
@@ -40,7 +42,7 @@ public class AgolItemFactory {
 
     public AgolItem createAgolItem(String agolJsonItem)
     {
-        HashMap agolItemProperties = agolJsonToKeyValuePairs(agolJsonItem);
+        HashMap agolItemProperties = agolJsonToHashMap(agolJsonItem);
         AgolItem agolItem = new AgolItem(agolItemProperties);
         return agolItem;
     }
@@ -50,9 +52,7 @@ public class AgolItemFactory {
         return agolItem;
     }
 
-    private HashMap<String,String> agolJsonToKeyValuePairs(String agolJsonItem)
-    {
-        log.info("Transforming ArcGIS Online Json to <String,String>-Pairs.");
+    private HashMap<String,String> agolJsonToHashMap(String agolJsonItem) {
         HashMap agolItemProperties = new HashMap();
         try {
             agolItemProperties = objectMapper.readValue(agolJsonItem, HashMap.class);
@@ -72,7 +72,7 @@ public class AgolItemFactory {
         HashMap deleteAgolItemProperties = new HashMap();
         HashMap updateAgolItemProperties = new HashMap();
 
-        // Altering objects in a HashMap while iterating through it is dangerous - so we do everything in single loops.
+        // Altering objects in a HashMap while iterating through it leads to null pointer errors - so we do everything in single loops.
         Iterator findNullItemsIterator = agolItemProperties.entrySet().iterator();
         int iteCounter = 0;
         long startTime = System.currentTimeMillis();
@@ -117,8 +117,30 @@ public class AgolItemFactory {
         return agolItemProperties;
     }
 
-    public String agolItemToJson(AgolItem agolItem)
-    {
+    // ToDo: make static?
+    public List<NameValuePair> getAgolItemAttributesAsList(AgolItem agolItem) {
+        List <NameValuePair> agolAttributes = new ArrayList<NameValuePair>();
+        for (String key : agolItem.getAttributes().keySet())
+        {
+            String agolKey = key;
+            if (key.startsWith("agol."))
+            {
+                agolKey = key.substring(5);
+            }
+
+            Object agolValue = agolItem.getAttributes().get(key);
+            if (agolValue==null)
+            {
+                agolValue = "";
+            }
+            agolAttributes.add(new BasicNameValuePair(agolKey, agolValue.toString()));
+        }
+        return agolAttributes;
+    }
+
+    // ToDo: Should we take this out? This gives back the String/String properties as JSON.
+    // About agolItemToAgolJson: No Agol JSON is needed when writing to Agol, it's just the response format from Agol.
+    public String agolItemToJson(AgolItem agolItem) {
         ObjectMapper objectMapper = new ObjectMapper();
         StringWriter strWriter = new StringWriter();
         try {
