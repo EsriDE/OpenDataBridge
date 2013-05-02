@@ -94,7 +94,7 @@ public class CkanSearchResponse {
                         String fileIdentifier = xPath.evaluate(xpathValue.getProperty("fileidentifier.xpath"), metaDocument) + "-" + resourceTypeList.get(k);
                         object.setMetadataFileIdentifier(fileIdentifier);
 
-                        if(resourceTypeList.get(k).equals("WMS")){
+                        if(resourceTypeList.get(k).equals("WMS") || resourceTypeList.get(k).equals("KML")){
                             object.setCapabilitiesUrl(resourceUrl);
                         }
                         
