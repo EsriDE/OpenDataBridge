@@ -11,16 +11,16 @@
 
     <context:property-placeholder location="classpath:IntegrationTest.properties"/>
 
-    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:agolItemFactory-ref="agolitemfactory">
+    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:agolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest">
         <constructor-arg type="java.lang.String" value="${test.service.url}"/>
         <constructor-arg type="java.lang.String" value="${test.service.username}"/>
         <constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
         <constructor-arg type="java.lang.String" value="${test.service.referer}"/>
-        <constructor-arg type="java.lang.String" value="${test.service.logpath}"/>
     </bean>
 
+    <bean class="esride.opendatabridge.httptransport.HTTPRequest" id="httpRequest" />
+
     <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory">
-        <constructor-arg type="java.lang.String" value="${test.service.logpathFactory}"/>
         <constructor-arg type="java.lang.Boolean" value="${test.service.propertiesToStrings}"/>
     </bean>
 

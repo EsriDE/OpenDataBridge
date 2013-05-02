@@ -13,7 +13,7 @@ public class AgolItem {
     private HashMap<String,String> _itemAttributes;
 
     // Constructors
-    public AgolItem(HashMap itemAttributes)
+    public AgolItem(HashMap<String,String> itemAttributes)
     {
         _itemAttributes = itemAttributes;
     }
@@ -21,6 +21,10 @@ public class AgolItem {
     public HashMap<String,String> getAttributes()
     {
         return _itemAttributes;
+    }
+
+    public String getUrl() {
+        return _itemAttributes.get("url");
     }
 }
 

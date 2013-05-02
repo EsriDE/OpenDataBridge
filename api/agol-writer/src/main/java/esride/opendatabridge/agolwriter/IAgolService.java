@@ -2,6 +2,7 @@ package esride.opendatabridge.agolwriter;
 
 import esride.opendatabridge.item.AgolItem;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -16,9 +17,9 @@ import java.util.Map;
 
 //ToDo: Umbenennen und vervollständigen
 public interface IAgolService {
-    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType);
-    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType);
-    public void addItem(AgolItem agolItem) throws AgolItemTransactionFailedException;
+    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType) throws IOException;
+    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType) throws IOException;
+    public void addItem(AgolItem agolItem) throws AgolItemTransactionFailedException, IOException;
     public void updateItem(AgolItem agolItem);
     public void deleteItem(AgolItem agolItem);
 }

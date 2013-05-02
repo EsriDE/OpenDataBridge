@@ -1,11 +1,7 @@
 package esride.opendatabridge.item;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
-
-import java.io.StringWriter;
 import java.util.*;
 
 /**
@@ -21,7 +17,7 @@ public class AgolItemFactory {
     private static final Logger log = Logger.getLogger(AgolItemFactory.class.getName());
     Boolean _propertiesToStrings;
 
-    public AgolItemFactory(String logPath, Boolean propertiesToStrings) {
+    public AgolItemFactory(Boolean propertiesToStrings) {
         _propertiesToStrings = propertiesToStrings;
         objectMapper = new ObjectMapper();
     }
@@ -107,25 +103,5 @@ public class AgolItemFactory {
         }
 
         return agolItemProperties;
-    }
-
-    public List<NameValuePair> getAgolItemAttributesAsList(AgolItem agolItem) {
-        List <NameValuePair> agolAttributes = new ArrayList<NameValuePair>();
-        for (String key : agolItem.getAttributes().keySet())
-        {
-            String agolKey = key;
-            if (key.startsWith("agol."))
-            {
-                agolKey = key.substring(5);
-            }
-
-            Object agolValue = agolItem.getAttributes().get(key);
-            if (agolValue==null)
-            {
-                agolValue = "";
-            }
-            agolAttributes.add(new BasicNameValuePair(agolKey, agolValue.toString()));
-        }
-        return agolAttributes;
     }
 }

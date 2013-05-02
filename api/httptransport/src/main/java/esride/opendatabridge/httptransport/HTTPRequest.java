@@ -3,8 +3,10 @@ package esride.opendatabridge.httptransport;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 
@@ -12,14 +14,13 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.SystemDefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -122,6 +123,32 @@ public class HTTPRequest implements IHTTPRequest{
         }
     }
 
+    public InputStream executePostRequest(String url, HashMap<String, String> content, HashMap<String, String> header) throws IOException {
+        if(sLogger.isInfoEnabled()){
+            sLogger.info("HTTP POST Request: " + url);
+        }
+        HttpPost postRequest = new HttpPost(url);
+        if(header != null){
+            postRequest.setHeaders(generateHeader(header));
+        }
+
+        UrlEncodedFormEntity contentEntity = contentMapToUrlEncodedFormEntity(content);
+        postRequest.setEntity(contentEntity);
+
+        HttpResponse response = client.execute(postRequest);
+        int statusCode = response.getStatusLine().getStatusCode();
+        if(sLogger.isInfoEnabled()){
+            sLogger.info("Status Code: " + statusCode);
+        }
+
+        HttpEntity respEntity = response.getEntity();
+        if(respEntity != null){
+            return respEntity.getContent();
+        } else{
+            throw new HttpResponseException(statusCode, "Response is null");
+        }
+    }
+
     public InputStream executePostRequest(String url, String reqBody, String reqBodyChar, HashMap<String, String> header) throws IOException {
         if(sLogger.isInfoEnabled()){
             sLogger.info("HTTP POST Request: " + url);
@@ -146,7 +173,26 @@ public class HTTPRequest implements IHTTPRequest{
             throw new HttpResponseException(statusCode, "Response is null");
         }
     }
-    
+
+    /**
+     * Transform HashMap of Strings to UrlEncodedFormEntity
+     * @param content
+     * @return content as UrlEncodedFormEntity
+     * @throws UnsupportedEncodingException
+     */
+    private UrlEncodedFormEntity contentMapToUrlEncodedFormEntity(HashMap<String, String> content) throws UnsupportedEncodingException {
+        List<NameValuePair> contentList = new ArrayList<NameValuePair>();
+        Iterator iter = content.entrySet().iterator();
+        while(iter.hasNext()){
+            Map.Entry property = (Map.Entry) iter.next();
+            String propertyKey = property.getKey().toString();
+            String propertyValue = property.getValue().toString();
+            contentList.add(new BasicNameValuePair(propertyKey, propertyValue));
+        }
+        UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(contentList);
+        return urlEncodedFormEntity;
+    }
+
     private Header[] generateHeader(HashMap<String, String> header){
         Header[] headerArray = new Header[header.size()];
         Set<String> headerKeySet = header.keySet();

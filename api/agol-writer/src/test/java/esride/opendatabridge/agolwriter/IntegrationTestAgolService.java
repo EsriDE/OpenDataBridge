@@ -2,12 +2,14 @@ package esride.opendatabridge.agolwriter;
 
 import esride.opendatabridge.item.AgolItem;
 import esride.opendatabridge.item.AgolItemFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +33,12 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
 
     @Test
     public void testGetAllItems() {
-        Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems("WMS");
+        try {
+            Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems("WMS");
+            Assert.assertNotNull("List of Agol items is empty.", agolItems);
+        } catch (IOException e) {
+            Assert.fail(e.getMessage());
+        }
     }
 
     @Test
@@ -40,7 +47,9 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
         try {
             agolService.addItem(agolItemFactory.createAgolItem(jsonMap.get("test01")));
         } catch (AgolItemTransactionFailedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            Assert.fail(e.getMessage());
+        } catch (IOException e) {
+            Assert.fail(e.getMessage());
         }
     }
 }
