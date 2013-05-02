@@ -12,6 +12,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.SystemDefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 
+import org.apache.http.params.CoreConnectionPNames;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -35,6 +36,8 @@ public class HTTPRequest implements IHTTPRequest{
 
     public HTTPRequest() {
         client = new SystemDefaultHttpClient();
+        client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 20000);
+        client.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 5000);
     }
 
     /**
@@ -45,14 +48,15 @@ public class HTTPRequest implements IHTTPRequest{
      * @throws IOException  if request fails or response answers with an error code
      */
     public InputStream executeGetRequest(String url, HashMap<String, String> header) throws IOException {
-        if(sLogger.isInfoEnabled()){
-            sLogger.info("HTTP GET Request: " + url);
-        }
+
         HttpGet getRequest = new HttpGet(url);
         if(header != null){
             getRequest.setHeaders(generateHeader(header));
         }
 
+        if(sLogger.isInfoEnabled()){
+            sLogger.info("HTTP GET Request: " + url);
+        }
         HttpResponse response = client.execute(getRequest);
 
         int statusCode = response.getStatusLine().getStatusCode();
@@ -76,9 +80,7 @@ public class HTTPRequest implements IHTTPRequest{
     }
     
     public InputStream executeGetRequest(String baseUrl, HashMap<String, String> requestParamMap, HashMap<String, String> header) throws IOException {
-        if(sLogger.isInfoEnabled()){
-            sLogger.info("HTTP GET Request: " + baseUrl);
-        }
+
 
         StringBuilder paramBuffer = new StringBuilder();
         paramBuffer.append(baseUrl);
@@ -97,7 +99,10 @@ public class HTTPRequest implements IHTTPRequest{
             }
 
         }
-        
+
+        if(sLogger.isInfoEnabled()){
+            sLogger.info("HTTP GET Request: " + paramBuffer.toString());
+        }
         HttpGet getRequest = new HttpGet(paramBuffer.toString());
         
         

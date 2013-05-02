@@ -53,7 +53,7 @@ public class UnitTestAgolJsonTransformer extends AbstractJUnit4SpringContextTest
 
             MetadataSet container1 = new MetadataSet();
             //container1.setEncodingType("xml");
-            container1.setMetadataType("capabilities");
+            container1.setMetadataType("ogc");
             try {
                 Document doc = builder.parse(capabilitiesStream);
                 container1.setXmlDoc(doc);

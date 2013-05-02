@@ -43,6 +43,8 @@ public class CkanReader implements IReader, IReaderFactory {
 
     private HashMap<String, IResource> resourceMap;
 
+    private HashMap<String, String> capabilitiesMapper;
+
     public void setAgolItemTransformer(IItemTransformer agolItemTransformer) {
         this.agolItemTransformer = agolItemTransformer;
     }
@@ -65,6 +67,10 @@ public class CkanReader implements IReader, IReaderFactory {
 
     public void setProcessId(String processId) {
         this.processId = processId;
+    }
+
+    public void setCapabilitiesMapper(HashMap<String, String> capabilitiesMapper) {
+        this.capabilitiesMapper = capabilitiesMapper;
     }
 
     public List<TransformedItem> getItemsFromCatalog() throws ReaderException {
@@ -110,6 +116,7 @@ public class CkanReader implements IReader, IReaderFactory {
             if(resource != null){
                 try {
                     object.setCapabilitiesDoc(resource.getRecourceMetadata(object.getResourceUrl(), object.getResourceType()));
+                    object.setCapabilitiesType(capabilitiesMapper.get(object.getResourceType().toLowerCase()));
                 } catch (ResourceException e) {
                     sLogger.error("The Resource (" + object.getResourceUrl() + ") is not available. " +
                             "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
@@ -138,7 +145,7 @@ public class CkanReader implements IReader, IReaderFactory {
             if(metadataObjectList.get(i).getCapabilitiesDoc() != null){
                 MetadataSet capabilitiesSet = new MetadataSet();
                 capabilitiesSet.setXmlDoc(metadataObjectList.get(i).getCapabilitiesDoc());
-                capabilitiesSet.setMetadataType("capabilities");
+                capabilitiesSet.setMetadataType(metadataObjectList.get(i).getCapabilitiesType());
                 setList.add(capabilitiesSet);
             }
             resource.setContainer(setList);

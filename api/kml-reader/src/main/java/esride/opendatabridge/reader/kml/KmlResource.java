@@ -67,13 +67,21 @@ public class KmlResource implements IResource{
         HashMap<String, String> paramMap = new HashMap<String, String>();
         paramMap.put("url", url);
         paramMap.put("outSR", outSR);
-
+        InputStream stream = null;
         try {
-            InputStream stream = httpRequest.executeGetRequest(utilityServiceUrl, paramMap, null);
+            stream = httpRequest.executeGetRequest(utilityServiceUrl, paramMap, null);
             return this.createDocumentFromJsonInputStream(stream);
             //create document from JSON 
         } catch (IOException e) {
             throw new ResourceException("No KML document from Resource with the url : " + url + " is available", e);
+        } finally {
+            try {
+                if(stream != null){
+                    stream.close();
+                }
+            } catch (IOException e) {
+                sLogger.error("Cannot close stream", e);
+            }
         }
 
     }
