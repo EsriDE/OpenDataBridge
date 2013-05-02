@@ -71,4 +71,28 @@ public class IntegrationTestCkanReader extends AbstractJUnit4SpringContextTests 
             Assert.fail(e.getMessage());
         }
     }
+
+
+    @Test
+    public void testGetSpecialItemsFromCatalog(){
+        HashMap<String, String> processProperties = new HashMap<String, String>();
+        processProperties.put("ckan.url", "http://www.govdata.de/ckan/api/search/dataset");
+        //processProperties.put("ckan_request_search_param_q", "geo.sv.rostock.de");
+        processProperties.put("ckan_request_search_param_q", "de-hh-inspire-gemarkungsgrenze");
+        processProperties.put("ckan_request_search_param_all_fields", "1");
+        processProperties.put("ckan_request_search_param_offset", "0");
+        processProperties.put("ckan_request_search_param_limit", "20");
+
+        try {
+            ckanReader.setProperties(processProperties, "Test001");
+        } catch (ReaderException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            List<TransformedItem> list = ckanReader.getItemsFromCatalog();
+        } catch (ReaderException e) {
+            Assert.fail(e.getMessage());
+        }
+    }
 }
