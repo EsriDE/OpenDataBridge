@@ -37,6 +37,10 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     @Test
     public void testAddItem(){
         // ToDo: How to generate a UID for the test data (id and item) and use a real username in the unit tests?
-        agolService.addItem(agolItemFactory.createAgolItem(jsonMap.get("test01")));
+        try {
+            agolService.addItem(agolItemFactory.createAgolItem(jsonMap.get("test01")));
+        } catch (AgolItemTransactionFailedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 }

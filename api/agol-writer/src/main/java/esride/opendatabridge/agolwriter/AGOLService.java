@@ -17,7 +17,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -28,8 +27,8 @@ import java.util.*;
  */
 public class AgolService implements IAgolService {
 
-    private String _userName, _password,_referer, _baseUrl;
-    private String _token, _accountId;
+    private String _userName, _password,_referer, _token;
+    private String _baseUrl, _userContentUrl;
     private Long _tokenExpires;
     private static final Logger log = Logger.getLogger(AgolService.class);
     private AgolItemFactory _agolItemFactory;
@@ -45,6 +44,8 @@ public class AgolService implements IAgolService {
         _userName = userName;
         _password = password;
         _referer = referer;
+
+        _userContentUrl = _baseUrl + "/sharing/content/users/" + _userName;
     }
 
     private void createToken() {
@@ -206,19 +207,20 @@ public class AgolService implements IAgolService {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    // ToDo: function addItems() for batch adding => saves http calls when able to call publishItems only once
     public void addItem(AgolItem agolItem) throws AgolItemTransactionFailedException {
         String itemId = createItem(agolItem);
         if (itemId!=null) {
-            publishItem(itemId);
+            shareItems(itemId);
         }
     }
 
     private String createItem(AgolItem agolItem) throws AgolItemTransactionFailedException {
         HttpClient httpclient = new DefaultHttpClient();
-        String userContentUrl = _baseUrl + "/sharing/content/users/" + _userName +"/addItem";
+        String addItemUrl = _userContentUrl + "/addItem";
 
         try {
-            HttpPost httppost = new HttpPost(userContentUrl);
+            HttpPost httppost = new HttpPost(addItemUrl);
 
             List<NameValuePair> agolAttributes = getStandardAgolAttributes();
             agolAttributes.addAll(_agolItemFactory.getAgolItemAttributesAsList(agolItem));
@@ -254,18 +256,20 @@ public class AgolService implements IAgolService {
         return null;
     }
 
-    private void publishItem(String itemId) {
+    /**
+     * Share Items
+     * @param itemIds: Comma-separated string of items that shall be shared publically.
+     */
+    private void shareItems(String itemIds) {
         HttpClient httpclient = new DefaultHttpClient();
-        String userContentUrl = _baseUrl + "/sharing/content/users/" + _userName +"/shareItems";
+        String publishItemUrl = _userContentUrl + "/shareItems";
 
         try {
-            HttpPost httppost = new HttpPost(userContentUrl);
+            HttpPost httppost = new HttpPost(publishItemUrl);
 
             List<NameValuePair> agolAttributes = getStandardAgolAttributes();
 
-            agolAttributes.add(new BasicNameValuePair("items", itemId));
-            // TODO: Wofür braucht es dieses "account"
-            agolAttributes.add(new BasicNameValuePair("account", "false"));
+            agolAttributes.add(new BasicNameValuePair("items", itemIds));
             agolAttributes.add(new BasicNameValuePair("everyone", "true"));
 
             httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
