@@ -114,11 +114,13 @@ public class CSWReader implements IReader, IReaderFactory {
             }
 
         }
-        
-        //Besonderheit, nun werden die WMS Capabilities herausgeholt
-        
 
-        List<Integer> failureList = new ArrayList<Integer>();
+        if(sLogger.isDebugEnabled()){
+            sLogger.debug("Number of objects: "  + metadataObjectList.size());
+        }
+
+
+        List<MetadataObject> failureList = new ArrayList<MetadataObject>();
         for(int i=0; i<metadataObjectList.size(); i++){
             MetadataObject object = metadataObjectList.get(i);
             IResource resource = resourceMap.get(object.getResourceType().toLowerCase());
@@ -129,17 +131,20 @@ public class CSWReader implements IReader, IReaderFactory {
                 } catch (ResourceException e) {
                     sLogger.error("The Resource (" + object.getResourceUrl() + ") is not available. " +
                             "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
-                    failureList.add(i);
+                    failureList.add(object);
                 }
             }
 
 
         }
+        if(sLogger.isDebugEnabled()){
+            sLogger.debug("Number of failure objects: "  + failureList.size());
+        }
         if(failureList.size() > 0){
-            for(int k=0; k<failureList.size(); k++){
-                metadataObjectList.remove(failureList.get(k).intValue());
-            }
-
+            metadataObjectList.removeAll(failureList);
+        }
+        if(sLogger.isDebugEnabled()){
+            sLogger.debug("Number of cleaned objects: "  + metadataObjectList.size());
         }
 
 
