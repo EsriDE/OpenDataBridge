@@ -18,7 +18,7 @@ import java.util.Map;
 public interface IAgolService {
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType);
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType);
-    public void addItem(AgolItem agolItem);
+    public void addItem(AgolItem agolItem) throws AgolItemTransactionFailedException;
     public void updateItem(AgolItem agolItem);
     public void deleteItem(AgolItem agolItem);
 }

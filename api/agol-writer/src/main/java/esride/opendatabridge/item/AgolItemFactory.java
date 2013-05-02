@@ -3,13 +3,10 @@ package esride.opendatabridge.item;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import sun.rmi.runtime.Log;
+import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.util.*;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,22 +19,11 @@ public class AgolItemFactory {
 
     ObjectMapper objectMapper;
     private static final Logger log = Logger.getLogger(AgolItemFactory.class.getName());
-    FileHandler handler;
     Boolean _propertiesToStrings;
 
     public AgolItemFactory(String logPath, Boolean propertiesToStrings) {
         _propertiesToStrings = propertiesToStrings;
         objectMapper = new ObjectMapper();
-
-        // Log Settings
-        try {
-            handler = new FileHandler(logPath, true);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        log.addHandler(handler);
-        log.setLevel(Log.BRIEF);
     }
 
     public AgolItem createAgolItem(String agolJsonItem)
@@ -88,7 +74,9 @@ public class AgolItemFactory {
         while (removeNullItemsIterator.hasNext()) {
             Map.Entry property = (Map.Entry) removeNullItemsIterator.next();
             agolItemProperties.remove(property.getKey());
-            log.info("Entry \"" + property.getKey() + "\" with null value removed.");
+            if (log.isInfoEnabled()) {
+                log.info("Entry \"" + property.getKey() + "\" with null value removed.");
+            }
             iteCounter++;
         }
         Iterator findUpdatePropertiesIterator = agolItemProperties.entrySet().iterator();
@@ -100,7 +88,9 @@ public class AgolItemFactory {
                 if (!propertyValueClass.equals(String.class)) {
                     String stringPropertyValue = propertyValue.toString().replaceAll("\\[", "").replaceAll("\\]", "");
                     updateAgolItemProperties.put(property.getKey(), stringPropertyValue);
-                    log.info(propertyValueClass.toString() + " value of key \"" + property.getKey() + "\" transformed to String value \"" + stringPropertyValue + "\"");
+                    if (log.isInfoEnabled()) {
+                        log.info(propertyValueClass.toString() + " value of key \"" + property.getKey() + "\" transformed to String value \"" + stringPropertyValue + "\"");
+                    }
                 }
             }
             iteCounter++;
@@ -112,12 +102,13 @@ public class AgolItemFactory {
             agolItemProperties.put(updateProperty.getKey(), updateProperty.getValue());
             iteCounter++;
         }
-        log.info(iteCounter + " iterations performed in " + (System.currentTimeMillis()-startTime) + " ms.");
+        if (log.isInfoEnabled()) {
+            log.info(iteCounter + " iterations performed in " + (System.currentTimeMillis()-startTime) + " ms.");
+        }
 
         return agolItemProperties;
     }
 
-    // ToDo: make static?
     public List<NameValuePair> getAgolItemAttributesAsList(AgolItem agolItem) {
         List <NameValuePair> agolAttributes = new ArrayList<NameValuePair>();
         for (String key : agolItem.getAttributes().keySet())
@@ -136,19 +127,5 @@ public class AgolItemFactory {
             agolAttributes.add(new BasicNameValuePair(agolKey, agolValue.toString()));
         }
         return agolAttributes;
-    }
-
-    // ToDo: Should we take this out? This gives back the String/String properties as JSON.
-    // About agolItemToAgolJson: No Agol JSON is needed when writing to Agol, it's just the response format from Agol.
-    public String agolItemToJson(AgolItem agolItem) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        StringWriter strWriter = new StringWriter();
-        try {
-            objectMapper.writeValue(strWriter, agolItem.getAttributes());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return strWriter.toString();
     }
 }

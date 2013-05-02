@@ -15,14 +15,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * User: gvs
@@ -34,9 +31,8 @@ public class AgolService implements IAgolService {
     private String _userName, _password,_referer, _baseUrl;
     private String _token, _accountId;
     private Long _tokenExpires;
-    private static final Logger log = Logger.getLogger(AgolService.class.getName());
+    private static final Logger log = Logger.getLogger(AgolService.class);
     private AgolItemFactory _agolItemFactory;
-    FileHandler handler;
     private Map<String, ArrayList<AgolItem>> agolItems = new HashMap<String, ArrayList<AgolItem>>();
 
     public void setAgolItemFactory(AgolItemFactory agolItemFactory) {
@@ -49,16 +45,6 @@ public class AgolService implements IAgolService {
         _userName = userName;
         _password = password;
         _referer = referer;
-
-        // Log Settings
-        try {
-            handler = new FileHandler(logPath, true);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        log.addHandler(handler);
-        Handler[] handlers = log.getHandlers();
     }
 
     private void createToken() {
@@ -100,41 +86,12 @@ public class AgolService implements IAgolService {
         }
     }
 
-    private void fillSelfDetails() {
-        String selfUrl = _baseUrl + "/sharing/accounts/self";
-
-        List<NameValuePair> agolAttributes = getStandardAgolAttributes();
-        agolAttributes.add(new BasicNameValuePair("culture", "de"));
-
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(selfUrl);
-        try {
-            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
-
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
-
-            if (entity != null)
-            {
-                String entities = EntityUtils.toString(entity);
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(entities);
-                JsonNode idNode = rootNode.get("id");
-                _accountId = idNode.asText();
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
-        }
-    }
-
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType) {
         long startTime = System.currentTimeMillis();
         fillAgolItems(itemType, "public", 0);
-        log.info(agolItems.size() + " AgolItem objects created in " + (System.currentTimeMillis() - startTime) + " ms.");
+        if (log.isInfoEnabled()) {
+            log.info(agolItems.size() + " AgolItem objects created in " + (System.currentTimeMillis() - startTime) + " ms.");
+        }
         return agolItems;
     }
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType) {
@@ -210,7 +167,9 @@ public class AgolService implements IAgolService {
                     if(contains){
                         ArrayList<AgolItem> agolItemArrayList = agolItems.get(strUrl);
                         agolItemArrayList.add(oneItem);
-                        log.info("Duplicate entry in ArcGIS Online detected for URL " + strUrl);
+                        if (log.isInfoEnabled()) {
+                            log.info("Duplicate entry in ArcGIS Online detected for URL " + strUrl);
+                        }
                         duplicateUrlsCount++;
                     }
                     else
@@ -220,7 +179,9 @@ public class AgolService implements IAgolService {
                         agolItems.put(strUrl, agolItemArrayList);
                     }
                 }
-                log.info(retrievedItemsCount + "/" + totalItemsCount + " retrieved. " + duplicateUrlsCount + " duplicate URLs found. " + agolItems.size() + " agolItems with different URLs found.");
+                if (log.isInfoEnabled()) {
+                    log.info(retrievedItemsCount + "/" + totalItemsCount + " retrieved. " + duplicateUrlsCount + " duplicate URLs found. " + agolItems.size() + " agolItems with different URLs found.");
+                }
 
                 // Recursive call: Items are limited to 100 - if more than that are available, call again
                 // ToDo: remove recursive call, use only 1 HttpClient
@@ -237,13 +198,6 @@ public class AgolService implements IAgolService {
         }
     }
 
-    public void addItem(AgolItem agolItem) {
-        String itemId = createItem(agolItem);
-        if (itemId!=null) {
-            publishItem(itemId);
-        }
-    }
-
     public void updateItem(AgolItem agolItem) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -252,7 +206,14 @@ public class AgolService implements IAgolService {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private String createItem(AgolItem agolItem) {
+    public void addItem(AgolItem agolItem) throws AgolItemTransactionFailedException {
+        String itemId = createItem(agolItem);
+        if (itemId!=null) {
+            publishItem(itemId);
+        }
+    }
+
+    private String createItem(AgolItem agolItem) throws AgolItemTransactionFailedException {
         HttpClient httpclient = new DefaultHttpClient();
         String userContentUrl = _baseUrl + "/sharing/content/users/" + _userName +"/addItem";
 
@@ -275,15 +236,12 @@ public class AgolService implements IAgolService {
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode rootNode = objectMapper.readTree(entities);
 
-                String strRN = rootNode.toString();
                 JsonNode errorNode = rootNode.get("error");
                 if (errorNode != null)
                 {
-                    log.log(Level.SEVERE, "Error " + errorNode.get("code") + ". Create Item failed. " + errorNode.get("message"));
-                    return null;
+                    throw new AgolItemTransactionFailedException("Create Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
                 }
                 JsonNode idNode = rootNode.get("id");
-                System.out.println(idNode.asText());
                 return idNode.asText();
             }
         }
@@ -333,12 +291,11 @@ public class AgolService implements IAgolService {
         List <NameValuePair> agolAttributes = new ArrayList<NameValuePair>();
         agolAttributes.add(new BasicNameValuePair("f", "json"));
 
-//        ToDo: Do we need this? Only gets accountId.
-//        fillSelfDetails();
-
         if ((_token == null) || (System.currentTimeMillis() >= _tokenExpires))
         {
-            log.info("Creating new token.");
+            if (log.isInfoEnabled()) {
+                log.info("Creating new token.");
+            }
             createToken();
         }
         agolAttributes.add(new BasicNameValuePair("token", _token));
