@@ -27,9 +27,14 @@ public class MetadataObject {
     private String resourceUrl;
 
     /**
-     * the URL for the resource capabilities (WMS)
+     * the URL for the resource capabilities
      */
     private String capabilitiesUrl;
+
+    /**
+     * the type of the capabilities (wms, kml, etc...)
+     */
+    private String capabilitiesType;
 
     /**
      * the metadata document
@@ -79,6 +84,14 @@ public class MetadataObject {
 
     public void setCapabilitiesDoc(Document capabilitiesDoc) {
         this.capabilitiesDoc = capabilitiesDoc;
+    }
+
+    public String getCapabilitiesType() {
+        return capabilitiesType;
+    }
+
+    public void setCapabilitiesType(String capabilitiesType) {
+        this.capabilitiesType = capabilitiesType;
     }
 
     public String getResourceType() {
