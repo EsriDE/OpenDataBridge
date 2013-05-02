@@ -11,8 +11,15 @@
 
     <bean class="esride.opendatabridge.reader.ckan.CkanReader" id="reader"  scope="prototype"
           p:searchRequest-ref="searchRequest"
+          p:capabilitiesMapper-ref="capabilitiesMap"
           p:resourceMap-ref="resourceMap"
           p:agolItemTransformer-ref="itemTransform"/>
+
+    <util:map id="capabilitiesMap" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="view" value="ogc"/>
+        <entry key="wms" value="ogc"/>
+        <entry key="kml" value="kml"/>
+    </util:map>
 
     <util:map id="resourceMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IResource">
         <entry key="wms" value-ref="capabilitiesRequest"/>
@@ -36,7 +43,7 @@
     
     <bean class="esride.opendatabridge.reader.kml.KmlResource" id="kmlRequest"
           p:httpRequest-ref="httpRequest"
-          p:outSR="{&quot;wkid&quot;:4326}"
+          p:outSR="%7B%22wkid%22:4326%7D"
           p:utilityServiceUrl="http://utility.arcgis.com/sharing/kml"/>
 
     <bean class="esride.opendatabridge.reader.ckan.CkanSearchResponse" id="searchResponse"
