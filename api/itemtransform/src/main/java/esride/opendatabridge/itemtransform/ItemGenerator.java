@@ -37,9 +37,9 @@ public class ItemGenerator {
         xPath = xPathFactory.newXPath();
     }
 
-    public HashMap getItemElementsFromDoc(HashMap<String, Document> xmlDoc, String processId, String targetResource) throws ItemGenerationException {
+    public HashMap<String, String> getItemElementsFromDoc(HashMap<String, Document> xmlDoc, String processId, String targetResource) throws ItemGenerationException {
     //public HashMap getItemElementsFromDoc(Document xmlDoc) throws ItemGenerationException{
-        HashMap itemMap = new HashMap();
+        HashMap<String, String> itemMap = new HashMap<String, String>();
         Properties properties = generatorConfiguration.getItemGeneratorConfiguration(processId, targetResource);
 
         String countString = (String)properties.get("item.count");
@@ -51,7 +51,11 @@ public class ItemGenerator {
             String itemType = properties.getProperty("item[" + i + "].value.type");
             if(itemType.equals("string")){
                 try {
-                    itemMap.put(itemKey, (String)xPath.evaluate(properties.getProperty("item[" + i + "].md.value"), xmlDoc.get(itemMetadataType), XPathConstants.STRING));
+                    if(xmlDoc.containsKey(itemMetadataType)){
+                        itemMap.put(itemKey, (String)xPath.evaluate(properties.getProperty("item[" + i + "].md.value"), xmlDoc.get(itemMetadataType), XPathConstants.STRING));
+                    }else{
+                        sLogger.warn("No document found for: " + itemMetadataType);
+                    }
                 } catch (XPathExpressionException e) {
                     String lMessage = "Cannot evaluate xpath as a string: " + properties.getProperty("item[" + i + "].md.value");
                     sLogger.error(lMessage);
@@ -61,16 +65,21 @@ public class ItemGenerator {
                 itemMap.put(itemKey, properties.getProperty("item[" + i + "].md.value"));
             } else if(itemType.equals("nodeset")){
                 try {
-                    NodeList nodeList = (NodeList)xPath.evaluate(properties.getProperty("item[" + i + "].md.value"), xmlDoc.get(itemMetadataType), XPathConstants.NODESET);
-                    StringBuffer buffer = new StringBuffer();
-                    int nodeListLength = nodeList.getLength();
-                    for(int j=0; j<nodeListLength; j++){
-                        buffer.append(nodeList.item(j).getNodeValue());
-                        if(j < nodeListLength-1){
-                            buffer.append(",");
+                    if(xmlDoc.containsKey(itemMetadataType)){
+                        NodeList nodeList = (NodeList)xPath.evaluate(properties.getProperty("item[" + i + "].md.value"), xmlDoc.get(itemMetadataType), XPathConstants.NODESET);
+                        StringBuffer buffer = new StringBuffer();
+                        int nodeListLength = nodeList.getLength();
+                        for(int j=0; j<nodeListLength; j++){
+                            buffer.append(nodeList.item(j).getNodeValue());
+                            if(j < nodeListLength-1){
+                                buffer.append(",");
+                            }
                         }
+                        itemMap.put(itemKey, buffer.toString());
+                    }else{
+                        sLogger.warn("No document found for: " + itemMetadataType);
                     }
-                    itemMap.put(itemKey, buffer.toString());
+
 
                 } catch (XPathExpressionException e) {
                     String lMessage = "Cannot evaluate xpath as a nodeset: " + properties.getProperty("item[" + i + "].md.value");

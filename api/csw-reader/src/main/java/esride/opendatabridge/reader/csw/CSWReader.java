@@ -20,7 +20,7 @@ import java.util.*;
  * - the <p>csw.url</p> (HTTP POST endpoint for the CSW GetRecords endpoint)
  * - 0..* <p>csw_request_getrecords_header_{*}</p> properties for overwriting the HTTP Header
  * - 0..* <p>csw_request_getrecords_template_{*}</p> placeholder for overwriting the GetRecords POST request
- * - 0..* <p>csw_response_xpath_{*}</p> XPath values if you don't use the ISO metadata model (like Dublin Core)
+ * - 0..* <p>csw_response_xpath_{*}</p>XPath values for using a different domain model (like Dublin Core)
  *
  * The GetRecords request is build by an XML Template. The template could be injected from a classpath path.
  *
@@ -86,14 +86,20 @@ public class CSWReader implements IReader, IReaderFactory {
             templateItems.put("csw_request_getrecords_template_startPosition", String.valueOf(startPosition));
             CatalogRequestObj reqObj = new CatalogRequestObj(cswUrl,templateItems, headerItems);
             try {
-                CatalogResponseObj resonseObj = getRecordsRequest.executeGetRecordsRequest(reqObj);
-                metadataObjectList.addAll(resonseObj.getMetadataDocuments());
-                int matchedRecords = resonseObj.getNumbersOfRecordMatched();
-                int returnedRecords = resonseObj.getNumbersOfRecordReturned();
+                CatalogResponseObj responseObj = getRecordsRequest.executeGetRecordsRequest(reqObj);
+
+                if(responseObj.getMetadataDocuments() != null){
+                    metadataObjectList.addAll(responseObj.getMetadataDocuments());
+                }
+                int matchedRecords = responseObj.getNumbersOfRecordMatched();
+                int returnedRecords = responseObj.getNumbersOfRecordReturned();
+                sLogger.info("CSW-Modul: Number of matched records: " + matchedRecords);
                 if(matchedRecords >= returnedRecords + startPosition){
                     startPosition = startPosition + maxRecords;
+                    sLogger.info("CSW-Modul: Next start position: " + startPosition);
                 }else{
                     pagination = false;
+                    sLogger.info("CSW-Modul: No further request");
                 }
             } catch (IOException e) {
                 String message = "CSW Request failed at startPosition: " + startPosition;
@@ -120,20 +126,11 @@ public class CSWReader implements IReader, IReaderFactory {
                 }
             }
 
-            //object.getResourceType();
-            /*if(object.getResourceUrl() != null || object.getResourceUrl().trim().length() > 0){
-                try {
-                    object.setCapabilitiesDoc(capabilitiesResource.getRecourceMetadata(object.getResourceUrl(), object.getResourceType()));
-                } catch (ResourceException e) {
-                    sLogger.error("The WMS (" + object.getResourceUrl() + ") is not available. " +
-                            "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
-                    failureList.add(i);
-                }
-            } */
+
         }
         if(failureList.size() > 0){
             for(int k=0; k<failureList.size(); k++){
-                metadataObjectList.remove(failureList.get(k));
+                metadataObjectList.remove(failureList.get(k).intValue());
             }
 
         }
@@ -158,21 +155,40 @@ public class CSWReader implements IReader, IReaderFactory {
             }
             resource.setContainer(setList);
             try {
-                HashMap agolItems = agolItemTransformer.transform2AgolItem(resource, processId);
+                HashMap<String, String> agolItems = agolItemTransformer.transform2AgolItem(resource, processId);
                 TransformedItem item = new TransformedItem();
                 item.setItemElements(agolItems);
                 item.setResourceUrl(metadataObjectList.get(i).getResourceUrl());
                 lTransformedItems.add(item);
+                if(sLogger.isDebugEnabled()){
+                    sLogger.debug("Item elements:---------------------");
+                    sLogger.debug("Item URL: "  + item.getResourceUrl());
+                    Set<String> keySet =  agolItems.keySet();
+                    Iterator<String> keyIter = keySet.iterator();
+                    while(keyIter.hasNext()){
+                        String key = keyIter.next();
+                        String value = agolItems.get(key);
+                        int valueLength = value.length();
+                        if(valueLength > 150){
+                            sLogger.debug("Item: " + key + ": Value: " + value.substring(0,150) + "...");
+                        }else{
+                            sLogger.debug("Item: " + key + ": Value: " + agolItems.get(key));
+                        }
+
+                    }
+                }
 
             } catch (ItemTransformationException e) {
                 sLogger.error("The metadataset with the file Identifier: " + metadataObjectList.get(i).getMetadataFileIdentifier() + " cannot be transformed", e);
             } catch (ItemGenerationException e) {
                 sLogger.error("The metadataset with the file Identifier: " + metadataObjectList.get(i).getMetadataFileIdentifier() + " cannot be transformed", e);
             }
-        }
-        
-        
 
+            
+        }
+       
+       sLogger.info("CSW-Modul: Requesting Metadata from catalog finished");
+       sLogger.info("------------------------------------------------ ");
        return lTransformedItems;
     }
 

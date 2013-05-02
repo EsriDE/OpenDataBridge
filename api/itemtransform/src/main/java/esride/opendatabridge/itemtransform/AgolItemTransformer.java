@@ -52,7 +52,7 @@ public class AgolItemTransformer implements IItemTransformer {
 
     }
 
-    public HashMap transform2AgolItem(MetadataResource resource, String processId) throws ItemTransformationException, ItemGenerationException {
+    public HashMap<String, String> transform2AgolItem(MetadataResource resource, String processId) throws ItemTransformationException, ItemGenerationException {
         
         HashMap<String, Document> docMap = new HashMap<String, Document>();
         List<MetadataSet> container = resource.getContainer();
@@ -71,8 +71,7 @@ public class AgolItemTransformer implements IItemTransformer {
             docMap.put(container.get(i).getMetadataType(), container.get(i).getXmlDoc());
         }
 
-        HashMap itemMap = mItemElemExtractor.getItemElementsFromDoc(docMap, processId, resource.getResourceType());
-        return itemMap;
+        return mItemElemExtractor.getItemElementsFromDoc(docMap, processId, resource.getResourceType());
     }
 
     /*private Document transformJsonStream2Doc(InputStream jsonInput) throws ItemTransformationException, ItemGenerationException {

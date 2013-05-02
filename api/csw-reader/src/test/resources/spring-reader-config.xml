@@ -9,7 +9,7 @@
 			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-<bean class="esride.opendatabridge.reader.csw.CSWReader" id="reader"
+<bean class="esride.opendatabridge.reader.csw.CSWReader" id="reader"  scope="prototype"
       p:getRecordsRequest-ref="getRecordsRequest"
       p:resourceMap-ref="resourceMap"
       p:agolItemTransformer-ref="itemTransform"/>

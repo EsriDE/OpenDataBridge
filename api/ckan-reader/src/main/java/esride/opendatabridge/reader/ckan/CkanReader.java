@@ -10,7 +10,17 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * THe CkanReader implements the IReader interface. The CkanReader class collects metadata from Ckan Open Data catalogues
+ * and transforms the metadata into an AGOL Item compatible data model. For running an CkanReader component the following resources must be
+ * available:
+ * - the <p>ckan.url</p> (HTTP GET endpoint for the Ckan catalogue endpoint)
+ * - 0..* <p>ckan_request_search_header__{*}</p> properties for overwriting the HTTP Header
+ * - 0..* <p>ckan_request_search_param__{*}</p> the request parameters for the select statement
+ * - 0..* <p>csw_response_xpath_{*}</p> XPath values for using a different domain model
+ *
+ * For the AGOL Item transformation an <p>itemelement_{*}.properties</p> files must be available. For each Ckan Metadata resource
+ * (like WMS, Shapefile, CSV file) one property file must be created.
+ *
  * User: sma
  * Date: 23.04.13
  * Time: 16:18
@@ -71,10 +81,12 @@ public class CkanReader implements IReader, IReaderFactory {
             templateItems.put("offset", String.valueOf(startPosition));
             CatalogRequestObj reqObj = new CatalogRequestObj(ckanUrl,templateItems, headerItems);
             try {
-                CatalogResponseObj resonseObj = searchRequest.executeCkanRequest(reqObj);
-                metadataObjectList.addAll(resonseObj.getMetadataDocuments());
-                int matchedRecords = resonseObj.getNumbersOfRecordMatched();
-                int returnedRecords = resonseObj.getNumbersOfRecordReturned();
+                CatalogResponseObj responseObj = searchRequest.executeCkanRequest(reqObj);
+                if(responseObj.getMetadataDocuments() != null){
+                    metadataObjectList.addAll(responseObj.getMetadataDocuments());
+                }
+                int matchedRecords = responseObj.getNumbersOfRecordMatched();
+                int returnedRecords = responseObj.getNumbersOfRecordReturned();
                 sLogger.info("Ckan-Modul: Number of matched records: " + matchedRecords);
                 if(matchedRecords > returnedRecords + startPosition){
                     startPosition = startPosition + maxRecords;
@@ -84,7 +96,7 @@ public class CkanReader implements IReader, IReaderFactory {
                     sLogger.info("Ckan-Modul: No further request");
                 }
             } catch (IOException e) {
-                String message = "CSW Request failed at startPosition: " + startPosition;
+                String message = "Ckan Request failed at startPosition: " + startPosition;
                 sLogger.error(message, e);
                 throw new ReaderException(message, e);
             }
@@ -108,7 +120,7 @@ public class CkanReader implements IReader, IReaderFactory {
         }
         if(failureList.size() > 0){
             for(int k=0; k<failureList.size(); k++){
-                metadataObjectList.remove(failureList.get(k));
+                metadataObjectList.remove(failureList.get(k).intValue());
             }
 
         }
@@ -131,11 +143,28 @@ public class CkanReader implements IReader, IReaderFactory {
             }
             resource.setContainer(setList);
             try {
-                HashMap agolItems = agolItemTransformer.transform2AgolItem(resource, processId);
+                HashMap<String, String> agolItems = agolItemTransformer.transform2AgolItem(resource, processId);
                 TransformedItem item = new TransformedItem();
                 item.setItemElements(agolItems);
                 item.setResourceUrl(metadataObjectList.get(i).getResourceUrl());
                 lTransformedItems.add(item);
+                if(sLogger.isDebugEnabled()){
+                    sLogger.debug("Item elements:---------------------");
+                    sLogger.debug("Item URL: "  + item.getResourceUrl());
+                    Set<String> keySet =  agolItems.keySet();
+                    Iterator<String> keyIter = keySet.iterator();
+                    while(keyIter.hasNext()){
+                        String key = keyIter.next();
+                        String value = agolItems.get(key);
+                        int valueLength = value.length();
+                        if(valueLength > 150){
+                            sLogger.debug("Item: " + key + ": Value: " + value.substring(0,150) + "...");
+                        }else{
+                            sLogger.debug("Item: " + key + ": Value: " + agolItems.get(key));
+                        }
+
+                    }
+                }
 
             } catch (ItemTransformationException e) {
                 sLogger.error("The metadataset with the file Identifier: " + metadataObjectList.get(i).getMetadataFileIdentifier() + " cannot be transformed", e);
@@ -145,7 +174,8 @@ public class CkanReader implements IReader, IReaderFactory {
         }
 
 
-
+        sLogger.info("Ckan-Modul: Requesting Metadata from catalog finished");
+        sLogger.info("------------------------------------------------ ");
         return lTransformedItems;
 
     }

@@ -20,5 +20,6 @@
         <module>resource-reader</module>
         <module>capabilities-reader</module>
         <module>ckan-reader</module>
+        <module>kml-reader</module>
 	</modules>
 </project>

@@ -73,7 +73,12 @@
     </modules>
     <dependencyManagement>
         <dependencies>
-            <!-- Eigene API dependencies ================================ -->            
+            <!-- Eigene API dependencies ================================ -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>kml-reader</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>agol-writer</artifactId>

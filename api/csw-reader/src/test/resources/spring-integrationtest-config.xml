@@ -9,19 +9,20 @@
 			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-    <bean class="esride.opendatabridge.reader.ckan.CkanReader" id="reader"  scope="prototype"
-          p:searchRequest-ref="searchRequest"
+    <bean class="esride.opendatabridge.reader.csw.CSWReader" id="reader"
+          p:getRecordsRequest-ref="getRecordsRequest"
           p:resourceMap-ref="resourceMap"
           p:agolItemTransformer-ref="itemTransform"/>
 
     <util:map id="resourceMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IResource">
+        <entry key="view" value-ref="capabilitiesRequest"/>
         <entry key="wms" value-ref="capabilitiesRequest"/>
-        <entry key="kml" value-ref="kmlRequest"/>
     </util:map>
 
-    <bean class="esride.opendatabridge.reader.ckan.CkanSearchRequest" id="searchRequest"
+    <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsRequest" id="getRecordsRequest"
           p:httpRequest-ref="httpRequest"
-          p:searchResponse-ref="searchResponse"/>
+          p:requestTemplate-ref="generator"
+          p:getRecordsResponse-ref="getRecordsResponse"/>
 
     <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"/>
 
@@ -33,22 +34,16 @@
 
     <bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesResource" id="capabilitiesRequest"
           p:request-ref="httpRequest"/>
-    
-    <bean class="esride.opendatabridge.reader.kml.KmlResource" id="kmlRequest"
-          p:httpRequest-ref="httpRequest"
-          p:outSR="{&quot;wkid&quot;:4326}"
-          p:utilityServiceUrl="http://utility.arcgis.com/sharing/kml"/>
 
-    <bean class="esride.opendatabridge.reader.ckan.CkanSearchResponse" id="searchResponse"
-            p:supportedResourceTypes-ref="supportedTypeList"/>
-
-    <util:list value-type="java.lang.String" id="supportedTypeList">
-        <value>WMS</value>
-        <value>KML</value>
-        <value>CSV</value>
-    </util:list>
+    <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsResponse" id="getRecordsResponse"/>
 
     <bean class="esride.opendatabridge.httptransport.HTTPRequest" id="httpRequest"/>
+
+
+    <bean class="esride.opendatabridge.reader.csw.GetRecordsRequestTemplate" id="generator"
+          p:templateLocation-ref="templateLocation"/>
+
+    <bean class="esride.opendatabridge.reader.csw.templatefile.FileSysGetRecordsTemplateLocation" id="templateLocation"/>
 
 
 </beans>

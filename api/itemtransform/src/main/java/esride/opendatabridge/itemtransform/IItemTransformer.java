@@ -11,6 +11,6 @@ import java.util.HashMap;
  */
 public interface IItemTransformer {
     
-    public HashMap transform2AgolItem(MetadataResource resource, String processId) throws ItemTransformationException, ItemGenerationException;
+    public HashMap<String, String> transform2AgolItem(MetadataResource resource, String processId) throws ItemTransformationException, ItemGenerationException;
 
 }
