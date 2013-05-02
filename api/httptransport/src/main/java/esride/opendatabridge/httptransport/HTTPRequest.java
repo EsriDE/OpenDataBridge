@@ -14,15 +14,14 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.SystemDefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -184,9 +183,9 @@ public class HTTPRequest implements IHTTPRequest{
      * Transform HashMap of Strings to UrlEncodedFormEntity
      * @param content
      * @return content as UrlEncodedFormEntity
-     * @throws UnsupportedEncodingException
+     * @throws IOException
      */
-    private UrlEncodedFormEntity contentMapToUrlEncodedFormEntity(HashMap<String, String> content) throws UnsupportedEncodingException {
+    private UrlEncodedFormEntity contentMapToUrlEncodedFormEntity(HashMap<String, String> content) throws IOException {
         List<NameValuePair> contentList = new ArrayList<NameValuePair>();
         Iterator iter = content.entrySet().iterator();
         while(iter.hasNext()){
