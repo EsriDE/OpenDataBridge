@@ -44,13 +44,14 @@ public class AgolItemFactory {
         }
 
         if (_propertiesToStrings) {
-            agolItemProperties = allAgolItemPropertiesToString(agolItemProperties);
+            agolItemProperties = cleanAgolItemProperties(agolItemProperties);
         }
 
         return agolItemProperties;
     }
 
-    private HashMap allAgolItemPropertiesToString(HashMap agolItemProperties) {
+    // ToDo: List of valid keys for item upload. Throw out invalid keys.
+    private HashMap cleanAgolItemProperties(HashMap agolItemProperties) {
         HashMap deleteAgolItemProperties = new HashMap();
         HashMap updateAgolItemProperties = new HashMap();
 

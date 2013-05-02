@@ -19,7 +19,7 @@ import java.util.Map;
 public interface IAgolService {
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType) throws IOException;
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType) throws IOException;
-    public void addItem(AgolItem agolItem) throws AgolItemTransactionFailedException, IOException;
-    public void updateItem(AgolItem agolItem);
-    public void deleteItem(AgolItem agolItem);
+    public String addItem(AgolItem agolItem) throws AgolItemTransactionFailedException, IOException;
+    public void updateItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException;
+    public void deleteItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException;
 }

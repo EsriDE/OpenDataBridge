@@ -26,5 +26,24 @@ public class AgolItem {
     public String getUrl() {
         return _itemAttributes.get("url");
     }
+
+    public String getId() {
+        return _itemAttributes.get("id");
+    }
+
+    public void setId(String id) {
+        updateAttribute("id", id);
+    }
+
+    public void updateAttribute(String key, String value) {
+        removeAttribute(key);
+        _itemAttributes.put(key, value);
+    }
+
+    public void removeAttribute(String key) {
+        if (_itemAttributes.containsKey(key)) {
+            _itemAttributes.remove(key);
+        }
+    }
 }
 

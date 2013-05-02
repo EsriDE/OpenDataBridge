@@ -77,19 +77,13 @@ public class AgolService implements IAgolService {
         fillAgolItems(itemType, accessType, 0);
         return agolItems;
     }
-    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType, int startWithItemNumber) throws IOException {
-        fillAgolItems(itemType, accessType, startWithItemNumber);
-        return agolItems;
-    }
     private void fillAgolItems(String itemType, String accessType, int startWithItemNumber) throws IOException {
         int agolItemsPaginationNextStart;
         int totalItemsCount;
         int retrievedItemsCount;
         int duplicateUrlsCount = 0;
 
-
         String searchUrl = _baseUrl + "/sharing/search";
-
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
 
         // get ALL public WMS items that are owned by logged-in user
@@ -154,21 +148,54 @@ public class AgolService implements IAgolService {
             }
 
             // Recursive call: Items are limited to 100 - if more than that are available, call again
-            // ToDo: remove recursive call, use only 1 HttpClient
             if (agolItemsPaginationNextStart!=-1) {
                 fillAgolItems(itemType, "public", agolItemsPaginationNextStart);
             }
         }
     }
 
-    public void updateItem(AgolItem agolItem) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void updateItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException {
+        String userItemUrl = _userContentUrl + "/items/" + agolItem.getId();
+        String updateItemUrl = userItemUrl + "/update";
+
+        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
+        agolAttributes.putAll(agolItem.getAttributes());
+
+        InputStream entities = _httpRequest.executePostRequest(updateItemUrl, agolAttributes, null);
+        if (entities != null)
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(entities);
+
+            JsonNode errorNode = rootNode.get("error");
+            if (errorNode != null)
+            {
+                throw new AgolItemTransactionFailedException("Update Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
+            }
+        }
     }
 
-    public void deleteItem(AgolItem agolItem) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void deleteItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException {
+        String userItemUrl = _userContentUrl + "/items/" + agolItem.getId();
+        String deleteItemUrl = userItemUrl + "/delete";
+
+        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
+
+        InputStream entities = _httpRequest.executePostRequest(deleteItemUrl, agolAttributes, null);
+        if (entities != null)
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(entities);
+
+            JsonNode errorNode = rootNode.get("error");
+            if (errorNode != null)
+            {
+                throw new AgolItemTransactionFailedException("Delete Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
+            }
+        }
     }
 
+    // ToDo: "access" Parameter, ob private, public oder an Gruppe geteilt
     public void addItems(List<AgolItem> agolItems) throws AgolItemTransactionFailedException, IOException {
         String itemIds = "";
         for (AgolItem agolItem : agolItems) {
@@ -181,11 +208,12 @@ public class AgolService implements IAgolService {
             shareItems(itemIds);
         }
     }
-    public void addItem(AgolItem agolItem) throws AgolItemTransactionFailedException, IOException {
+    public String addItem(AgolItem agolItem) throws AgolItemTransactionFailedException, IOException {
         String itemId = createItem(agolItem);
         if (itemId!=null) {
             shareItems(itemId);
         }
+        return itemId;
     }
 
     private String createItem(AgolItem agolItem) throws AgolItemTransactionFailedException, IOException {
