@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WMS_Capabilities version="1.3.0" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.opengis.net/wms">
+    <Service>
+        <Name>Bodenkunde</Name>
+        <Title>BSU Bodendaten(WMS-INSPIRE)</Title>
+        <Abstract>BSU Bodendaten(WMS-INSPIRE)</Abstract>
+        <KeywordList>
+            <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+            <Keyword>Bodendaten</Keyword>
+            <Keyword>Horizonte</Keyword>
+            <Keyword>Profile</Keyword>
+            <Keyword>inspireidentifiziert</Keyword>
+            <Keyword>Umweltinformationsgesetz</Keyword>
+            <Keyword>Umweltinformationssystem</Keyword>
+            <Keyword>WMS</Keyword>
+            <Keyword>Hamburg</Keyword>
+            <Keyword>Inspire</Keyword>
+            <Keyword>GDI-DE</Keyword>
+            <Keyword>ArcIMS</Keyword>
+        </KeywordList>
+        <OnlineResource xlink:href="http://wscw0010.fhhnet.stadt.hamburg.de:8080/wmsconnector/com.esri.wms.Esrimap/bis_bk_wms?" xlink:type="simple"/>
+        <ContactInformation>
+            <ContactPersonPrimary>
+                <ContactPerson>Reiner Glowinski</ContactPerson>
+                <ContactOrganization>Behörde für Stadtentwicklung und Umwelt der Freien und Hansestadt Hamburg</ContactOrganization>
+            </ContactPersonPrimary>
+            <ContactPosition>IT-Referat, Projekte und Integration</ContactPosition>
+            <ContactAddress>
+                <AddressType>postal</AddressType>
+                <Address>Stadthausbrücke 8</Address>
+                <City>Hamburg</City>
+                <StateOrProvince>Hamburg</StateOrProvince>
+                <PostCode>20355</PostCode>
+                <Country>Germany</Country>
+            </ContactAddress>
+            <ContactVoiceTelephone>+49 40 42840 2346</ContactVoiceTelephone>
+            <ContactFacsimileTelephone>+49 40 42840 3196</ContactFacsimileTelephone>
+            <ContactElectronicMailAddress>reiner.glowinski@bsu.hamburg.de</ContactElectronicMailAddress>
+        </ContactInformation>
+        <Fees>none</Fees>
+        <AccessConstraints>none</AccessConstraints>
+    </Service>
+    <Capability>
+        <Request>
+            <GetCapabilities>
+                <Format>text/xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xlink:href="http://wscw0010.fhhnet.stadt.hamburg.de:8080/wmsconnector/com.esri.wms.Esrimap/bis_bk_wms?" xlink:type="simple"/>
+                        </Get>
+                        <Post>
+                            <OnlineResource xlink:href="http://wscw0010.fhhnet.stadt.hamburg.de:8080/wmsconnector/com.esri.wms.Esrimap/bis_bk_wms?" xlink:type="simple"/>
+                        </Post>
+                    </HTTP>
+                </DCPType>
+            </GetCapabilities>
+            <GetMap>
+                <Format>image/bmp</Format>
+                <Format>image/tiff</Format>
+                <Format>image/png</Format>
+                <Format>image/jpeg</Format>
+                <Format>image/gif</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xlink:href="http://wscw0010.fhhnet.stadt.hamburg.de:8080/wmsconnector/com.esri.wms.Esrimap/bis_bk_wms?" xlink:type="simple"/>
+                        </Get>
+                        <Post>
+                            <OnlineResource xlink:href="http://wscw0010.fhhnet.stadt.hamburg.de:8080/wmsconnector/com.esri.wms.Esrimap/bis_bk_wms?" xlink:type="simple"/>
+                        </Post>
+                    </HTTP>
+                </DCPType>
+            </GetMap>
+            <GetFeatureInfo>
+                <Format>text/xml</Format>
+                <Format>text/html</Format>
+                <Format>text/plain</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xlink:href="http://wscw0010.fhhnet.stadt.hamburg.de:8080/wmsconnector/com.esri.wms.Esrimap/bis_bk_wms?" xlink:type="simple"/>
+                        </Get>
+                        <Post>
+                            <OnlineResource xlink:href="http://wscw0010.fhhnet.stadt.hamburg.de:8080/wmsconnector/com.esri.wms.Esrimap/bis_bk_wms?" xlink:type="simple"/>
+                        </Post>
+                    </HTTP>
+                </DCPType>
+            </GetFeatureInfo>
+        </Request>
+        <Exception>
+            <Format>XML</Format>
+            <Format>INIMAGE</Format>
+            <Format>BLANK</Format>
+        </Exception>
+        <inspire_vs:ExtendedCapabilities xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0" xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" xsi:schemaLocation="http://inspire.ec.europa.eu/schemas/common/1.0 http://inspire.ec.europa.eu/schemas/common/1.0/common.xsd http://inspire.ec.europa.eu/schemas/inspire_vs/1.0 http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd">
+            <inspire_common:MetadataUrl>
+                <inspire_common:URL>http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?Service=CSW&amp;Request=GetRecordById&amp;Version=2.0.2&amp;id=C7E06A60-4E21-460C-83B0-E108C69FE2B8&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full</inspire_common:URL>
+                <inspire_common:MediaType>application/vnd.ogc.csw.GetRecordByIdResponse_xml</inspire_common:MediaType>
+            </inspire_common:MetadataUrl>
+            <inspire_common:SupportedLanguages>
+                <inspire_common:DefaultLanguage>
+                    <inspire_common:Language>ger</inspire_common:Language>
+                </inspire_common:DefaultLanguage>
+            </inspire_common:SupportedLanguages>
+            <inspire_common:ResponseLanguage>
+                <inspire_common:Language>ger</inspire_common:Language>
+            </inspire_common:ResponseLanguage>
+        </inspire_vs:ExtendedCapabilities>
+        <Layer noSubsets="0" opaque="0" queryable="0">
+            <Name>BSU Bodendaten (WMS)</Name>
+            <Title>BSU Bodendaten (WMS)</Title>
+            <Abstract>Bodendaten-Service for making available INSPIRE themes</Abstract>
+            <CRS>EPSG:25832</CRS>
+            <CRS>EPSG:31467</CRS>
+            <CRS>EPSG:4326</CRS>
+            <CRS>EPSG:4258</CRS>
+            <CRS>EPSG:4839</CRS>
+            <CRS>EPSG:3034</CRS>
+            <CRS>EPSG:3035</CRS>
+            <CRS>EPSG:3042</CRS>
+            <CRS>EPSG:3043</CRS>
+            <CRS>EPSG:3044</CRS>
+            <EX_GeographicBoundingBox>
+                <westBoundLongitude>8.1204732181</westBoundLongitude>
+                <eastBoundLongitude>10.6440657325</eastBoundLongitude>
+                <southBoundLatitude>53.2913978557</southBoundLatitude>
+                <northBoundLatitude>54.1098383993</northBoundLatitude>
+            </EX_GeographicBoundingBox>
+            <BoundingBox CRS="EPSG:25832" minx="447660.7912597563" miny="5916115.123059885" maxx="589227.35184593" maxy="5982745.770079986"/>
+            <BoundingBox CRS="EPSG:31467" minx="3447711.0988992304" miny="5918042.763865673" maxx="3589334.2541244556" maxy="5984700.814526174"/>
+            <BoundingBox CRS="EPSG:4326" minx="8.212909614007792" miny="53.394107397736406" maxx="10.341846881566775" maxy="53.98553546607966"/>
+            <BoundingBox CRS="EPSG:4258" minx="8.212909614007792" miny="53.394107397736406" maxx="10.341846881566775" maxy="53.98553546607966"/>
+            <BoundingBox CRS="EPSG:4839" miny="266214.33741417166" minx="-152092.22605081322" maxy="334363.72213088896" maxx="-10377.333682334594"/>
+            <BoundingBox CRS="EPSG:3034" minx="3885097.186980244" miny="2949890.3425976546" maxx="4021981.4609275954" maxy="3014901.244770127"/>
+            <BoundingBox CRS="EPSG:3035" minx="4202117.081712464" miny="3365134.380850315" maxx="4343743.307177519" maxy="3432394.2924918784"/>
+            <BoundingBox CRS="EPSG:3042" minx="1233783.9195979245" miny="5974895.087450384" maxx="1384825.05921519" maxy="6064701.806320319"/>
+            <BoundingBox CRS="EPSG:3043" minx="841676.5682731983" miny="5928782.094185356" maxx="987827.5961325101" maxy="6006898.32881539"/>
+            <BoundingBox CRS="EPSG:3044" minx="447660.7912597563" miny="5916115.123059885" maxx="589227.35184593" maxy="5982745.770079986"/>
+            <AuthorityURL name="DEHHGLOBODEN">
+                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.hamburg.de/boden"/>
+            </AuthorityURL>
+            <MetadataURL type="ISO19115:2003">
+                <Format>application/xml</Format>
+                <OnlineResource xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=HMDK#a111cd7d-a5b4-4dbf-af18-89998b0f398c&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+            </MetadataURL>
+            <Layer queryable="1">
+                <Name>1</Name>
+                <Title>Bodenkunde-Profile</Title>
+                <Abstract>Bodenkunde-Profile</Abstract>
+                <CRS>EPSG:25832</CRS>
+                <CRS>EPSG:31467</CRS>
+                <CRS>EPSG:4326</CRS>
+                <CRS>EPSG:4258</CRS>
+                <CRS>EPSG:4839</CRS>
+                <CRS>EPSG:3034</CRS>
+                <CRS>EPSG:3035</CRS>
+                <CRS>EPSG:3042</CRS>
+                <CRS>EPSG:3043</CRS>
+                <CRS>EPSG:3044</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>8.2358594038</westBoundLongitude>
+                    <eastBoundLongitude>10.5280561067</eastBoundLongitude>
+                    <southBoundLatitude>53.3297080577</southBoundLatitude>
+                    <northBoundLatitude>54.0737754021</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <BoundingBox CRS="EPSG:25832" minx="447660.7912597563" miny="5916115.123059885" maxx="589227.35184593" maxy="5982745.770079986"/>
+                <BoundingBox CRS="EPSG:31467" minx="3447711.0988992304" miny="5918042.763865673" maxx="3589334.2541244556" maxy="5984700.814526174"/>
+                <BoundingBox CRS="EPSG:4326" minx="8.212909614007792" miny="53.394107397736406" maxx="10.341846881566775" maxy="53.98553546607966"/>
+                <BoundingBox CRS="EPSG:4258" minx="8.212909614007792" miny="53.394107397736406" maxx="10.341846881566775" maxy="53.98553546607966"/>
+                <BoundingBox CRS="EPSG:4839" miny="266214.33741417166" minx="-152092.22605081322" maxy="334363.72213088896" maxx="-10377.333682334594"/>
+                <BoundingBox CRS="EPSG:3034" minx="3885097.186980244" miny="2949890.3425976546" maxx="4021981.4609275954" maxy="3014901.244770127"/>
+                <BoundingBox CRS="EPSG:3035" minx="4202117.081712464" miny="3365134.380850315" maxx="4343743.307177519" maxy="3432394.2924918784"/>
+                <BoundingBox CRS="EPSG:3042" minx="1233783.9195979245" miny="5974895.087450384" maxx="1384825.05921519" maxy="6064701.806320319"/>
+                <BoundingBox CRS="EPSG:3043" minx="841676.5682731983" miny="5928782.094185356" maxx="987827.5961325101" maxy="6006898.32881539"/>
+                <BoundingBox CRS="EPSG:3044" minx="447660.7912597563" miny="5916115.123059885" maxx="589227.35184593" maxy="5982745.770079986"/>
+                <AuthorityURL name="DEHHGLOBODEN">
+                    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.hamburg.de/boden"/>
+                </AuthorityURL>
+                <Identifier authority="DEHHGLOBODEN">HMDK#a111cd7d-a5b4-4dbf-af18-89998b0f398c</Identifier>
+                <MetadataURL type="ISO19115:2003">
+                    <Format>application/xml</Format>
+                    <OnlineResource xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=635714B3-9878-436E-88DA-0DD9148DB199&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+                </MetadataURL>
+                <MaxScaleDenominator>NaN</MaxScaleDenominator>
+            </Layer>
+            <Layer queryable="1">
+                <Name>0</Name>
+                <Title>Bodenkunde-Horizonte</Title>
+                <Abstract>SBodenkunde-Horizonte</Abstract>
+                <CRS>EPSG:25832</CRS>
+                <CRS>EPSG:31467</CRS>
+                <CRS>EPSG:4326</CRS>
+                <CRS>EPSG:4258</CRS>
+                <CRS>EPSG:4839</CRS>
+                <CRS>EPSG:3034</CRS>
+                <CRS>EPSG:3035</CRS>
+                <CRS>EPSG:3042</CRS>
+                <CRS>EPSG:3043</CRS>
+                <CRS>EPSG:3044</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>8.2358594038</westBoundLongitude>
+                    <eastBoundLongitude>10.5280561067</eastBoundLongitude>
+                    <southBoundLatitude>53.3297080577</southBoundLatitude>
+                    <northBoundLatitude>54.0737754021</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <BoundingBox CRS="EPSG:25832" minx="447660.7912597563" miny="5916115.123059885" maxx="589227.35184593" maxy="5982745.770079986"/>
+                <BoundingBox CRS="EPSG:31467" minx="3447711.0988992304" miny="5918042.763865673" maxx="3589334.2541244556" maxy="5984700.814526174"/>
+                <BoundingBox CRS="EPSG:4326" minx="8.212909614007792" miny="53.394107397736406" maxx="10.341846881566775" maxy="53.98553546607966"/>
+                <BoundingBox CRS="EPSG:4258" minx="8.212909614007792" miny="53.394107397736406" maxx="10.341846881566775" maxy="53.98553546607966"/>
+                <BoundingBox CRS="EPSG:4839" miny="266214.33741417166" minx="-152092.22605081322" maxy="334363.72213088896" maxx="-10377.333682334594"/>
+                <BoundingBox CRS="EPSG:3034" minx="3885097.186980244" miny="2949890.3425976546" maxx="4021981.4609275954" maxy="3014901.244770127"/>
+                <BoundingBox CRS="EPSG:3035" minx="4202117.081712464" miny="3365134.380850315" maxx="4343743.307177519" maxy="3432394.2924918784"/>
+                <BoundingBox CRS="EPSG:3042" minx="1233783.9195979245" miny="5974895.087450384" maxx="1384825.05921519" maxy="6064701.806320319"/>
+                <BoundingBox CRS="EPSG:3043" minx="841676.5682731983" miny="5928782.094185356" maxx="987827.5961325101" maxy="6006898.32881539"/>
+                <BoundingBox CRS="EPSG:3044" minx="447660.7912597563" miny="5916115.123059885" maxx="589227.35184593" maxy="5982745.770079986"/>
+                <AuthorityURL name="DEHHGLOBODEN">
+                    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.hamburg.de/boden"/>
+                </AuthorityURL>
+                <Identifier authority="DEHHGLOBODEN">HMDK#a111cd7d-a5b4-4dbf-af18-89998b0f398c</Identifier>
+                <MetadataURL type="ISO19115:2003">
+                    <Format>application/xml</Format>
+                    <OnlineResource xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_CSW.aspx?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;id=635714B3-9878-436E-88DA-0DD9148DB199&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full"/>
+                </MetadataURL>
+                <MaxScaleDenominator>NaN</MaxScaleDenominator>
+            </Layer>
+        </Layer>
+    </Capability>
+</WMS_Capabilities>

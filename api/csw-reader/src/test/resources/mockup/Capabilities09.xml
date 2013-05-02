@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<WMS_Capabilities version="1.3.0" xmlns="http://www.opengis.net/wms" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:esri_wms="http://www.esri.com/wms" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.esri.com/wms http://gateway.hamburg.de/OGCFassade/HH_WMS_Strassenverkehr.aspx?version=1.3.0&amp;service=WMS&amp;request=GetSchemaExtension">
+    <Service>
+        <Name><![CDATA[WMS]]></Name>
+        <Title><![CDATA[BSU_IB_Strassenverkehr]]></Title>
+        <Abstract>WMS</Abstract>
+        <KeywordList><Keyword><![CDATA[]]></Keyword></KeywordList>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Strassenverkehr.aspx"/>
+        <ContactInformation>
+            <ContactPersonPrimary>
+                <ContactPerson><![CDATA[]]>Thomas Eichhorn</ContactPerson>
+                <ContactOrganization><![CDATA[]]>Landesbetrieb Geoinformation und Vermessung</ContactOrganization>
+            </ContactPersonPrimary>
+            <ContactPosition><![CDATA[]]></ContactPosition>
+            <ContactAddress>
+                <AddressType><![CDATA[]]>postal</AddressType>
+                <Address><![CDATA[]]>Sachsenkamp 4</Address>
+                <City><![CDATA[]]>Hamburg</City>
+                <StateOrProvince><![CDATA[]]>HH</StateOrProvince>
+                <PostCode><![CDATA[]]>20097</PostCode>
+                <Country><![CDATA[]]>Germany</Country>
+            </ContactAddress>
+            <ContactVoiceTelephone><![CDATA[]]>+49 40 42826 5975</ContactVoiceTelephone>
+            <ContactFacsimileTelephone><![CDATA[]]>+49 40 42826 5966</ContactFacsimileTelephone>
+            <ContactElectronicMailAddress><![CDATA[]]>gvgeoportal@gv.hamburg.de</ContactElectronicMailAddress>
+        </ContactInformation>
+        <Fees><![CDATA[]]>DE: kostenfrei fuer die nicht-kommerzielle Nutzung</Fees>
+        <AccessConstraints><![CDATA[]]>DE: Die Daten sind gesetzlich geschuetzt. Eine kommerzielle Nutzung des Kartendienstes erfordert die schriftliche Zustimmung des Landesbetriebs Geoinformation und Vermessung Hamburg</AccessConstraints>
+        <MaxWidth>2048</MaxWidth>
+        <MaxHeight>2048</MaxHeight>
+    </Service>
+    <Capability>
+        <Request>
+            <GetCapabilities>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <Format>text/xml</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Strassenverkehr.aspx"/></Get></HTTP>
+                </DCPType>
+            </GetCapabilities>
+            <GetMap>
+                <Format>image/bmp</Format>
+                <Format>image/jpeg</Format>
+                <Format>image/tiff</Format>
+                <Format>image/png</Format>
+                <Format>image/png8</Format>
+                <Format>image/png24</Format>
+                <Format>image/png32</Format>
+                <Format>image/gif</Format>
+                <Format>image/svg+xml</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Strassenverkehr.aspx"/></Get></HTTP>
+                </DCPType>
+            </GetMap>
+            <GetFeatureInfo>
+                <Format>application/vnd.esri.wms_raw_xml</Format>
+                <Format>application/vnd.esri.wms_featureinfo_xml</Format>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <Format>text/xml</Format>
+                <Format>text/html</Format>
+                <Format>text/plain</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Strassenverkehr.aspx"/></Get></HTTP>
+                </DCPType>
+            </GetFeatureInfo>
+            <esri_wms:GetStyles>
+                <Format>application/vnd.ogc.sld+xml</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Strassenverkehr.aspx"/></Get></HTTP>
+                </DCPType>
+            </esri_wms:GetStyles>
+        </Request>
+        <Exception>
+            <Format>application/vnd.ogc.se_xml</Format>
+            <Format>application/vnd.ogc.se_inimage</Format>
+            <Format>application/vnd.ogc.se_blank</Format>
+            <Format>text/xml</Format>
+            <Format>XML</Format>
+        </Exception>
+        <Layer>
+            <Title><![CDATA[Layer]]></Title>
+            <CRS>CRS:84</CRS>
+            <CRS>EPSG:4326</CRS>
+            <CRS>EPSG:25832</CRS>
+            <CRS>EPSG:31467</CRS>
+            <EX_GeographicBoundingBox>
+                <westBoundLongitude>9.7035194682</westBoundLongitude>
+                <eastBoundLongitude>10.3610239626</eastBoundLongitude>
+                <southBoundLatitude>53.3795925474</southBoundLatitude>
+                <northBoundLatitude>53.7603852266</northBoundLatitude>
+            </EX_GeographicBoundingBox>
+            <BoundingBox CRS="CRS:84" minx="9.7035194682" miny="53.3795925474" maxx="10.3610239626" maxy="53.7603852266"/>
+            <BoundingBox CRS="EPSG:4326" minx="53.3795925474" miny="9.7035194682" maxx="53.7603852266" maxy="10.3610239626"/>
+            <BoundingBox CRS="EPSG:25832" minx="544220" miny="5915245" maxx="591167" maxy="5957050"/>
+            <BoundingBox CRS="EPSG:31467" minx="5917263" miny="3544318" maxx="5958984" maxy="3591265"/>
+            <Layer queryable="1">
+                <Name>0</Name>
+                <Title><![CDATA[Strassenverkehr_Lnight_2012]]></Title>
+                <Abstract><![CDATA[Strassenverkehr_Lnight_2012]]></Abstract>
+                <CRS>CRS:84</CRS>
+                <CRS>EPSG:4326</CRS>
+                <CRS>EPSG:25832</CRS>
+                <CRS>EPSG:31467</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>9.7035194682</westBoundLongitude>
+                    <eastBoundLongitude>10.3610239626</eastBoundLongitude>
+                    <southBoundLatitude>53.3795925474</southBoundLatitude>
+                    <northBoundLatitude>53.7603852266</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <BoundingBox CRS="CRS:84" minx="9.7035194682" miny="53.3795925474" maxx="10.3610239626" maxy="53.7603852266"/>
+                <BoundingBox CRS="EPSG:4326" minx="53.3795925474" miny="9.7035194682" maxx="53.7603852266" maxy="10.3610239626"/>
+                <BoundingBox CRS="EPSG:25832" minx="544220" miny="5915245" maxx="591167" maxy="5957050"/>
+                <BoundingBox CRS="EPSG:31467" minx="5917263" miny="3544318" maxx="5958984" maxy="3591265"/>
+                <Style>
+                    <Name>default</Name>
+                    <Title>0</Title>
+                    <LegendURL width="129" height="129">
+                        <Format>image/png</Format>
+                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Strassenverkehr.aspx?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=0" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                    </LegendURL>
+                </Style>
+            </Layer>
+            <Layer queryable="1">
+                <Name>1</Name>
+                <Title><![CDATA[Strassenverkehr_Lden_2012]]></Title>
+                <Abstract><![CDATA[Strassenverkehr_Lden_2012]]></Abstract>
+                <CRS>CRS:84</CRS>
+                <CRS>EPSG:4326</CRS>
+                <CRS>EPSG:25832</CRS>
+                <CRS>EPSG:31467</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>9.7035194682</westBoundLongitude>
+                    <eastBoundLongitude>10.3610239626</eastBoundLongitude>
+                    <southBoundLatitude>53.3795925474</southBoundLatitude>
+                    <northBoundLatitude>53.7603852266</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <BoundingBox CRS="CRS:84" minx="9.7035194682" miny="53.3795925474" maxx="10.3610239626" maxy="53.7603852266"/>
+                <BoundingBox CRS="EPSG:4326" minx="53.3795925474" miny="9.7035194682" maxx="53.7603852266" maxy="10.3610239626"/>
+                <BoundingBox CRS="EPSG:25832" minx="544220" miny="5915245" maxx="591167" maxy="5957050"/>
+                <BoundingBox CRS="EPSG:31467" minx="5917263" miny="3544318" maxx="5958984" maxy="3591265"/>
+                <Style>
+                    <Name>default</Name>
+                    <Title>1</Title>
+                    <LegendURL width="131" height="107">
+                        <Format>image/png</Format>
+                        <OnlineResource xlink:href="http://gateway.hamburg.de/OGCFassade/HH_WMS_Strassenverkehr.aspx?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=1" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                    </LegendURL>
+                </Style>
+            </Layer>
+        </Layer>
+    </Capability>
+</WMS_Capabilities>
