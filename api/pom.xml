@@ -12,5 +12,14 @@
 	<modules>
 		<module>agol-writer</module>		
 		<module>transformation</module>
+        <module>processinfo</module>
+        <module>catalog-reader</module>
+        <module>csw-reader</module>
+        <module>itemtransform</module>
+        <module>httptransport</module>
+        <module>resource-reader</module>
+        <module>capabilities-reader</module>
+        <module>ckan-reader</module>
+        <module>kml-reader</module>
 	</modules>
 </project>

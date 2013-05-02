@@ -74,11 +74,16 @@
     </dependencies>
     <modules>
         <module>api</module>
-        <!--<module>apps</module>-->
+        <module>apps</module>
     </modules>
     <dependencyManagement>
         <dependencies>
-            <!-- Eigene API dependencies ================================ -->            
+            <!-- Eigene API dependencies ================================ -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>kml-reader</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>agol-writer</artifactId>
@@ -88,10 +93,60 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>transformation</artifactId>
                 <version>${project.version}</version>
-            </dependency> 			
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>processinfo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>localapp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>catalog-reader</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>resource-reader</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>csw-reader</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>ckan-reader</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>capabilities-reader</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>itemtransform</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>httptransport</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- 3rd party Module dependencies ================================ -->
-			<dependency>
+            <dependency>
+                <groupId>xml-resolver</groupId>
+                <artifactId>xml-resolver</artifactId>
+                <version>1.1</version>
+            </dependency>
+            <dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-core</artifactId>
 				<version>2.1.4</version>
@@ -106,6 +161,11 @@
 				<artifactId>jackson-databind</artifactId>
 				<version>2.1.4</version>
 			</dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>2.1.4</version>
+            </dependency>
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
@@ -114,7 +174,6 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <scope>test</scope>
                 <version>3.0.6.RELEASE</version>
             </dependency>
             <dependency>
@@ -126,14 +185,22 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <scope>test</scope>
                 <version>3.0.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <scope>test</scope>
                 <version>3.0.6.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.14</version>
+            </dependency>
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>stringtemplate</artifactId>
+                <version>4.0.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

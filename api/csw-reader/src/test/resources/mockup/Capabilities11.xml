@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE WMT_MS_Capabilities SYSTEM "http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd">
+<WMT_MS_Capabilities version="1.1.1">
+    <Service>
+        <Name>OGC:WMS</Name>
+        <Title>Web Map Service apro_wms</Title>
+        <Abstract>ArcIMS 9.3.1 apro_wms Web Map Service</Abstract>
+        <KeywordList>
+            <Keyword>ArcIMS</Keyword>
+        </KeywordList>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://wscw0010:8080/wmsconnector/com.esri.wms.Esrimap/apro_wms?" xlink:type="simple"/>
+        <ContactInformation>
+            <ContactPersonPrimary>
+                <ContactPerson/>
+                <ContactOrganization/>
+            </ContactPersonPrimary>
+            <ContactPosition/>
+            <ContactAddress>
+                <AddressType>postal</AddressType>
+                <Address/>
+                <City/>
+                <StateOrProvince/>
+                <PostCode/>
+                <Country/>
+            </ContactAddress>
+            <ContactVoiceTelephone/>
+            <ContactFacsimileTelephone/>
+            <ContactElectronicMailAddress/>
+        </ContactInformation>
+        <Fees>none</Fees>
+        <AccessConstraints>none</AccessConstraints>
+    </Service>
+    <Capability>
+        <Request>
+            <GetCapabilities>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://wscw0010:8080/wmsconnector/com.esri.wms.Esrimap/apro_wms?" xlink:type="simple"/>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetCapabilities>
+            <GetMap>
+                <Format>image/png</Format>
+                <Format>image/jpeg</Format>
+                <Format>image/gif</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://wscw0010:8080/wmsconnector/com.esri.wms.Esrimap/apro_wms?" xlink:type="simple"/>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetMap>
+            <GetFeatureInfo>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <Format>text/xml</Format>
+                <Format>text/html</Format>
+                <Format>text/plain</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://wscw0010:8080/wmsconnector/com.esri.wms.Esrimap/apro_wms?" xlink:type="simple"/>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetFeatureInfo>
+        </Request>
+        <Exception>
+            <Format>application/vnd.ogc.se_xml</Format>
+            <Format>application/vnd.ogc.se_inimage</Format>
+            <Format>application/vnd.ogc.se_blank</Format>
+        </Exception>
+        <UserDefinedSymbolization SupportSLD="1" UserLayer="0" UserStyle="1" RemoteWFS="0"/>
+        <Layer noSubsets="0" opaque="0" queryable="0">
+            <Title>apro_wms</Title>
+            <SRS>EPSG:4326</SRS>
+            <SRS>EPSG:25832</SRS>
+            <SRS>EPSG:31467</SRS>
+            <SRS>EPSG:4258</SRS>
+            <SRS>EPSG:3034</SRS>
+            <SRS>EPSG:3042</SRS>
+            <SRS>EPSG:3043</SRS>
+            <SRS>EPSG:3044</SRS>
+            <LatLonBoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3305514105" maxx="10.4920782992" maxy="53.9757879344"/>
+            <BoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3305514105" maxx="10.4920782992" maxy="53.9757879344"/>
+            <BoundingBox SRS="EPSG:25832" minx="460000" miny="5910049.67794795" maxx="597876.479084716" maxy="5981000"/>
+            <Layer queryable="1">
+                <Name>12</Name>
+                <Title>Apro-Flächen</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+            </Layer>
+            <Layer queryable="1">
+                <Name>11</Name>
+                <Title>Apro-Symbole</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+            </Layer>
+            <Layer queryable="1">
+                <Name>10</Name>
+                <Title>Flächen mit Klärungsbedarf</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+            </Layer>
+            <Layer queryable="1">
+                <Name>9</Name>
+                <Title>wertvolle Einzelbiotope</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+            </Layer>
+            <Layer queryable="1">
+                <Name>8</Name>
+                <Title>Verbindungsbiotope</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+            </Layer>
+            <Layer queryable="1">
+                <Name>7</Name>
+                <Title>Eignungsgebiete für Windkraftstandorte</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+            </Layer>
+            <Layer queryable="1">
+                <Name>6</Name>
+                <Title>Natura 2000</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+                <BoundingBox SRS="EPSG:4326" minx="8.3901248458" miny="53.3764349374" maxx="10.3720449285" maxy="53.9757879344"/>
+            </Layer>
+            <Layer queryable="1">
+                <Name>5</Name>
+                <Title>Gewaesser</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="9.6293445347" miny="53.3307644772" maxx="10.4872965294" maxy="53.8412082623"/>
+                <BoundingBox SRS="EPSG:4326" minx="9.6293445347" miny="53.3307644772" maxx="10.4872965294" maxy="53.8412082623"/>
+            </Layer>
+            <Layer queryable="1">
+                <Name>4</Name>
+                <Title>Bundesstrassen</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="9.6299988619" miny="53.3674235959" maxx="10.4255814783" maxy="53.8053567122"/>
+                <BoundingBox SRS="EPSG:4326" minx="9.6299988619" miny="53.3674235959" maxx="10.4255814783" maxy="53.8053567122"/>
+            </Layer>
+            <Layer queryable="1">
+                <Name>3</Name>
+                <Title>Autobahn</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="9.6369285411" miny="53.331271778" maxx="10.4268967568" maxy="53.8411230685"/>
+                <BoundingBox SRS="EPSG:4326" minx="9.6369285411" miny="53.331271778" maxx="10.4268967568" maxy="53.8411230685"/>
+            </Layer>
+            <Layer queryable="1">
+                <Name>2</Name>
+                <Title>Hauptstrassen</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="9.6293439703" miny="53.3307625318" maxx="10.4872659061" maxy="53.8412101251"/>
+                <BoundingBox SRS="EPSG:4326" minx="9.6293439703" miny="53.3307625318" maxx="10.4872659061" maxy="53.8412101251"/>
+            </Layer>
+            <Layer queryable="0">
+                <Name>1</Name>
+                <Title>Lapro_DISK_alt</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="9.7205207977" miny="53.3862280839" maxx="10.3473761011" maxy="53.7611366897"/>
+                <BoundingBox SRS="EPSG:4326" minx="9.7205207977" miny="53.3862280839" maxx="10.3473761011" maxy="53.7611366897"/>
+            </Layer>
+            <Layer queryable="1">
+                <Name>0</Name>
+                <Title>DISK_Texte_Lapro</Title>
+                <SRS>EPSG:4326</SRS>
+                <LatLonBoundingBox SRS="EPSG:4326" minx="9.7205207977" miny="53.3862280839" maxx="10.3473761011" maxy="53.7611366897"/>
+                <BoundingBox SRS="EPSG:4326" minx="9.7205207977" miny="53.3862280839" maxx="10.3473761011" maxy="53.7611366897"/>
+            </Layer>
+        </Layer>
+    </Capability>
+</WMT_MS_Capabilities>

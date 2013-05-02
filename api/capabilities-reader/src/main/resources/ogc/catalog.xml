@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <!--<public publicId="http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd"
+            uri="WMS_MS_Capabilities.dtd"/>-->
+    <system systemId="http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd"
+            uri="WMS_MS_Capabilities.dtd"/>
+    <public publicId="http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd"
+            uri="capabilities_1_3_0.xsd"/>
+    <public publicId="-//W3C//DTD XHTML 1.0 Strict//EN"
+            uri="xhtml1-strict.dtd"/>
+    <public publicId="-//W3C//DTD XHTML 1.0 Transitional//EN"
+            uri="xhtml1-transitional.dtd"/>
+    <public publicId="-//W3C//DTD XHTML 1.0 Frameset//EN"
+            uri="xhtml1-frameset.dtd"/>
+    <public publicId="-//W3C//ENTITIES Latin 1 for XHTML//EN"
+            uri="xhtml-lat1.ent"/>
+    <public publicId="-//W3C//ENTITIES Symbols for XHTML//EN"
+            uri="xhtml-symbol.ent"/>
+    <public publicId="-//W3C//ENTITIES Special for XHTML//EN"
+            uri="xhtml-special.ent"/>
+</catalog>

@@ -1,0 +1,33 @@
+{
+    "help": "\n    Searches for resources satisfying a given search criteria.\n\n    It returns a dictionary with 2 fields: ``count`` and ``results``.  The\n    ``count`` field contains the total number of Resources found without the\n    limit or query parameters having an effect.  The ``results`` field is a\n    list of dictized Resource objects.\n\n    The 'query' parameter is a required field.  It is a string of the form\n    ``{field}:{term}`` or a list of strings, each of the same form.  Within\n    each string, ``{field}`` is a field or extra field on the Resource domain\n    object.\n\n    If ``{field}`` is ``\"hash\"``, then an attempt is made to match the\n    `{term}` as a *prefix* of the ``Resource.hash`` field.\n\n    If ``{field}`` is an extra field, then an attempt is made to match against\n    the extra fields stored against the Resource.\n\n    Note: The search is limited to search against extra fields declared in\n    the config setting ``ckan.extra_resource_fields``.\n\n    Note: Due to a Resource's extra fields being stored as a json blob, the\n    match is made against the json string representation.  As such, false\n    positives may occur:\n\n    If the search criteria is: ::\n\n        query = \"field1:term1\"\n\n    Then a json blob with the string representation of: ::\n\n        {\"field1\": \"foo\", \"field2\": \"term1\"}\n\n    will match the search criteria!  This is a known short-coming of this\n    approach.\n\n    All matches are made ignoring case; and apart from the ``\"hash\"`` field,\n    a term matches if it is a substring of the field's value.\n\n    Finally, when specifying more than one search criteria, the criteria are\n    AND-ed together.\n\n    The ``order`` parameter is used to control the ordering of the results.\n    Currently only ordering one field is available, and in ascending order\n    only.\n\n    The ``fields`` parameter is deprecated as it is not compatible with calling\n    this action with a GET request to the action API.\n\n    The context may contain a flag, `search_query`, which if True will make\n    this action behave as if being used by the internal search api.  ie - the\n    results will not be dictized, and SearchErrors are thrown for bad search\n    queries (rather than ValidationErrors).\n\n    :param query: The search criteria.  See above for description.\n    :type query: string or list of strings of the form \"{field}:{term1}\"\n    :param fields: Deprecated\n    :type fields: dict of fields to search terms.\n    :param order_by: A field on the Resource model that orders the results.\n    :type order_by: string\n    :param offset: Apply an offset to the query.\n    :type offset: int\n    :param limit: Apply a limit to the query.\n    :type limit: int\n\n    :returns:  A dictionary with a ``count`` field, and a ``results`` field.\n    :rtype: dict\n\n    ",
+    "success": true,
+    "result": {
+        "count": 1,
+        "results": {
+            "mimetype": "text/csv",
+            "resource_group_id": "e397ebc9-9582-452c-8bd7-82ffcf6a7e8f",
+            "cache_url": "",
+            "hash": "c8d44d1c16051f83ca108aabf1854e7c54c8ad0f",
+            "description": "You can see this data plotted on a map, by clicking on 'Map' below. Individual data records can be seen by clicking on each point.",
+            "format": "CSV",
+            "url": "http://afghanistanelectiondata.org/sites/default/files/district_centerpoints.csv",
+            "created": "2012-05-08T12:01:10.941191",
+            "tracking_summary": {
+                "total": 0,
+                "recent": 0
+            },
+            "webstore_url": "http://demo.ckan.org/api/data/f6331f99-51f6-44d9-95b9-b20f3b74f360/",
+            "cache_last_updated": null,
+            "state": "active",
+            "mimetype_inner": "",
+            "webstore_last_updated": "2012-05-08T12:48:48.599514",
+            "last_modified": "2012-05-08T12:01:12.221263",
+            "position": 0,
+            "revision_id": "0458ae9f-0543-4650-bff9-7c70d12e1a60",
+            "size": "32378",
+            "id": "f6331f99-51f6-44d9-95b9-b20f3b74f360",
+            "resource_type": "file",
+            "name": "District Names"
+        }
+    }
+}
