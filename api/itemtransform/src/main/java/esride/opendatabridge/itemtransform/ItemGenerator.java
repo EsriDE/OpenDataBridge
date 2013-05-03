@@ -5,10 +5,17 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -26,15 +33,21 @@ public class ItemGenerator {
     private XPathFactory xPathFactory;
     private XPath xPath;
     
+
+    private Transformer trans;
+    
     private IItemGeneratorConfiguration generatorConfiguration;
 
     public void setGeneratorConfiguration(IItemGeneratorConfiguration generatorConfiguration) {
         this.generatorConfiguration = generatorConfiguration;
     }
 
-    public ItemGenerator(){
+    public ItemGenerator() throws TransformerConfigurationException {
         xPathFactory = XPathFactory.newInstance();
         xPath = xPathFactory.newXPath();
+
+        TransformerFactory fac = TransformerFactory.newInstance();
+        Transformer trans = fac.newTransformer();
     }
 
     public HashMap<String, String> getItemElementsFromDoc(HashMap<String, Document> xmlDoc, String processId, String targetResource) throws ItemGenerationException {
@@ -46,6 +59,18 @@ public class ItemGenerator {
         int count = Integer.parseInt(countString);
         for(int i=0; i<count; i++){
             String itemMetadataType = properties.getProperty("item[" + i + "].md.type");
+
+            if(sLogger.isDebugEnabled()){
+                Document doc = xmlDoc.get(itemMetadataType);
+                try {
+                    StringWriter write = new StringWriter();
+                    trans.transform(new DOMSource(doc), new StreamResult(write));
+                    sLogger.debug("GetItem from Document: " + write.toString());
+                } catch (TransformerException e) {
+                    sLogger.warn("Could not transform document for logging.");
+                }
+            }
+
 
             String itemKey = properties.getProperty("item[" + i + "].md.id");
             String itemType = properties.getProperty("item[" + i + "].value.type");
