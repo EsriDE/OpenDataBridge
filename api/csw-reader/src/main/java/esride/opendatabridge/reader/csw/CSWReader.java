@@ -198,7 +198,13 @@ public class CSWReader implements IReader, IReaderFactory {
 
             
         }
-       
+
+        if(failureList.size() > 0){
+            sLogger.info("Please check the following urls. They are not accessible during the transformation");
+            for (MetadataObject aFailureList : failureList) {
+                sLogger.info(aFailureList.getResourceUrl());
+            }
+        }
        sLogger.info("CSW-Modul: Requesting Metadata from catalog finished");
        sLogger.info("------------------------------------------------ ");
        return lTransformedItems;

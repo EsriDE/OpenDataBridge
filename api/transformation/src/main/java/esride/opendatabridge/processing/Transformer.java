@@ -1,12 +1,17 @@
 package esride.opendatabridge.processing;
 
-import esride.opendatabridge.agolwriter.AgolService;
-import esride.opendatabridge.item.AgolItem;
 
-import java.util.ArrayList;
+import esride.opendatabridge.reader.IReader;
+import esride.opendatabridge.reader.ReaderException;
+import esride.opendatabridge.reader.TransformedItem;
+import org.apache.log4j.Logger;
+
+
+
+
+
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -17,50 +22,44 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class Transformer {
+    
+    private static Logger sLogger = Logger.getLogger(Transformer.class);
+    
+    private HashMap<String, ItemContainer> itemContainer = new HashMap<String, ItemContainer>();
 
-    public static void main(String[] args) {
-        String subscription  = args[0];
-        String user = args[1];
-        String password = args[2];
-        String logpath = args[3];
 
-        AgolService agolService = new AgolService(subscription, user, password, "http://www.esri.de", logpath);
-        Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems("WMS");
+    public void processTransformation(IReader reader){        
+
+        //hole die Items vom Katalog
+        List<TransformedItem> transformedItemList = null;
+        try {
+            transformedItemList = reader.getItemsFromCatalog();
+        } catch (ReaderException e) {
+            e.printStackTrace();
+        }
+
+        if(transformedItemList != null){
+            int listSize = transformedItemList.size();
+            for(int i=0; i<listSize; i++){
+                TransformedItem item = transformedItemList.get(i);
+                ItemContainer container = new ItemContainer();
+                container.setCatalogItem(item);
+                itemContainer.put(item.getResourceUrl(), container);
+            }
+        }
+
+        //hole die AGOL Items des Kunden und iteriere ueber die Liste und fuege zum Container hinzu
+
+       //iteriere ueber HashMap und holeItem raus
 
     }
 
-    /*
-    Get External Items
-    @returns: HashMap<url, AgolItem>
-     */
+    public void testProcessTransformation(){
+        //hole nun die Items vom Katalog
+        
+        //persistiere die Daten
 
-    /*
-    Get AGOL Items
-    @returns: HashMap<url, AgolItem>
-     */
-
-    /*
-    Compare Item Lists
-    @returns: CompareListContainer {
-        List<AgolItem> addList;
-        List<AgolItem> updateList;
-        List<AgolItem> deleteList;
     }
-     */
 
-    /*
-    public Write Comparison Results to AGOL {
-        private addAgolItems(List<AgolItem> addList);
-        private updateAgolItems(List<AgolItem> updateList);
-        private deleteAgolItems(List<AgolItem> deleteList);
-     }
-     */
-
-    /*
-    Synchronize Accounts
-    - get both listst
-    - compare
-    - write to AGOL
-     */
 
 }
