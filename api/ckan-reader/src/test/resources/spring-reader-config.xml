@@ -33,7 +33,8 @@
     <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"/>
 
     <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
-          p:generatorConfiguration-ref="itemConfig"/>
+          p:generatorConfiguration-ref="itemConfig"
+            p:elemHandlerMap-ref="elemMap"/>
 
     <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
           p:itemElemExtractor-ref="itemGenerator"/>
@@ -56,6 +57,46 @@
     </util:list>
 
     <bean class="esride.opendatabridge.httptransport.HTTPRequest" id="httpRequest"/>
+
+    <util:map id="elemMap" key-type="java.lang.String" value-type="esride.opendatabridge.itemtransform.elemhandler.IElemHandler">
+        <entry key="default" value-ref="defaultElemHandler"/>
+        <entry key="string" value-ref="stringElemHandler"/>
+        <entry key="nodeset" value-ref="nodesetElemHandler"/>
+        <entry key="licenseCodeList" value-ref="licenseCodeListElemHandler"/>
+    </util:map>
+
+    <bean id="defaultElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.DefaultElemHandler"/>
+    <bean id="stringElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.StringElemHandler"/>
+    <bean id="nodesetElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.NodesetElemHandler"/>
+    <bean id="licenseCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CodeListElemHandler"
+            p:codeListMap-ref="licenseMap"/>
+
+    <util:map id="licenseMap" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="dl-de-by-1.0" value="Datenlizenz Deutschland Namensnennung"/>
+        <entry key="official-work" value="Amtliches Werk, lizenzfrei nach §5 UrhG"/>
+        <entry key="geonutzv-de-2013-03-19" value="Nutzungsbestimmungen für die Bereitstellung von Geodaten des Bundes"/>
+        <entry key="cc-by" value="Creative Commons Namensnennung (CC-BY)"/>
+        <entry key="cc-zero" value="Creative Commons Zero"/>
+        <entry key="cc-by-sa" value="Creative Commons Attribution Weitergabe unter gleichen Bedingungen (CC-BY-SA)"/>
+        <entry key="odc-odbl" value="Open Data Commons Open Database License (ODbL)"/>
+        <entry key="odc-by" value="Open Data Commons Namensnennung"/>
+        <entry key="odc-pddl" value="Open Data Commons Public Domain Dedication and Licence (PDDL)"/>
+        <entry key="other-open" value="Andere freie Lizenz"/>
+        <entry key="cc-nc" value="Creative Commons Nicht-Kommerziell (CC-NC)"/>
+        <entry key="cc-by-nd" value="Creative Commons Keine Bearbeitung (CC-BY-ND)"/>
+        <entry key="dl-de-by-nc-1.0" value="Datenlizenz Deutschland Namensnennung nicht-kommerziell"/>
+        <entry key="geolizenz-i-a" value="Geolizenz Ia Namensnennung"/>
+        <entry key="geolizenz-closed" value="eingeschränkte Geolizenz"/>
+        <entry key="apache" value="Apache Lizenz"/>
+        <entry key="app_commercial" value="Andere kommerzielle Lizenz"/>
+        <entry key="app_freeware" value="Andere kostenfreie Lizenz"/>
+        <entry key="app_opensource" value="Andere Open Source Lizenz"/>
+        <entry key="bsd-license" value="BSD Lizenz"/>
+        <entry key="gfdl" value="GNU Free Documentation License"/>
+        <entry key="gpl-3.0" value="GNU General Public License version 3.0 (GPLv3)"/>
+        <entry key="mozilla" value="Mozilla Public License 1.0 (MPL)"/>
+        <entry key="other-closed" value="Andere eingeschränkte Lizenz"/>
+    </util:map>
 
 
 </beans>
