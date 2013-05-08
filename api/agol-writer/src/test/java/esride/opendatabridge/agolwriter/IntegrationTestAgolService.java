@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,12 +43,53 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     }
 
     @Test
-    public void testAddUpdateDeleteItem(){
+    public void testAddPublicUpdateDeleteItem(){
         try {
             AgolItem testItem = agolItemFactory.createAgolItem(jsonMap.get("test01"));
-            String itemId = agolService.addItem(testItem);
+            List<AgolItem> agolItems = new ArrayList<AgolItem>();
+            agolItems.add((testItem));
+            String itemId = agolService.addItems(agolItems);
             testItem.setId(itemId);
             agolService.updateItem(testItem);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddOrgUpdateDeleteItem(){
+        try {
+            AgolItem testItem = agolItemFactory.createAgolItem(jsonMap.get("test01"));
+            List<AgolItem> agolItems = new ArrayList<AgolItem>();
+            agolItems.add((testItem));
+            String itemId = agolService.addItems(agolItems, AccessType.ORG);
+            testItem.setId(itemId);
+            agolService.updateItem(testItem);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddGroupsUpdateDeleteItem(){
+        try {
+            String userGroupIds = agolService.getUserGroupIds();
+            AgolItem testItem = agolItemFactory.createAgolItem(jsonMap.get("test01"));
+            List<AgolItem> agolItems = new ArrayList<AgolItem>();
+            agolItems.add((testItem));
+            String itemId = agolService.addItems(agolItems, AccessType.SHARED, userGroupIds);
+            testItem.setId(itemId);
+            agolService.updateItem(testItem);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetUserGroupIds() {
+        try {
+            String userGroupIds = agolService.getUserGroupIds();
+            Assert.assertNotNull(userGroupIds);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

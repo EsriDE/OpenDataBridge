@@ -4,6 +4,7 @@ import esride.opendatabridge.item.AgolItem;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -19,7 +20,7 @@ import java.util.Map;
 public interface IAgolService {
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType) throws IOException;
     public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType) throws IOException;
-    public String addItem(AgolItem agolItem) throws AgolItemTransactionFailedException, IOException;
+    public String addItems(List<AgolItem> agolItems) throws AgolItemTransactionFailedException, IOException;
     public void updateItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException;
     public void deleteItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException;
 }

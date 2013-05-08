@@ -11,7 +11,7 @@
 
     <context:property-placeholder location="classpath:IntegrationTest.properties"/>
 
-    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:agolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest">
+    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest">
         <constructor-arg type="java.lang.String" value="${test.service.url}"/>
         <constructor-arg type="java.lang.String" value="${test.service.username}"/>
         <constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
