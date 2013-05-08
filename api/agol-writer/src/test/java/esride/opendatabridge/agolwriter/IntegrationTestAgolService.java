@@ -1,9 +1,18 @@
 package esride.opendatabridge.agolwriter;
 
+import esride.opendatabridge.item.AgolItem;
+import esride.opendatabridge.item.AgolItemFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,10 +25,31 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests {
 
     @Autowired
-    private AGOLService agolService;
+    private AgolService agolService;
+    @Autowired
+    private AgolItemFactory agolItemFactory;
+    @Resource
+    private HashMap<String,String> jsonMap;
 
     @Test
-    public void testAddItem(){
-        //....
+    public void testGetAllItems() {
+        try {
+            Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems("WMS");
+            Assert.assertNotNull("List of Agol items is empty.", agolItems);
+        } catch (IOException e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddUpdateDeleteItem(){
+        try {
+            AgolItem testItem = agolItemFactory.createAgolItem(jsonMap.get("test01"));
+            String itemId = agolService.addItem(testItem);
+            testItem.setId(itemId);
+            agolService.updateItem(testItem);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
     }
 }

@@ -2,250 +2,271 @@ package esride.opendatabridge.agolwriter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esride.opendatabridge.item.AGOLItem;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import esride.opendatabridge.httptransport.HTTPRequest;
+import esride.opendatabridge.item.AgolItem;
+import esride.opendatabridge.item.AgolItemFactory;
+import org.apache.log4j.Logger;
 
-import org.apache.http.util.EntityUtils;
-
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * User: gvs
  * Date: 06.03.13
  * Time: 13:22
  */
-public class AGOLService implements IWriter{
+public class AgolService implements IAgolService {
 
-    private String _userName, _password,_referer, _baseUrl;
-    private String _token, _accountId;
+    private String _userName, _password,_referer, _token;
+    private String _baseUrl, _userContentUrl;
+    private Long _tokenExpires;
+    private static final Logger log = Logger.getLogger(AgolService.class);
+    private AgolItemFactory _agolItemFactory;
+    private Map<String, ArrayList<AgolItem>> agolItems = new HashMap<String, ArrayList<AgolItem>>();
+    private HTTPRequest _httpRequest;
 
-    public AGOLService(String baseUrl, String userName, String password, String referer)
+    public void setAgolItemFactory(AgolItemFactory agolItemFactory) {
+        this._agolItemFactory = agolItemFactory;
+    }
+    public void set_httpRequest(HTTPRequest _httpRequest) {
+        this._httpRequest = _httpRequest;
+    }
+
+    public AgolService(String baseUrl, String userName, String password, String referer)
     {
         _baseUrl = baseUrl;
         _userName = userName;
         _password = password;
         _referer = referer;
+
+        _userContentUrl = _baseUrl + "/sharing/content/users/" + _userName;
     }
 
-    private String createToken() {
-        HttpClient httpclient = new DefaultHttpClient();
+    private void createToken() throws IOException {
+        String generateTokenBaseUrl = "https://www.arcgis.com/sharing/generateToken";
 
-        try {
-            String generateTokenBaseUrl = "https://www.arcgis.com/sharing/generateToken";
+        HashMap<String, String> agolAttributes = new HashMap<String, String>();
+        agolAttributes.put("f", "json");
+        agolAttributes.put("username", _userName);
+        agolAttributes.put("password", _password);
+        agolAttributes.put("referer", _referer);
 
-            HttpPost httppost = new HttpPost(generateTokenBaseUrl);
+        InputStream entities = _httpRequest.executePostRequest(generateTokenBaseUrl, agolAttributes, null);
 
-            List <NameValuePair> agolAttributes = new ArrayList <NameValuePair>();
-            agolAttributes.add(new BasicNameValuePair("f", "json"));
-            agolAttributes.add(new BasicNameValuePair("username", _userName));
-            agolAttributes.add(new BasicNameValuePair("password", _password));
-            agolAttributes.add(new BasicNameValuePair("referer", _referer));
-
-            // TODO: Encoding funktioniert nicht richtig
-            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes, Charset.forName("UTF-8")));
-
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
-
-            if (entity != null)
-            {
-                String entities = EntityUtils.toString(entity);
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(entities);
-                JsonNode tokenNode = rootNode.get("token");
-                return tokenNode.asText();
-            }
+        if (entities != null)
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(entities);
+            JsonNode tokenNode = rootNode.get("token");
+            _token = tokenNode.asText();
+            String tokenExpires = rootNode.get("expires").toString();
+            _tokenExpires = Long.valueOf(tokenExpires);
         }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
-        }
-        return null;
     }
 
-    private String getAccountId() {
-        String selfUrl = _baseUrl + "/sharing/accounts/self";
-
-        List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
-        agolAttributes.add(new BasicNameValuePair("culture", "de"));
-
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(selfUrl);
-        try {
-            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
-
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
-
-            if (entity != null)
-            {
-                String entities = EntityUtils.toString(entity);
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(entities);
-                JsonNode idNode = rootNode.get("id");
-                return idNode.asText();
-            }
+    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType) throws IOException {
+        long startTime = System.currentTimeMillis();
+        fillAgolItems(itemType, "public", 0);
+        if (log.isInfoEnabled()) {
+            log.info(agolItems.size() + " AgolItem objects created in " + (System.currentTimeMillis() - startTime) + " ms.");
         }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
-        }
-        return null;
+        return agolItems;
     }
+    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType) throws IOException {
+        fillAgolItems(itemType, accessType, 0);
+        return agolItems;
+    }
+    private void fillAgolItems(String itemType, String accessType, int startWithItemNumber) throws IOException {
+        int agolItemsPaginationNextStart;
+        int totalItemsCount;
+        int retrievedItemsCount;
+        int duplicateUrlsCount = 0;
 
-
-    public List <String> getResourceUrls() {
-        _token = createToken();
-        System.out.println(_token);
-        _accountId = getAccountId();
-        System.out.println(_accountId);
-
-        List <String> urlStrings = new ArrayList <String>();
-
-        HttpClient httpclient = new DefaultHttpClient();
         String searchUrl = _baseUrl + "/sharing/search";
+        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
 
-        try {
-            HttpPost httppost = new HttpPost(searchUrl);
+        // get ALL public WMS items that are owned by logged-in user
+        String searchString =  "(owner:" + _userName + " AND " + "access:" + accessType + " AND "+ "type:\"" + itemType + "\")";
 
-            List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
+        // get ALL public WMS items in the organization (accountId)
+//            String searchString =  "(accountid:" + _accountId + " AND " + "access:" + accessType + " AND "+ "type:\"" + itemType + "\")";
 
-            String searchString =  "(accountid:" + _accountId + " AND " + "access:public"+ " AND "+ "type:\"WMS\")";
-            agolAttributes.add(new BasicNameValuePair("q", searchString));
-            agolAttributes.add(new BasicNameValuePair("num", "100"));
+        // get ALL public WMS items
+//            String searchString =  "(access:" + accessType + " AND "+ "type:\"" + itemType + "\")";
 
+        agolAttributes.put("q", searchString);
+        agolAttributes.put("num", "100");  // Maximum value: 100
+        agolAttributes.put("start", String.valueOf(startWithItemNumber));
 
-            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
+        InputStream entities = _httpRequest.executePostRequest(searchUrl, agolAttributes, null);
 
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
+        if (entities != null)
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(entities);
 
-            if (entity != null)
+            // General information
+            agolItemsPaginationNextStart = Integer.valueOf(rootNode.get("nextStart").toString());
+            totalItemsCount = Integer.valueOf(rootNode.get("total").toString());
+            if (agolItemsPaginationNextStart != -1) {
+                retrievedItemsCount = agolItemsPaginationNextStart-1;
+            }
+            else
             {
-                String entities = EntityUtils.toString(entity);
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(entities);
-                List<JsonNode> urlNodes = rootNode.findValues("url");
+                retrievedItemsCount = Integer.valueOf(rootNode.get("total").toString());
+            }
 
-                for ( JsonNode node : urlNodes )
+            // Results
+            JsonNode resultsNode = rootNode.get("results");
+            Iterator resultsIterator = resultsNode.elements();
+
+            while (resultsIterator.hasNext()) {
+                JsonNode result = (JsonNode) resultsIterator.next();
+                String strUrl = result.findValue("url").toString();
+
+                AgolItem oneItem = _agolItemFactory.createAgolItem(result.toString()); // fromAgolJson
+
+                boolean contains = agolItems.containsKey(strUrl);
+                if(contains){
+                    ArrayList<AgolItem> agolItemArrayList = agolItems.get(strUrl);
+                    agolItemArrayList.add(oneItem);
+                    if (log.isInfoEnabled()) {
+                        log.info("Duplicate entry in ArcGIS Online detected for URL " + strUrl);
+                    }
+                    duplicateUrlsCount++;
+                }
+                else
                 {
-                    urlStrings.add(node.asText());
-                    System.out.println(node.asText());
+                    ArrayList<AgolItem> agolItemArrayList = new ArrayList<AgolItem>();
+                    agolItemArrayList.add(oneItem);
+                    agolItems.put(strUrl, agolItemArrayList);
                 }
             }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
-        }
+            if (log.isInfoEnabled()) {
+                log.info(retrievedItemsCount + "/" + totalItemsCount + " retrieved. " + duplicateUrlsCount + " duplicate URLs found. " + agolItems.size() + " agolItems with different URLs found.");
+            }
 
-        return urlStrings;
+            // Recursive call: Items are limited to 100 - if more than that are available, call again
+            if (agolItemsPaginationNextStart!=-1) {
+                fillAgolItems(itemType, "public", agolItemsPaginationNextStart);
+            }
+        }
     }
 
+    public void updateItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException {
+        String userItemUrl = _userContentUrl + "/items/" + agolItem.getId();
+        String updateItemUrl = userItemUrl + "/update";
 
-    public void addItem(AGOLItem agolItem) {
+        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
+        agolAttributes.putAll(agolItem.getAttributes());
+
+        InputStream entities = _httpRequest.executePostRequest(updateItemUrl, agolAttributes, null);
+        if (entities != null)
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(entities);
+
+            JsonNode errorNode = rootNode.get("error");
+            if (errorNode != null)
+            {
+                throw new AgolItemTransactionFailedException("Update Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
+            }
+        }
+    }
+
+    public void deleteItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException {
+        String userItemUrl = _userContentUrl + "/items/" + agolItem.getId();
+        String deleteItemUrl = userItemUrl + "/delete";
+
+        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
+
+        InputStream entities = _httpRequest.executePostRequest(deleteItemUrl, agolAttributes, null);
+        if (entities != null)
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(entities);
+
+            JsonNode errorNode = rootNode.get("error");
+            if (errorNode != null)
+            {
+                throw new AgolItemTransactionFailedException("Delete Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
+            }
+        }
+    }
+
+    // ToDo: "access" Parameter, ob private, public oder an Gruppe geteilt
+    public void addItems(List<AgolItem> agolItems) throws AgolItemTransactionFailedException, IOException {
+        String itemIds = "";
+        for (AgolItem agolItem : agolItems) {
+            if (itemIds.length()>0) {
+                itemIds += ",";
+            }
+            itemIds += createItem(agolItem);
+        }
+        if (itemIds!=null) {
+            shareItems(itemIds);
+        }
+    }
+    public String addItem(AgolItem agolItem) throws AgolItemTransactionFailedException, IOException {
         String itemId = createItem(agolItem);
-        publishItem(itemId);
+        if (itemId!=null) {
+            shareItems(itemId);
+        }
+        return itemId;
     }
 
-    private void publishItem(String itemId) {
+    private String createItem(AgolItem agolItem) throws AgolItemTransactionFailedException, IOException {
+        String addItemUrl = _userContentUrl + "/addItem";
 
-        HttpClient httpclient = new DefaultHttpClient();
-        String userContentUrl = _baseUrl + "/sharing/content/users/" + _userName +"/shareItems";
+        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
+        agolAttributes.putAll(agolItem.getAttributes());
 
-        try {
-            HttpPost httppost = new HttpPost(userContentUrl);
+        InputStream entities = _httpRequest.executePostRequest(addItemUrl, agolAttributes, null);
 
-            List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
+        if (entities != null)
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(entities);
 
-            agolAttributes.add(new BasicNameValuePair("items", itemId));
-            // TODO: Wofür braucht es dieses "account"
-            agolAttributes.add(new BasicNameValuePair("account", "false"));
-            agolAttributes.add(new BasicNameValuePair("everyone", "true"));
-
-            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
-
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
-
-            if (entity != null)
+            JsonNode errorNode = rootNode.get("error");
+            if (errorNode != null)
             {
-                String entities = EntityUtils.toString(entity);
-                System.out.println(entities);
+                throw new AgolItemTransactionFailedException("Create Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            httpclient.getConnectionManager().shutdown();
-        }
-    }
-
-    private String createItem(AGOLItem agolItem) {
-        HttpClient httpclient = new DefaultHttpClient();
-        String userContentUrl = _baseUrl + "/sharing/content/users/" + _userName +"/addItem";
-
-        try {
-            HttpPost httppost = new HttpPost(userContentUrl);
-
-            List<NameValuePair> agolAttributes = getStandardAGOLAttributes();
-            for (String key : agolItem.getAttributes().keySet() )
-            {
-                String agolKey = key;
-                if (key.startsWith("agol."))
-                {
-                    agolKey = key.substring(5);
-                }
-
-                agolAttributes.add(new BasicNameValuePair(agolKey, agolItem.getAttributes().get(key)));
-            }
-
-            httppost.setEntity(new UrlEncodedFormEntity(agolAttributes));
-
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
-
-            if (entity != null)
-            {
-                String entities = EntityUtils.toString(entity);
-                System.out.println(entities);
-
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(entities);
-                JsonNode idNode = rootNode.get("id");
-                System.out.println(idNode.asText());
-                return idNode.asText();
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            httpclient.getConnectionManager().shutdown();  // Deallocation of all system resources
+            JsonNode idNode = rootNode.get("id");
+            return idNode.asText();
         }
         return null;
     }
 
-    private List<NameValuePair> getStandardAGOLAttributes() {
-        List <NameValuePair> agolAttributes = new ArrayList<NameValuePair>();
-        agolAttributes.add(new BasicNameValuePair("f", "json"));
-        agolAttributes.add(new BasicNameValuePair("token", _token));
+    /**
+     * Share Items
+     * @param itemIds: Comma-separated string of items that shall be shared publically.
+     */
+    private void shareItems(String itemIds) throws IOException {
+        String publishItemUrl = _userContentUrl + "/shareItems";
+
+        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
+
+        agolAttributes.put("items", itemIds);
+        agolAttributes.put("everyone", "true");
+
+        InputStream entities = _httpRequest.executePostRequest(publishItemUrl, agolAttributes, null);
+    }
+
+    private HashMap<String, String> getStandardAgolAttributes() throws IOException {
+        HashMap<String, String> agolAttributes = new HashMap<String, String>();
+        agolAttributes.put("f", "json");
+
+        if ((_token == null) || (System.currentTimeMillis() >= _tokenExpires))
+        {
+            if (log.isInfoEnabled()) {
+                log.info("Creating new token.");
+            }
+            createToken();
+        }
+        agolAttributes.put("token", _token);
         return agolAttributes;
     }
 }

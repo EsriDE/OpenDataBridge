@@ -314,7 +314,7 @@
             <id>env-dev</id>
             <!--
             This is the development profile, per default it points to a build.properties file in the user home,
-            but this can be changed localy by specifiying the property local.configfile with its own string.
+            but this can be changed locally by specifying the property local.configfile with its own string.
             -->
             <activation>
                 <property>
