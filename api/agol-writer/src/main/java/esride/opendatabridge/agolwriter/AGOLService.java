@@ -25,6 +25,7 @@ public class AgolService implements IAgolService {
     private AgolItemFactory _agolItemFactory;
     private Map<String, ArrayList<AgolItem>> _agolItems = new HashMap<String, ArrayList<AgolItem>>();
     private HTTPRequest _httpRequest;
+    private ObjectMapper _objectMapper;
 
     /**
      * Setter for _agolItemFactory
@@ -40,6 +41,14 @@ public class AgolService implements IAgolService {
      */
     public void set_httpRequest(HTTPRequest httpRequest) {
         this._httpRequest = httpRequest;
+    }
+
+    /**
+     * Setter for _objectMapper
+     * @param objectMapper
+     */
+    public void set_objectMapper(ObjectMapper objectMapper) {
+        this._objectMapper = objectMapper;
     }
 
     /**
@@ -111,7 +120,7 @@ public class AgolService implements IAgolService {
                 if (userGroupIds.length()>0) {
                     userGroupIds += ",";
                 }
-                userGroupIds += group.get("id");
+                userGroupIds += group.get("id").toString().replace("\"", "");
             }
         }
          return userGroupIds;

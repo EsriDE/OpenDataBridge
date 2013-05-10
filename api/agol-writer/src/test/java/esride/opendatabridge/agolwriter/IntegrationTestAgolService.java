@@ -45,12 +45,14 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     @Test
     public void testAddPublicUpdateDeleteItem(){
         try {
-            AgolItem testItem = agolItemFactory.createAgolItem(jsonMap.get("test01"));
+            AgolItem testItem1 = agolItemFactory.createAgolItem(jsonMap.get("test01"));
+            AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
             List<AgolItem> agolItems = new ArrayList<AgolItem>();
-            agolItems.add((testItem));
+            agolItems.add((testItem1));
             String itemId = agolService.addItems(agolItems);
-            testItem.setId(itemId);
-            agolService.updateItem(testItem);
+            testItem2.setId(itemId);
+            agolService.updateItem(testItem2);
+            agolService.deleteItem(testItem2);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -59,12 +61,14 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     @Test
     public void testAddOrgUpdateDeleteItem(){
         try {
-            AgolItem testItem = agolItemFactory.createAgolItem(jsonMap.get("test01"));
+            AgolItem testItem1 = agolItemFactory.createAgolItem(jsonMap.get("test01"));
+            AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
             List<AgolItem> agolItems = new ArrayList<AgolItem>();
-            agolItems.add((testItem));
+            agolItems.add((testItem1));
             String itemId = agolService.addItems(agolItems, AccessType.ORG);
-            testItem.setId(itemId);
-            agolService.updateItem(testItem);
+            testItem2.setId(itemId);
+            agolService.updateItem(testItem2);
+            agolService.deleteItem(testItem2);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -74,12 +78,14 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     public void testAddGroupsUpdateDeleteItem(){
         try {
             String userGroupIds = agolService.getUserGroupIds();
-            AgolItem testItem = agolItemFactory.createAgolItem(jsonMap.get("test01"));
+            AgolItem testItem1 = agolItemFactory.createAgolItem(jsonMap.get("test01"));
+            AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
             List<AgolItem> agolItems = new ArrayList<AgolItem>();
-            agolItems.add((testItem));
+            agolItems.add((testItem1));
             String itemId = agolService.addItems(agolItems, AccessType.SHARED, userGroupIds);
-            testItem.setId(itemId);
-            agolService.updateItem(testItem);
+            testItem2.setId(itemId);
+            agolService.updateItem(testItem2);
+            agolService.deleteItem(testItem2);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
