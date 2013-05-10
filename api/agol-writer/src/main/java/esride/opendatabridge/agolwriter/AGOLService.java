@@ -87,8 +87,7 @@ public class AgolService implements IAgolService {
 
         if (entities != null)
         {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(entities);
+            JsonNode rootNode = _objectMapper.readTree(entities);
             JsonNode tokenNode = rootNode.get("token");
             _token = tokenNode.asText();
             String tokenExpires = rootNode.get("expires").toString();
@@ -109,8 +108,7 @@ public class AgolService implements IAgolService {
         InputStream entities = _httpRequest.executePostRequest(_userCommunityUrl, agolAttributes, null);
         if (entities != null)
         {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(entities);
+            JsonNode rootNode = _objectMapper.readTree(entities);
 
             JsonNode groupsNode = rootNode.get("groups");
             Iterator groupsIterator = groupsNode.elements();
@@ -189,8 +187,7 @@ public class AgolService implements IAgolService {
 
         if (entities != null)
         {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(entities);
+            JsonNode rootNode = _objectMapper.readTree(entities);
 
             // General information
             agolItemsPaginationNextStart = Integer.valueOf(rootNode.get("nextStart").toString());
@@ -301,8 +298,7 @@ public class AgolService implements IAgolService {
 
         if (entities != null)
         {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(entities);
+            JsonNode rootNode = _objectMapper.readTree(entities);
 
             JsonNode errorNode = rootNode.get("error");
             if (errorNode != null)
@@ -365,8 +361,7 @@ public class AgolService implements IAgolService {
         InputStream entities = _httpRequest.executePostRequest(updateItemUrl, agolAttributes, null);
         if (entities != null)
         {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(entities);
+            JsonNode rootNode = _objectMapper.readTree(entities);
 
             JsonNode errorNode = rootNode.get("error");
             if (errorNode != null)
@@ -391,8 +386,7 @@ public class AgolService implements IAgolService {
         InputStream entities = _httpRequest.executePostRequest(deleteItemUrl, agolAttributes, null);
         if (entities != null)
         {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(entities);
+            JsonNode rootNode = _objectMapper.readTree(entities);
 
             JsonNode errorNode = rootNode.get("error");
             if (errorNode != null)
