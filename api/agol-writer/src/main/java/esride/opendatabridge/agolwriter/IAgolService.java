@@ -7,20 +7,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Created with IntelliJ IDEA.
- * User: gvs
- * Date: 06.03.13
- * Time: 15:20
+ * User: nik
+ * Date: 10.05.13
+ * Time: 18:12
  * To change this template use File | Settings | File Templates.
  */
-
-//ToDo: Umbenennen und vervollständigen
 public interface IAgolService {
-    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType) throws IOException;
-    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType) throws IOException;
-    public String addItems(List<AgolItem> agolItems) throws AgolItemTransactionFailedException, IOException;
-    public void updateItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException;
-    public void deleteItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException;
+    String getUserGroupIds() throws IOException;
+
+    AgolItem getItem(String itemId);
+
+    Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes) throws IOException;
+
+    Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, AccessType accessType) throws IOException;
+
+    Map<String, ArrayList<AgolItem>> getAllItems(String searchString) throws IOException;
+
+    String addItems(List<AgolItem> agolItems) throws AgolItemTransactionFailedException, IOException;
+
+    String addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolItemTransactionFailedException, IOException;
+
+    String addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolItemTransactionFailedException, IOException;
+
+    void unshareItems(String itemIds, String groupIds);
+
+    void updateItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException;
+
+    void deleteItem(List<AgolItem> agolItems) throws IOException, AgolItemTransactionFailedException;
 }

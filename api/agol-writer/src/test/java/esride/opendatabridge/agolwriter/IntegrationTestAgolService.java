@@ -35,7 +35,10 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     @Test
     public void testGetAllItems() {
         try {
-            Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems("WMS");
+            List<String> itemTypes = new ArrayList<String>();
+            itemTypes.add("WMS");
+            itemTypes.add("Map Service");
+            Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems(itemTypes, AccessType.ORG);
             Assert.assertNotNull("List of Agol items is empty.", agolItems);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
@@ -52,7 +55,9 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             String itemId = agolService.addItems(agolItems);
             testItem2.setId(itemId);
             agolService.updateItem(testItem2);
-            agolService.deleteItem(testItem2);
+            List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
+            deleteAgolItems.add((testItem2));
+            agolService.deleteItem(deleteAgolItems);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -68,7 +73,9 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             String itemId = agolService.addItems(agolItems, AccessType.ORG);
             testItem2.setId(itemId);
             agolService.updateItem(testItem2);
-            agolService.deleteItem(testItem2);
+            List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
+            deleteAgolItems.add((testItem2));
+            agolService.deleteItem(deleteAgolItems);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -85,7 +92,9 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             String itemId = agolService.addItems(agolItems, AccessType.SHARED, userGroupIds);
             testItem2.setId(itemId);
             agolService.updateItem(testItem2);
-            agolService.deleteItem(testItem2);
+            List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
+            deleteAgolItems.add((testItem2));
+            agolService.deleteItem(deleteAgolItems);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

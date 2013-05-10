@@ -17,15 +17,16 @@ import java.util.*;
  * Time: 13:22
  */
 public class AgolService implements IAgolService {
-
     private String _userName, _password,_referer, _token;
-    private String _baseUrl, _rootUrl, _userContentUrl, _userCommunityUrl;
+    private String _baseUrl, _rootUrl, _userContentUrl, _selfUrl;
     private Long _tokenExpires;
     private static final Logger log = Logger.getLogger(AgolService.class);
     private AgolItemFactory _agolItemFactory;
     private Map<String, ArrayList<AgolItem>> _agolItems = new HashMap<String, ArrayList<AgolItem>>();
     private HTTPRequest _httpRequest;
     private ObjectMapper _objectMapper;
+    private String _userGroupIds;
+    private String _orgId;
 
     /**
      * Setter for _agolItemFactory
@@ -65,9 +66,10 @@ public class AgolService implements IAgolService {
         _password = password;
         _referer = referer;
 
-        _rootUrl = _baseUrl + "/sharing/";
+        _rootUrl = _baseUrl + "/sharing";
         _userContentUrl = _rootUrl + "/content/users/" + _userName;
-        _userCommunityUrl = _rootUrl + "/community/users/" + _userName;
+        _selfUrl = _rootUrl + "/community/self";
+//        _userCommunityUrl = _rootUrl + "/community/users/" + _userName;
     }
 
     /**
@@ -96,88 +98,156 @@ public class AgolService implements IAgolService {
     }
 
     /**
-     * Get IDs of the groups the logged-in user is a member of
-     * @return Comma-separated userGroupIds
+     * Fill user details
      * @throws IOException
      */
-    public String getUserGroupIds() throws IOException {
-        String userGroupIds = "";
+    private void fillUserDetails() throws IOException {
+        _userGroupIds = "";
+        _orgId = "";
 
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
 
-        InputStream entities = _httpRequest.executePostRequest(_userCommunityUrl, agolAttributes, null);
+        InputStream entities = _httpRequest.executePostRequest(_selfUrl, agolAttributes, null);
         if (entities != null)
         {
             JsonNode rootNode = _objectMapper.readTree(entities);
 
             JsonNode groupsNode = rootNode.get("groups");
-            Iterator groupsIterator = groupsNode.elements();
+            if (groupsNode!=null) {
+                Iterator groupsIterator = groupsNode.elements();
 
-            while (groupsIterator.hasNext()) {
-                JsonNode group = (JsonNode) groupsIterator.next();
-                if (userGroupIds.length()>0) {
-                    userGroupIds += ",";
+                while (groupsIterator.hasNext()) {
+                    JsonNode group = (JsonNode) groupsIterator.next();
+                    if (_userGroupIds.length()>0) {
+                        _userGroupIds += ",";
+                    }
+                    JsonNode idNode = group.get("id");
+                    if (idNode != null) {
+                        _userGroupIds += idNode.toString().replace("\"", "");
+                    }
                 }
-                userGroupIds += group.get("id").toString().replace("\"", "");
+            }
+
+            JsonNode accountIdNode = rootNode.get("accountId");
+            if (accountIdNode != null) {
+                _orgId = accountIdNode.toString().replace("\"", "");
             }
         }
-         return userGroupIds;
+    }
+    /**
+     * Get IDs of the groups the logged-in user is a member of
+     * @return Comma-separated userGroupIds
+     */
+    public String getUserGroupIds() throws IOException {
+        if (_userGroupIds == null) {    // first call
+            fillUserDetails();
+        }
+        return _userGroupIds;
+    }
+    /**
+     * Get account ID of the logged-in user
+     * @return accountId
+     * @throws IOException
+     */
+    public String getAccountId() throws IOException {
+        if (_orgId == null) {    // first call
+            fillUserDetails();
+        }
+        return _orgId;
     }
 
-
-
+    /**
+     * Get a specific item, for example to check it's properties
+     * @param itemId
+     * @return
+     */
+    public AgolItem getItem(String itemId) {
+        // ToDo: implement
+        return _agolItemFactory.createAgolItem("");
+    }
 
     /* ToDo:
-        - itemType und accessType als String-Array o.ä., über (... OR ...) abfragen.
-        - überschreiben mit Suchbeschränkung auf owner=_userName, Gruppen=groupId(s) und Organisation=accountid
-        - separat: public Getter für Gruppen anbieten, denen der eingeloggte User angehört
+        - Wie sieht's aus mit einer Schlagwortsuche auf Title oder Tags?
       */
 
     /**
-     * Get all public items
-     * @param itemType: WMS | CSV | ...
+     * Get all items owned by logged-in user. If logged-in user is not an admin, he has only write permission to his own items.
+     * @param itemTypes: http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#//02r3000000ms000000
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType) throws IOException {
-        fillAgolItems(itemType, "public", 0);
-        return _agolItems;
+    public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes) throws IOException {
+        return getAllItems(itemTypes, AccessType.PRIVATE);
     }
     /**
      * Get all items with selectable access type
-     * @param itemType: WMS | CSV | ...
+     * @param itemTypes
      * @param accessType
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> getAllItems(String itemType, String accessType) throws IOException {
-        fillAgolItems(itemType, accessType, 0);
+    public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, AccessType accessType) throws IOException {
+        String searchString = createSearchString(itemTypes, accessType);
+        fillAgolItems(searchString, 0, 0);
         return _agolItems;
     }
     /**
-     * Get items request
-     * @param itemType: WMS | CSV | ...
+     * Get all items that match the search string
+     * @param searchString
+     * @return
+     * @throws IOException
+     */
+    public Map<String, ArrayList<AgolItem>> getAllItems(String searchString) throws IOException {
+        fillAgolItems(searchString, 0, 0);
+        return _agolItems;
+    }
+    /**
+     * Concatenate search string for items request
+     * @param itemTypes
      * @param accessType
+     * @return
+     * @throws IOException
+     */
+    private String createSearchString(List<String> itemTypes, AccessType accessType) throws IOException {
+        String searchString =  "(";
+
+        if (accessType.equals(AccessType.PRIVATE)) {
+            // if logged-in user is not an admin, he has only write permission to his own items
+            searchString +=  "owner:" + _userName;
+        }
+        else if (accessType.equals(AccessType.ORG)) {
+            searchString += "accountid:" + getAccountId();
+        }
+
+        String searchItemTypes = "";
+        for (String itemType : itemTypes) {
+            if (searchItemTypes.length()>0) {
+                searchItemTypes += " OR ";
+            }
+            searchItemTypes += "type:\"" + itemType + "\"";
+        }
+        searchItemTypes = "(" + searchItemTypes + ")";
+        if (searchItemTypes.length()>0 ) {
+            searchString += " AND " + searchItemTypes;
+        }
+
+        searchString += ")";
+
+        return searchString;
+    }
+    /**
+     * Get items request
+     * @param searchString
      * @param startWithItemNumber: Integer value for recursive calls - 100 items are the maximum return number for one HTTP request
      * @throws IOException
      */
-    private void fillAgolItems(String itemType, String accessType, int startWithItemNumber) throws IOException {
+    private void fillAgolItems(String searchString, int startWithItemNumber, int alreadyRetrieved) throws IOException {
         int agolItemsPaginationNextStart;
         int totalItemsCount;
         int retrievedItemsCount;
         int duplicateUrlsCount = 0;
-
         String searchUrl = _rootUrl + "/search";
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
-
-        // get ALL public WMS items that are owned by logged-in user
-        String searchString =  "(owner:" + _userName + " AND " + "access:" + accessType + " AND "+ "type:\"" + itemType + "\")";
-
-        // get ALL public WMS items in the organization (accountId)
-//            String searchString =  "(accountid:" + _accountId + " AND " + "access:" + accessType + " AND "+ "type:\"" + itemType + "\")";
-
-        // get ALL public WMS items
-//            String searchString =  "(access:" + accessType + " AND "+ "type:\"" + itemType + "\")";
 
         agolAttributes.put("q", searchString);
         agolAttributes.put("num", "100");  // Maximum value: 100
@@ -193,7 +263,7 @@ public class AgolService implements IAgolService {
             agolItemsPaginationNextStart = Integer.valueOf(rootNode.get("nextStart").toString());
             totalItemsCount = Integer.valueOf(rootNode.get("total").toString());
             if (agolItemsPaginationNextStart != -1) {
-                retrievedItemsCount = agolItemsPaginationNextStart-1;
+                retrievedItemsCount = agolItemsPaginationNextStart-1 + alreadyRetrieved;
             }
             else
             {
@@ -232,7 +302,7 @@ public class AgolService implements IAgolService {
 
             // Recursive call: Items are limited to 100 - if more than that are available, call again
             if (agolItemsPaginationNextStart!=-1) {
-                fillAgolItems(itemType, "public", agolItemsPaginationNextStart);
+                fillAgolItems(searchString, agolItemsPaginationNextStart, retrievedItemsCount);
             }
         }
     }
@@ -329,20 +399,17 @@ public class AgolService implements IAgolService {
         else if (accessType.equals(AccessType.ORG)) {
             agolAttributes.put("account", "true");
         }
-//        if (accessType.equals(AccessType.PUBLIC)) {
-//            agolAttributes.put("everyone", "true");
-//            agolAttributes.put("account", "false");
-//        }
-//        else if (accessType.equals(AccessType.ORG)) {
-//            agolAttributes.put("everyone", "false");
-//            agolAttributes.put("account", "true");
-//        }
-//        else {
-//            agolAttributes.put("everyone", "false");
-//            agolAttributes.put("account", "false");
-//        }
         agolAttributes.put("groups", groupIds);
         InputStream entities = _httpRequest.executePostRequest(publishItemUrl, agolAttributes, null);
+    }
+
+    /**
+     * Manualle unshare items
+     * @param itemIds: Comma-separated list of items to be unshared
+     * @param groupIds: Comma-separated list of group IDs that the items will be unshared with.
+     */
+    public void unshareItems(String itemIds, String groupIds) {
+        // ToDo: implement
     }
 
     /**
@@ -373,26 +440,33 @@ public class AgolService implements IAgolService {
 
     /**
      * Delete a specific item
-     * @param agolItem
+     * @param agolItems
      * @throws IOException
      * @throws AgolItemTransactionFailedException
      */
-    public void deleteItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException {
-        String userItemUrl = _userContentUrl + "/items/" + agolItem.getId();
-        String deleteItemUrl = userItemUrl + "/delete";
+    public void deleteItem(List<AgolItem> agolItems) throws IOException, AgolItemTransactionFailedException {
+        String deleteItemsUrl = _userContentUrl + "/deleteItems";
+        String itemIds = "";
 
+        for (AgolItem agolItem : agolItems) {
+            if (itemIds.length()>0) {
+                itemIds += ",";
+            }
+            itemIds += agolItem.getId();
+        }
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
-
-        InputStream entities = _httpRequest.executePostRequest(deleteItemUrl, agolAttributes, null);
+        agolAttributes.put("items", itemIds);
+        InputStream entities = _httpRequest.executePostRequest(deleteItemsUrl, agolAttributes, null);
         if (entities != null)
         {
             JsonNode rootNode = _objectMapper.readTree(entities);
 
-            JsonNode errorNode = rootNode.get("error");
-            if (errorNode != null)
-            {
-                throw new AgolItemTransactionFailedException("Delete Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
-            }
+//          ToDo: Response contains "results" array with possible error nodes => adjust error handling
+//            JsonNode errorNode = rootNode.get("error");
+//            if (errorNode != null)
+//            {
+//                throw new AgolItemTransactionFailedException("Delete Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
+//            }
         }
     }
 
@@ -405,13 +479,13 @@ public class AgolService implements IAgolService {
         HashMap<String, String> agolAttributes = new HashMap<String, String>();
         agolAttributes.put("f", "json");
 
-        if ((_token == null) || (System.currentTimeMillis() >= _tokenExpires))
-        {
+        if ((_token == null) || (System.currentTimeMillis() >= _tokenExpires)) {
             if (log.isInfoEnabled()) {
                 log.info("Creating new token.");
             }
             createToken();
         }
+
         agolAttributes.put("token", _token);
         return agolAttributes;
     }
