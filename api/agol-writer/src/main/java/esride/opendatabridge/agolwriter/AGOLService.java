@@ -431,7 +431,24 @@ public class AgolService implements IAgolService {
         agolAttributes.put("groups", groupIds);
         InputStream entities = _httpRequest.executePostRequest(publishItemUrl, agolAttributes, null);
 
-        handleResultListThatMightContainErrors(entities);
+        handleResultListErrors(entities);
+    }
+
+    /**
+     * Manually unshare items
+     * @param agolItems
+     * @param groupIds: Comma-separated list of group IDs that the items will be unshared with.
+     */
+    public void unshareItems(List<AgolItem> agolItems, String groupIds) throws IOException, AgolTransactionFailedException {
+        String itemIds = "";
+
+        for (AgolItem agolItem : agolItems) {
+            if (!itemIds.isEmpty()) {
+                itemIds += ",";
+            }
+            itemIds += agolItem.getId();
+        }
+        unshareItems(itemIds, groupIds);
     }
 
     /**
@@ -440,10 +457,31 @@ public class AgolService implements IAgolService {
      * @param groupIds: Comma-separated list of group IDs that the items will be unshared with.
      */
     public void unshareItems(String itemIds, String groupIds) throws IOException, AgolTransactionFailedException {
-        String deleteItemsUrl = _userContentUrl + "/unshareItems";
-        String errorItems = simpleHttpWithItemIdList(itemIds, deleteItemsUrl);
+        String unshareItemsUrl = _userContentUrl + "/unshareItems";
+
+        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
+        agolAttributes.put("items", itemIds);
+        agolAttributes.put("groups", groupIds);
+
+        // ToDo: Diskutieren:
+        // - unshareItems funktioniert offensichtlich nur für groups
+        // - um ORG- oder PUBLIC-Freigabe aufzuheben, muss ein shareItems mit account/everyone=false gesendet werden
+        // Ist das hier ein Use Case??
+        InputStream entities = _httpRequest.executePostRequest(unshareItemsUrl, agolAttributes, null);
+        String errorItems = handleResultListErrors(entities);
+
         if (!errorItems.isEmpty()) {
             throw new AgolTransactionFailedException("Unshare items failed for the following items: \n" + errorItems);
+        }
+    }
+
+    /**
+     * Update a list of items
+     * @param agolItems
+     */
+    public void updateItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException {
+        for (AgolItem agolItem : agolItems) {
+            updateItem(agolItem);
         }
     }
 
@@ -498,24 +536,13 @@ public class AgolService implements IAgolService {
      */
     public void deleteItems(String itemIds) throws IOException, AgolTransactionFailedException {
         String deleteItemsUrl = _userContentUrl + "/deleteItems";
-        String errorItems = simpleHttpWithItemIdList(itemIds, deleteItemsUrl);
+        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
+        agolAttributes.put("items", itemIds);
+        InputStream entities = _httpRequest.executePostRequest(deleteItemsUrl, agolAttributes, null);
+        String errorItems =  handleResultListErrors(entities);
         if (!errorItems.isEmpty()) {
             throw new AgolTransactionFailedException("Delete items failed for the following items: \n" + errorItems);
         }
-    }
-
-    /**
-     * Handle a HTTP request to a function that only expects an itemId list
-     * @param itemIds
-     * @param actionUrl
-     * @return String with a list of items that returned error messages
-     * @throws IOException
-     */
-    private String simpleHttpWithItemIdList(String itemIds, String actionUrl) throws IOException {
-        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
-        agolAttributes.put("items", itemIds);
-        InputStream entities = _httpRequest.executePostRequest(actionUrl, agolAttributes, null);
-        return handleResultListThatMightContainErrors(entities);
     }
 
     /**
@@ -524,12 +551,11 @@ public class AgolService implements IAgolService {
      * @return String with a list of items that returned error messages
      * @throws IOException
      */
-    private String handleResultListThatMightContainErrors(InputStream entities) throws IOException {
+    private String handleResultListErrors(InputStream entities) throws IOException {
         String errorItems = "";
         if (entities != null)
         {
             JsonNode rootNode = _objectMapper.readTree(entities);
-
             JsonNode resultsNode = rootNode.get("results");
             if (resultsNode != null)
             {

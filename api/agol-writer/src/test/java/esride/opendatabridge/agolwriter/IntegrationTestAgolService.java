@@ -83,9 +83,15 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
             List<AgolItem> agolItems = new ArrayList<AgolItem>();
             agolItems.add((testItem1));
+
             String itemId = agolService.addItems(agolItems, AccessType.ORG);
             testItem2.setId(itemId);
             agolService.updateItem(testItem2);
+
+            List<AgolItem> unshareItems = new ArrayList<AgolItem>();
+            unshareItems.add(testItem2);
+            agolService.unshareItems(unshareItems, agolService.getUserGroupIds());
+
             List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
             deleteAgolItems.add((testItem2));
             agolService.deleteItems(deleteAgolItems);
@@ -98,13 +104,22 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     public void testAddGroupsUpdateDeleteItem(){
         try {
             String userGroupIds = agolService.getUserGroupIds();
+            String firstGroup = userGroupIds.substring(0,userGroupIds.indexOf(","));
             AgolItem testItem1 = agolItemFactory.createAgolItem(jsonMap.get("test01"));
             AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
             List<AgolItem> agolItems = new ArrayList<AgolItem>();
             agolItems.add((testItem1));
+
             String itemId = agolService.addItems(agolItems, AccessType.SHARED, userGroupIds);
             testItem2.setId(itemId);
-            agolService.updateItem(testItem2);
+            List<AgolItem> updateItems = new ArrayList<AgolItem>();
+            updateItems.add(testItem2);
+            agolService.updateItems(updateItems);
+
+            List<AgolItem> unshareItems = new ArrayList<AgolItem>();
+            unshareItems.add(testItem2);
+            agolService.unshareItems(unshareItems, firstGroup);
+
             List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
             deleteAgolItems.add((testItem2));
             agolService.deleteItems(deleteAgolItems);
