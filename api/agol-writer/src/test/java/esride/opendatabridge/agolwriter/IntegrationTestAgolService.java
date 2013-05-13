@@ -57,7 +57,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             agolService.updateItem(testItem2);
             List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
             deleteAgolItems.add((testItem2));
-            agolService.deleteItem(deleteAgolItems);
+            agolService.deleteItems(deleteAgolItems);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -75,7 +75,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             agolService.updateItem(testItem2);
             List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
             deleteAgolItems.add((testItem2));
-            agolService.deleteItem(deleteAgolItems);
+            agolService.deleteItems(deleteAgolItems);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -94,7 +94,16 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             agolService.updateItem(testItem2);
             List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
             deleteAgolItems.add((testItem2));
-            agolService.deleteItem(deleteAgolItems);
+            agolService.deleteItems(deleteAgolItems);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testDeleteItemsError(){
+        try {
+            agolService.deleteItems("37af5e4b787046ab9301255eb15c41bf,2C2cc78b3b57e64967aae845b937e92637");
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

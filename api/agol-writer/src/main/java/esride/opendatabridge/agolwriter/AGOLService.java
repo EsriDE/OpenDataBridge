@@ -401,15 +401,21 @@ public class AgolService implements IAgolService {
         }
         agolAttributes.put("groups", groupIds);
         InputStream entities = _httpRequest.executePostRequest(publishItemUrl, agolAttributes, null);
+
+        handleResultListThatMightContainErrors(entities);
     }
 
     /**
-     * Manualle unshare items
+     * Manually unshare items
      * @param itemIds: Comma-separated list of items to be unshared
      * @param groupIds: Comma-separated list of group IDs that the items will be unshared with.
      */
-    public void unshareItems(String itemIds, String groupIds) {
-        // ToDo: implement
+    public void unshareItems(String itemIds, String groupIds) throws IOException, AgolItemTransactionFailedException {
+        String deleteItemsUrl = _userContentUrl + "/unshareItems";
+        String errorItems = simpleHttpWithItemIdList(itemIds, deleteItemsUrl);
+        if (!errorItems.isEmpty()) {
+            throw new AgolItemTransactionFailedException("Unshare items failed for the following items: \n" + errorItems);
+        }
     }
 
     /**
@@ -439,13 +445,12 @@ public class AgolService implements IAgolService {
     }
 
     /**
-     * Delete a specific item
+     * Delete ArcgGIS Online items
      * @param agolItems
      * @throws IOException
      * @throws AgolItemTransactionFailedException
      */
-    public void deleteItem(List<AgolItem> agolItems) throws IOException, AgolItemTransactionFailedException {
-        String deleteItemsUrl = _userContentUrl + "/deleteItems";
+    public void deleteItems(List<AgolItem> agolItems) throws IOException, AgolItemTransactionFailedException {
         String itemIds = "";
 
         for (AgolItem agolItem : agolItems) {
@@ -454,20 +459,65 @@ public class AgolService implements IAgolService {
             }
             itemIds += agolItem.getId();
         }
+        deleteItems(itemIds);
+    }
+    /**
+     * Delete ArcgGIS Online items
+     * @param itemIds as comma-separated list
+     * @throws IOException
+     * @throws AgolItemTransactionFailedException
+     */
+    public void deleteItems(String itemIds) throws IOException, AgolItemTransactionFailedException {
+        String deleteItemsUrl = _userContentUrl + "/deleteItems";
+        String errorItems = simpleHttpWithItemIdList(itemIds, deleteItemsUrl);
+        if (!errorItems.isEmpty()) {
+            throw new AgolItemTransactionFailedException("Delete items failed for the following items: \n" + errorItems);
+        }
+    }
+
+    /**
+     * Handle a HTTP request to a function that only expects an itemId list
+     * @param itemIds
+     * @param actionUrl
+     * @return String with a list of items that returned error messages
+     * @throws IOException
+     */
+    private String simpleHttpWithItemIdList(String itemIds, String actionUrl) throws IOException {
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
         agolAttributes.put("items", itemIds);
-        InputStream entities = _httpRequest.executePostRequest(deleteItemsUrl, agolAttributes, null);
+        InputStream entities = _httpRequest.executePostRequest(actionUrl, agolAttributes, null);
+        return handleResultListThatMightContainErrors(entities);
+    }
+
+    /**
+     * Handle a result list that might contain errors
+     * @param entities
+     * @return String with a list of items that returned error messages
+     * @throws IOException
+     */
+    private String handleResultListThatMightContainErrors(InputStream entities) throws IOException {
+        String errorItems = "";
         if (entities != null)
         {
             JsonNode rootNode = _objectMapper.readTree(entities);
 
-//          ToDo: Response contains "results" array with possible error nodes => adjust error handling
-//            JsonNode errorNode = rootNode.get("error");
-//            if (errorNode != null)
-//            {
-//                throw new AgolItemTransactionFailedException("Delete Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
-//            }
+            JsonNode resultsNode = rootNode.get("results");
+            if (resultsNode != null)
+            {
+                Iterator resultsIterator = resultsNode.iterator();
+                while (resultsIterator.hasNext()) {
+                    JsonNode resultNode = (JsonNode) resultsIterator.next();
+                    JsonNode errorNode = resultNode.get("error");
+                    if (errorNode!=null) {
+                        if (!errorItems.isEmpty()) {
+                            errorItems += "\n";
+                        }
+                        errorItems += resultNode.get("itemId") + ": " + errorNode.get("message") + " (Error code " + errorNode.get("code") + ")";
+                    }
+                }
+            }
         }
+        return errorItems;
     }
 
     /**

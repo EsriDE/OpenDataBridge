@@ -31,9 +31,11 @@ public interface IAgolService {
 
     String addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolItemTransactionFailedException, IOException;
 
-    void unshareItems(String itemIds, String groupIds);
+    void unshareItems(String itemIds, String groupIds) throws IOException, AgolItemTransactionFailedException;
 
     void updateItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException;
 
-    void deleteItem(List<AgolItem> agolItems) throws IOException, AgolItemTransactionFailedException;
+    void deleteItems(String itemIds) throws IOException, AgolItemTransactionFailedException;
+
+    void deleteItems(List<AgolItem> agolItems) throws IOException, AgolItemTransactionFailedException;
 }
