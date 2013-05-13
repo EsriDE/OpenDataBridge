@@ -7,20 +7,20 @@ package esride.opendatabridge.agolwriter;
  * Time: 11:41
  * To change this template use File | Settings | File Templates.
  */
-public class AgolItemTransactionFailedException extends Exception {
-    public AgolItemTransactionFailedException() {
+public class AgolTransactionFailedException extends Exception {
+    public AgolTransactionFailedException() {
         super();    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    public AgolItemTransactionFailedException(String message) {
+    public AgolTransactionFailedException(String message) {
         super(message);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    public AgolItemTransactionFailedException(String message, Throwable cause) {
+    public AgolTransactionFailedException(String message, Throwable cause) {
         super(message, cause);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    public AgolItemTransactionFailedException(Throwable cause) {
+    public AgolTransactionFailedException(Throwable cause) {
         super(cause);    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

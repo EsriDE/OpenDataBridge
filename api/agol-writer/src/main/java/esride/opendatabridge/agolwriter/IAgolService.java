@@ -17,7 +17,7 @@ import java.util.Map;
 public interface IAgolService {
     String getUserGroupIds() throws IOException;
 
-    AgolItem getItem(String itemId);
+    AgolItem getItem(String itemId) throws IOException, AgolTransactionFailedException;
 
     Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes) throws IOException;
 
@@ -25,17 +25,17 @@ public interface IAgolService {
 
     Map<String, ArrayList<AgolItem>> getAllItems(String searchString) throws IOException;
 
-    String addItems(List<AgolItem> agolItems) throws AgolItemTransactionFailedException, IOException;
+    String addItems(List<AgolItem> agolItems) throws AgolTransactionFailedException, IOException;
 
-    String addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolItemTransactionFailedException, IOException;
+    String addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolTransactionFailedException, IOException;
 
-    String addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolItemTransactionFailedException, IOException;
+    String addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolTransactionFailedException, IOException;
 
-    void unshareItems(String itemIds, String groupIds) throws IOException, AgolItemTransactionFailedException;
+    void unshareItems(String itemIds, String groupIds) throws IOException, AgolTransactionFailedException;
 
-    void updateItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException;
+    void updateItem(AgolItem agolItem) throws IOException, AgolTransactionFailedException;
 
-    void deleteItems(String itemIds) throws IOException, AgolItemTransactionFailedException;
+    void deleteItems(String itemIds) throws IOException, AgolTransactionFailedException;
 
-    void deleteItems(List<AgolItem> agolItems) throws IOException, AgolItemTransactionFailedException;
+    void deleteItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException;
 }

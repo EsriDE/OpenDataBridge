@@ -46,6 +46,19 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     }
 
     @Test
+    public void testGetDistillerien() {
+        try {
+            List<String> itemTypes = new ArrayList<String>();
+            itemTypes.add("Web Mapping Application");
+            itemTypes.add("Feature Service");
+            Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems(itemTypes, AccessType.ORG, "Distillerien");
+            Assert.assertNotNull("List of ArcGIS Online items is empty.", agolItems);
+        } catch (IOException e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
     public void testAddPublicUpdateDeleteItem(){
         try {
             AgolItem testItem1 = agolItemFactory.createAgolItem(jsonMap.get("test01"));
@@ -101,9 +114,18 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     }
 
     @Test
-    public void testDeleteItemsError(){
+    public void testDeleteItems(){
         try {
             agolService.deleteItems("37af5e4b787046ab9301255eb15c41bf,2C2cc78b3b57e64967aae845b937e92637");
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetItem(){
+        try {
+            agolService.getItem("2C2cc78b3b57e64967aae845b937e92637");
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

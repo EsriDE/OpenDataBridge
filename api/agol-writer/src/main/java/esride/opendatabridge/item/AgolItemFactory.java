@@ -50,7 +50,9 @@ public class AgolItemFactory {
         return agolItemProperties;
     }
 
-    // ToDo: List of valid keys for item upload. Throw out invalid keys.
+    // ToDo:
+    // - List of valid keys for item upload. Throw out invalid keys.
+    // - Define keys that are obligatory to prevent cases like this AgolItem: error={code=400, messageCode=CONT_0001, message=Item '2C2cc78b3b57e64967aae845b937e92637' does not exist or is inaccessible., details=}
     private HashMap cleanAgolItemProperties(HashMap agolItemProperties) {
         HashMap deleteAgolItemProperties = new HashMap();
         HashMap updateAgolItemProperties = new HashMap();

@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class AgolService implements IAgolService {
     private String _userName, _password,_referer, _token;
-    private String _baseUrl, _rootUrl, _userContentUrl, _selfUrl;
+    private String _baseUrl, _rootUrl, _userContentUrl, _selfUrl, _contentUrl;
     private Long _tokenExpires;
     private static final Logger log = Logger.getLogger(AgolService.class);
     private AgolItemFactory _agolItemFactory;
@@ -59,8 +59,7 @@ public class AgolService implements IAgolService {
      * @param password
      * @param referer
      */
-    public AgolService(String baseUrl, String userName, String password, String referer)
-    {
+    public AgolService(String baseUrl, String userName, String password, String referer) {
         _baseUrl = baseUrl;
         _userName = userName;
         _password = password;
@@ -69,7 +68,7 @@ public class AgolService implements IAgolService {
         _rootUrl = _baseUrl + "/sharing";
         _userContentUrl = _rootUrl + "/content/users/" + _userName;
         _selfUrl = _rootUrl + "/community/self";
-//        _userCommunityUrl = _rootUrl + "/community/users/" + _userName;
+        _contentUrl = _rootUrl + "/content";
     }
 
     /**
@@ -118,7 +117,7 @@ public class AgolService implements IAgolService {
 
                 while (groupsIterator.hasNext()) {
                     JsonNode group = (JsonNode) groupsIterator.next();
-                    if (_userGroupIds.length()>0) {
+                    if (!_userGroupIds.isEmpty()) {
                         _userGroupIds += ",";
                     }
                     JsonNode idNode = group.get("id");
@@ -161,9 +160,20 @@ public class AgolService implements IAgolService {
      * @param itemId
      * @return
      */
-    public AgolItem getItem(String itemId) {
-        // ToDo: implement
-        return _agolItemFactory.createAgolItem("");
+    public AgolItem getItem(String itemId) throws IOException, AgolTransactionFailedException {
+        String itemUrl = _contentUrl + "/items/" + itemId;
+        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
+        InputStream entities = _httpRequest.executePostRequest(itemUrl, agolAttributes, null);
+        if (entities != null)
+        {
+            JsonNode rootNode = _objectMapper.readTree(entities);
+            JsonNode errorNode = rootNode.get("error");
+            if (errorNode!=null) {
+                throw new AgolTransactionFailedException("Get item failed with error " + errorNode.get("code") +  "." + errorNode.get("message"));
+            }
+            return _agolItemFactory.createAgolItem(rootNode.toString());
+        }
+        throw new AgolTransactionFailedException("Getting item " + itemId + " failed with no result.");
     }
 
     /* ToDo:
@@ -171,7 +181,7 @@ public class AgolService implements IAgolService {
       */
 
     /**
-     * Get all items owned by logged-in user. If logged-in user is not an admin, he has only write permission to his own items.
+     * Get all items of a specific type, that are owned by logged-in user. If logged-in user is not an admin, he has only write permission to his own items. This is probably the standard use case.
      * @param itemTypes: http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#//02r3000000ms000000
      * @return
      * @throws IOException
@@ -187,7 +197,20 @@ public class AgolService implements IAgolService {
      * @throws IOException
      */
     public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, AccessType accessType) throws IOException {
-        String searchString = createSearchString(itemTypes, accessType);
+        String searchString = createSearchString(itemTypes, accessType, "");
+        fillAgolItems(searchString, 0, 0);
+        return _agolItems;
+    }
+    /**
+     * Get all items with selectable access type
+     * @param itemTypes
+     * @param accessType
+     * @param addendum String that is added to the end of the generated search String as a restriction ("AND")
+     * @return
+     * @throws IOException
+     */
+    public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, AccessType accessType, String addendum) throws IOException {
+        String searchString = createSearchString(itemTypes, accessType, addendum);
         fillAgolItems(searchString, 0, 0);
         return _agolItems;
     }
@@ -203,12 +226,14 @@ public class AgolService implements IAgolService {
     }
     /**
      * Concatenate search string for items request
+     *
      * @param itemTypes
      * @param accessType
+     * @param addendum String that is added to the end of the generated search String as a restriction "AND"
      * @return
      * @throws IOException
      */
-    private String createSearchString(List<String> itemTypes, AccessType accessType) throws IOException {
+    private String createSearchString(List<String> itemTypes, AccessType accessType, String addendum) throws IOException {
         String searchString =  "(";
 
         if (accessType.equals(AccessType.PRIVATE)) {
@@ -221,14 +246,18 @@ public class AgolService implements IAgolService {
 
         String searchItemTypes = "";
         for (String itemType : itemTypes) {
-            if (searchItemTypes.length()>0) {
+            if (!searchItemTypes.isEmpty()) {
                 searchItemTypes += " OR ";
             }
             searchItemTypes += "type:\"" + itemType + "\"";
         }
         searchItemTypes = "(" + searchItemTypes + ")";
-        if (searchItemTypes.length()>0 ) {
+        if (!searchItemTypes.isEmpty()) {
             searchString += " AND " + searchItemTypes;
+        }
+
+        if (!addendum.isEmpty()) {
+            searchString += " AND " + addendum;
         }
 
         searchString += ")";
@@ -311,10 +340,10 @@ public class AgolService implements IAgolService {
      * Add a list of items and share publically
      * @param agolItems
      * @return Comma-separated list of added itemIDs
-     * @throws AgolItemTransactionFailedException
+     * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    public String addItems(List<AgolItem> agolItems) throws AgolItemTransactionFailedException, IOException {
+    public String addItems(List<AgolItem> agolItems) throws AgolTransactionFailedException, IOException {
         return addItems(agolItems, AccessType.PUBLIC);
     }
     /**
@@ -322,10 +351,10 @@ public class AgolService implements IAgolService {
      * @param agolItems
      * @param accessType
      * @return Comma-separated list of added itemIDs
-     * @throws AgolItemTransactionFailedException
+     * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    public String addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolItemTransactionFailedException, IOException {
+    public String addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolTransactionFailedException, IOException {
         return addItems(agolItems, accessType, "");
     }
     /**
@@ -334,13 +363,13 @@ public class AgolService implements IAgolService {
      * @param accessType
      * @param groupIds: Comma-separated list of groupIDs the items shall be shared with
      * @return Comma-separated list of added itemIDs
-     * @throws AgolItemTransactionFailedException
+     * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    public String addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolItemTransactionFailedException, IOException {
+    public String addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolTransactionFailedException, IOException {
         String itemIds = "";
         for (AgolItem agolItem : agolItems) {
-            if (itemIds.length()>0) {
+            if (!itemIds.isEmpty()) {
                 itemIds += ",";
             }
             itemIds += createItem(agolItem);
@@ -355,10 +384,10 @@ public class AgolService implements IAgolService {
      * Create item
      * @param agolItem
      * @return the ID of the created item
-     * @throws AgolItemTransactionFailedException
+     * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    private String createItem(AgolItem agolItem) throws AgolItemTransactionFailedException, IOException {
+    private String createItem(AgolItem agolItem) throws AgolTransactionFailedException, IOException {
         String addItemUrl = _userContentUrl + "/addItem";
 
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
@@ -373,7 +402,7 @@ public class AgolService implements IAgolService {
             JsonNode errorNode = rootNode.get("error");
             if (errorNode != null)
             {
-                throw new AgolItemTransactionFailedException("Create Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
+                throw new AgolTransactionFailedException("Create item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
             JsonNode idNode = rootNode.get("id");
             return idNode.asText();
@@ -410,11 +439,11 @@ public class AgolService implements IAgolService {
      * @param itemIds: Comma-separated list of items to be unshared
      * @param groupIds: Comma-separated list of group IDs that the items will be unshared with.
      */
-    public void unshareItems(String itemIds, String groupIds) throws IOException, AgolItemTransactionFailedException {
+    public void unshareItems(String itemIds, String groupIds) throws IOException, AgolTransactionFailedException {
         String deleteItemsUrl = _userContentUrl + "/unshareItems";
         String errorItems = simpleHttpWithItemIdList(itemIds, deleteItemsUrl);
         if (!errorItems.isEmpty()) {
-            throw new AgolItemTransactionFailedException("Unshare items failed for the following items: \n" + errorItems);
+            throw new AgolTransactionFailedException("Unshare items failed for the following items: \n" + errorItems);
         }
     }
 
@@ -422,9 +451,9 @@ public class AgolService implements IAgolService {
      * Update a specific item
      * @param agolItem
      * @throws IOException
-     * @throws AgolItemTransactionFailedException
+     * @throws AgolTransactionFailedException
      */
-    public void updateItem(AgolItem agolItem) throws IOException, AgolItemTransactionFailedException {
+    public void updateItem(AgolItem agolItem) throws IOException, AgolTransactionFailedException {
         String userItemUrl = _userContentUrl + "/items/" + agolItem.getId();
         String updateItemUrl = userItemUrl + "/update";
 
@@ -439,7 +468,7 @@ public class AgolService implements IAgolService {
             JsonNode errorNode = rootNode.get("error");
             if (errorNode != null)
             {
-                throw new AgolItemTransactionFailedException("Update Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
+                throw new AgolTransactionFailedException("Update Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
         }
     }
@@ -448,13 +477,13 @@ public class AgolService implements IAgolService {
      * Delete ArcgGIS Online items
      * @param agolItems
      * @throws IOException
-     * @throws AgolItemTransactionFailedException
+     * @throws AgolTransactionFailedException
      */
-    public void deleteItems(List<AgolItem> agolItems) throws IOException, AgolItemTransactionFailedException {
+    public void deleteItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException {
         String itemIds = "";
 
         for (AgolItem agolItem : agolItems) {
-            if (itemIds.length()>0) {
+            if (!itemIds.isEmpty()) {
                 itemIds += ",";
             }
             itemIds += agolItem.getId();
@@ -465,13 +494,13 @@ public class AgolService implements IAgolService {
      * Delete ArcgGIS Online items
      * @param itemIds as comma-separated list
      * @throws IOException
-     * @throws AgolItemTransactionFailedException
+     * @throws AgolTransactionFailedException
      */
-    public void deleteItems(String itemIds) throws IOException, AgolItemTransactionFailedException {
+    public void deleteItems(String itemIds) throws IOException, AgolTransactionFailedException {
         String deleteItemsUrl = _userContentUrl + "/deleteItems";
         String errorItems = simpleHttpWithItemIdList(itemIds, deleteItemsUrl);
         if (!errorItems.isEmpty()) {
-            throw new AgolItemTransactionFailedException("Delete items failed for the following items: \n" + errorItems);
+            throw new AgolTransactionFailedException("Delete items failed for the following items: \n" + errorItems);
         }
     }
 
