@@ -17,5 +17,13 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>processinfo</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>resource-reader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>itemtransform</artifactId>
+        </dependency>
     </dependencies>
 </project>

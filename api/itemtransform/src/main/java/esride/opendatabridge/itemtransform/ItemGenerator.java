@@ -70,13 +70,13 @@ public class ItemGenerator {
 
 
             String itemKey = properties.getProperty("item[" + i + "].md.id");
-            String itemType = properties.getProperty("item[" + i + "].value.type");
+            String itemHandler = properties.getProperty("item[" + i + "].value.handler");
 
-            if(elemHandlerMap.containsKey(itemType)){
-                IElemHandler handler = elemHandlerMap.get(itemType);
+            if(elemHandlerMap.containsKey(itemHandler)){
+                IElemHandler handler = elemHandlerMap.get(itemHandler);
                 itemMap.put(itemKey, handler.handleElement(properties.getProperty("item[" + i + "].md.value"), xmlDoc.get(itemMetadataType)));
             } else{
-                String lMessage = "Wrong item Type: " + properties.getProperty("item[" + i + "].value.type");
+                String lMessage = "Wrong item Type: " + properties.getProperty("item[" + i + "].value.handler");
                 sLogger.error(lMessage);
                 throw new ItemGenerationException(lMessage);
             }
