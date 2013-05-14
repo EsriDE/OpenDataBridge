@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class UnitTestsAgolItem extends AbstractJUnit4SpringContextTests {
 
     @Autowired
     private AgolItemFactory agolItemFactory;
-    @Autowired
+    @Resource
     private Map<String,String> jsonMap;
 
     @Test
