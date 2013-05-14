@@ -31,7 +31,7 @@ public class IntegrationTestCkanSearchRequest extends AbstractJUnit4SpringContex
     public void testCkanWMS(){
         //CatalogRequestObj reqObj = new CatalogRequestObj();
         try {
-            CatalogResponseObj responseObj = searchRequest.executeCkanRequest(reqObj1);
+            CatalogResponseObj responseObj = searchRequest.executeRequest(reqObj1);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
         }
