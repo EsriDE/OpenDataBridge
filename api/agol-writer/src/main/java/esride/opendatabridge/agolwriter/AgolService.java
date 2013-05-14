@@ -172,7 +172,7 @@ public class AgolService {
     }
 
     /**
-     * Get a specific item, for example to check it's properties
+     * Get a specific item including Sharing information
      * @param itemId
      * @return
      */
@@ -198,8 +198,8 @@ public class AgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes) throws IOException {
-        return getAllItems(itemTypes, OwnerType.USER);
+    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes) throws IOException {
+        return searchItems(itemTypes, OwnerType.USER);
     }
     /**
      * Get all items with selectable access type
@@ -208,8 +208,8 @@ public class AgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, OwnerType ownerType) throws IOException {
-        String searchString = createSearchString(itemTypes, ownerType, "");
+    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType) throws IOException {
+        String searchString = getSearchString(itemTypes, ownerType, "");
         fillAgolItems(searchString, 0, 0);
         return _agolItems;
     }
@@ -221,8 +221,8 @@ public class AgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException {
-        String searchString = createSearchString(itemTypes, ownerType, addendum);
+    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException {
+        String searchString = getSearchString(itemTypes, ownerType, addendum);
         fillAgolItems(searchString, 0, 0);
         return _agolItems;
     }
@@ -232,8 +232,8 @@ public class AgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> getAllItems(String searchString, OwnerType ownerType) throws IOException {
-        searchString = "(" + searchString  + " AND " + createOwnerTypeSearchString(ownerType) + ")";
+    public Map<String, ArrayList<AgolItem>> searchItems(String searchString, OwnerType ownerType) throws IOException {
+        searchString = "(" + searchString  + " AND " + getOwnerTypeSearchString(ownerType) + ")";
         fillAgolItems(searchString, 0, 0);
         return _agolItems;
     }
@@ -245,10 +245,10 @@ public class AgolService {
      * @return Search String
      * @throws IOException
      */
-    private String createSearchString(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException {
+    private String getSearchString(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException {
         String searchString =  "(";
 
-        searchString += createOwnerTypeSearchString(ownerType);
+        searchString += getOwnerTypeSearchString(ownerType);
 
         String searchItemTypes = "";
         for (String itemType : itemTypes) {
@@ -276,7 +276,7 @@ public class AgolService {
      * @return
      * @throws IOException
      */
-    private String createOwnerTypeSearchString(OwnerType ownerType) throws IOException {
+    private String getOwnerTypeSearchString(OwnerType ownerType) throws IOException {
         String searchString = "";
         // If logged-in user is not an admin, he has only write permission to his own items. So he won't get more than those.
         if (ownerType.equals(OwnerType.USER) || !getRole().equals("account_admin")) {
@@ -395,7 +395,7 @@ public class AgolService {
             if (!itemIds.isEmpty()) {
                 itemIds += ",";
             }
-            itemIds += createItem(agolItem);
+            itemIds += addItem(agolItem);
         }
         if (itemIds!=null && !accessType.equals(AccessType.PRIVATE)) {
             shareItems(itemIds, accessType, groupIds);
@@ -403,13 +403,13 @@ public class AgolService {
         return itemIds;
     }
     /**
-     * Create item
+     * Add item
      * @param agolItem
      * @return the ID of the created item
      * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    private String createItem(AgolItem agolItem) throws AgolTransactionFailedException, IOException {
+    private String addItem(AgolItem agolItem) throws AgolTransactionFailedException, IOException {
         String addItemUrl = _userContentUrl + "/addItem";
 
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
@@ -424,7 +424,7 @@ public class AgolService {
             JsonNode errorNode = rootNode.get("error");
             if (errorNode != null)
             {
-                throw new AgolTransactionFailedException("Create item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
+                throw new AgolTransactionFailedException("Add item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
             JsonNode idNode = rootNode.get("id");
             return idNode.asText();

@@ -38,7 +38,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             List<String> itemTypes = new ArrayList<String>();
             itemTypes.add("WMS");
             itemTypes.add("Map Service");
-            Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems(itemTypes, OwnerType.ORG);
+            Map<String, ArrayList<AgolItem>> agolItems = agolService.searchItems(itemTypes, OwnerType.ORG);
             Assert.assertNotNull("List of Agol items is empty.", agolItems);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
@@ -51,7 +51,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             List<String> itemTypes = new ArrayList<String>();
             itemTypes.add("Web Mapping Application");
             itemTypes.add("Feature Service");
-            Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems(itemTypes, OwnerType.ORG, "Distillerien");
+            Map<String, ArrayList<AgolItem>> agolItems = agolService.searchItems(itemTypes, OwnerType.ORG, "Distillerien");
             Assert.assertNotNull("List of ArcGIS Online items is empty.", agolItems);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
