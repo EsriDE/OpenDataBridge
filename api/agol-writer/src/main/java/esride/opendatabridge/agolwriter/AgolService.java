@@ -12,9 +12,11 @@ import java.io.InputStream;
 import java.util.*;
 
 /**
- * User: gvs
- * Date: 06.03.13
+ * Created with IntelliJ IDEA.
+ * User: nik
+ * Date: 14.05.13
  * Time: 13:22
+ * To change this template use File | Settings | File Templates.
  */
 public class AgolService implements IAgolService {
     private String _userName, _password,_referer, _token;
