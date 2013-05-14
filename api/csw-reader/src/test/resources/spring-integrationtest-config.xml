@@ -10,7 +10,7 @@
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <bean class="esride.opendatabridge.reader.csw.CSWReader" id="reader"
-          p:getRecordsRequest-ref="getRecordsRequest"
+          p:searchRequest-ref="getRecordsRequest"
           p:capabilitiesMapper-ref="capabilitiesMap"
           p:resourceMap-ref="resourceMap"
           p:agolItemTransformer-ref="itemTransform"/>

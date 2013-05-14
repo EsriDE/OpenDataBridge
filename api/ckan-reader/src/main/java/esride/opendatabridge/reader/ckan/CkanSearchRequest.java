@@ -8,6 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import esride.opendatabridge.httptransport.IHTTPRequest;
 import esride.opendatabridge.reader.request.CatalogRequestObj;
 import esride.opendatabridge.reader.request.CatalogResponseObj;
+import esride.opendatabridge.reader.request.ICatalogRequest;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -30,7 +31,7 @@ import java.io.*;
  * Time: 12:49
  * To change this template use File | Settings | File Templates.
  */
-public class CkanSearchRequest {
+public class CkanSearchRequest implements ICatalogRequest {
 
     private static Logger sLogger = Logger.getLogger(CkanSearchRequest.class);
 
@@ -67,7 +68,7 @@ public class CkanSearchRequest {
         jsonFactory = new JsonFactory();
     }
 
-    public CatalogResponseObj executeCkanRequest(CatalogRequestObj requestObj) throws IOException {
+    public CatalogResponseObj executeRequest(CatalogRequestObj requestObj) throws IOException {
 
         InputStream stream = httpRequest.executeGetRequest(requestObj.getCatalogUrl(), requestObj.getParameters(), null);
         Document responseDoc = this.createDocumentFromJsonInputStream(stream);

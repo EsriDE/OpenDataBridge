@@ -5,6 +5,7 @@ package esride.opendatabridge.reader.csw;
 import esride.opendatabridge.httptransport.IHTTPRequest;
 import esride.opendatabridge.reader.request.CatalogRequestObj;
 import esride.opendatabridge.reader.request.CatalogResponseObj;
+import esride.opendatabridge.reader.request.ICatalogRequest;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -23,7 +24,7 @@ import java.io.InputStream;
  * Time: 18:20
  * To change this template use File | Settings | File Templates.
  */
-public class CSWGetRecordsRequest {
+public class CSWGetRecordsRequest implements ICatalogRequest {
 
     private static Logger sLogger = Logger.getLogger(CSWGetRecordsRequest.class);
 
@@ -64,7 +65,7 @@ public class CSWGetRecordsRequest {
 
     }
 
-    public CatalogResponseObj executeGetRecordsRequest(CatalogRequestObj requestObj) throws IOException {
+    public CatalogResponseObj executeRequest(CatalogRequestObj requestObj) throws IOException {
 
         String getRecordsRequest = requestTemplate.generateGetRecordsTemplate(requestObj.getParameters());
         InputStream stream = httpRequest.executePostRequest(requestObj.getCatalogUrl(), getRecordsRequest, "UTF-8", requestObj.getHeader());
