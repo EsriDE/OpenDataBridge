@@ -38,7 +38,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             List<String> itemTypes = new ArrayList<String>();
             itemTypes.add("WMS");
             itemTypes.add("Map Service");
-            Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems(itemTypes, AccessType.ORG);
+            Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems(itemTypes, OwnerType.ORG);
             Assert.assertNotNull("List of Agol items is empty.", agolItems);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
@@ -51,7 +51,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             List<String> itemTypes = new ArrayList<String>();
             itemTypes.add("Web Mapping Application");
             itemTypes.add("Feature Service");
-            Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems(itemTypes, AccessType.ORG, "Distillerien");
+            Map<String, ArrayList<AgolItem>> agolItems = agolService.getAllItems(itemTypes, OwnerType.ORG, "Distillerien");
             Assert.assertNotNull("List of ArcGIS Online items is empty.", agolItems);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
@@ -66,8 +66,12 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             List<AgolItem> agolItems = new ArrayList<AgolItem>();
             agolItems.add((testItem1));
             String itemId = agolService.addItems(agolItems);
+
             testItem2.setId(itemId);
-            agolService.updateItem(testItem2);
+            List<AgolItem> updateItems = new ArrayList<AgolItem>();
+            updateItems.add(testItem2);
+            agolService.updateItems(updateItems);
+
             List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
             deleteAgolItems.add((testItem2));
             agolService.deleteItems(deleteAgolItems);
@@ -83,14 +87,12 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
             List<AgolItem> agolItems = new ArrayList<AgolItem>();
             agolItems.add((testItem1));
-
             String itemId = agolService.addItems(agolItems, AccessType.ORG);
-            testItem2.setId(itemId);
-            agolService.updateItem(testItem2);
 
-            List<AgolItem> unshareItems = new ArrayList<AgolItem>();
-            unshareItems.add(testItem2);
-            agolService.unshareItems(unshareItems, agolService.getUserGroupIds());
+            testItem2.setId(itemId);
+            List<AgolItem> updateItems = new ArrayList<AgolItem>();
+            updateItems.add(testItem2);
+            agolService.updateItems(updateItems, AccessType.SHARED, agolService.getUserGroupIds());
 
             List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
             deleteAgolItems.add((testItem2));
@@ -114,11 +116,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             testItem2.setId(itemId);
             List<AgolItem> updateItems = new ArrayList<AgolItem>();
             updateItems.add(testItem2);
-            agolService.updateItems(updateItems);
-
-            List<AgolItem> unshareItems = new ArrayList<AgolItem>();
-            unshareItems.add(testItem2);
-            agolService.unshareItems(unshareItems, firstGroup);
+            agolService.updateItems(updateItems, AccessType.SHARED, firstGroup);
 
             List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
             deleteAgolItems.add((testItem2));

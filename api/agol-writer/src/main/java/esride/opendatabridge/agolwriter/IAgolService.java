@@ -10,8 +10,8 @@ import java.util.Map;
 /**
  * Created with IntelliJ IDEA.
  * User: nik
- * Date: 13.05.13
- * Time: 18:44
+ * Date: 14.05.13
+ * Time: 12:01
  * To change this template use File | Settings | File Templates.
  */
 public interface IAgolService {
@@ -21,9 +21,9 @@ public interface IAgolService {
 
     Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes) throws IOException;
 
-    Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, AccessType accessType) throws IOException;
+    Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, OwnerType ownerType) throws IOException;
 
-    Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, AccessType accessType, String addendum) throws IOException;
+    Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException;
 
     Map<String, ArrayList<AgolItem>> getAllItems(String searchString) throws IOException;
 
@@ -33,13 +33,11 @@ public interface IAgolService {
 
     String addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolTransactionFailedException, IOException;
 
-    void unshareItems(List<AgolItem> agolItems, String groupIds) throws IOException, AgolTransactionFailedException;
-
-    void unshareItems(String itemIds, String groupIds) throws IOException, AgolTransactionFailedException;
-
     void updateItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException;
 
-    void updateItem(AgolItem agolItem) throws IOException, AgolTransactionFailedException;
+    void updateItems(List<AgolItem> agolItems, AccessType accessType) throws IOException, AgolTransactionFailedException;
+
+    void updateItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException;
 
     void deleteItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException;
 

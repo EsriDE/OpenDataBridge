@@ -35,7 +35,6 @@ public class AgolService implements IAgolService {
     public void set_AgolItemFactory(AgolItemFactory agolItemFactory) {
         this._agolItemFactory = agolItemFactory;
     }
-
     /**
      * Setter for _httpRequest
      * @param httpRequest
@@ -43,7 +42,6 @@ public class AgolService implements IAgolService {
     public void set_httpRequest(HTTPRequest httpRequest) {
         this._httpRequest = httpRequest;
     }
-
     /**
      * Setter for _objectMapper
      * @param objectMapper
@@ -148,7 +146,7 @@ public class AgolService implements IAgolService {
      * @return accountId
      * @throws IOException
      */
-    public String getAccountId() throws IOException {
+    private String getAccountId() throws IOException {
         if (_orgId == null) {    // first call
             fillUserDetails();
         }
@@ -176,10 +174,6 @@ public class AgolService implements IAgolService {
         throw new AgolTransactionFailedException("Getting item " + itemId + " failed with no result.");
     }
 
-    /* ToDo:
-        - Wie sieht's aus mit einer Schlagwortsuche auf Title oder Tags?
-      */
-
     /**
      * Get all items of a specific type, that are owned by logged-in user. If logged-in user is not an admin, he has only write permission to his own items. This is probably the standard use case.
      * @param itemTypes: http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#//02r3000000ms000000
@@ -187,30 +181,30 @@ public class AgolService implements IAgolService {
      * @throws IOException
      */
     public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes) throws IOException {
-        return getAllItems(itemTypes, AccessType.PRIVATE);
+        return getAllItems(itemTypes, OwnerType.USER);
     }
     /**
      * Get all items with selectable access type
      * @param itemTypes
-     * @param accessType
+     * @param ownerType
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, AccessType accessType) throws IOException {
-        String searchString = createSearchString(itemTypes, accessType, "");
+    public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, OwnerType ownerType) throws IOException {
+        String searchString = createSearchString(itemTypes, ownerType, "");
         fillAgolItems(searchString, 0, 0);
         return _agolItems;
     }
     /**
      * Get all items with selectable access type
      * @param itemTypes
-     * @param accessType
+     * @param ownerType
      * @param addendum String that is added to the end of the generated search String as a restriction ("AND")
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, AccessType accessType, String addendum) throws IOException {
-        String searchString = createSearchString(itemTypes, accessType, addendum);
+    public Map<String, ArrayList<AgolItem>> getAllItems(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException {
+        String searchString = createSearchString(itemTypes, ownerType, addendum);
         fillAgolItems(searchString, 0, 0);
         return _agolItems;
     }
@@ -226,21 +220,20 @@ public class AgolService implements IAgolService {
     }
     /**
      * Concatenate search string for items request
-     *
      * @param itemTypes
-     * @param accessType
+     * @param ownerType
      * @param addendum String that is added to the end of the generated search String as a restriction "AND"
-     * @return
+     * @return Search String
      * @throws IOException
      */
-    private String createSearchString(List<String> itemTypes, AccessType accessType, String addendum) throws IOException {
+    private String createSearchString(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException {
         String searchString =  "(";
 
-        if (accessType.equals(AccessType.PRIVATE)) {
+        if (ownerType.equals(OwnerType.USER)) {
             // if logged-in user is not an admin, he has only write permission to his own items
             searchString +=  "owner:" + _userName;
         }
-        else if (accessType.equals(AccessType.ORG)) {
+        else if (ownerType.equals(OwnerType.ORG)) {
             searchString += "accountid:" + getAccountId();
         }
 
@@ -379,7 +372,6 @@ public class AgolService implements IAgolService {
         }
         return itemIds;
     }
-
     /**
      * Create item
      * @param agolItem
@@ -433,13 +425,12 @@ public class AgolService implements IAgolService {
 
         handleResultListErrors(entities);
     }
-
     /**
-     * Manually unshare items
+     * Unshare items
      * @param agolItems
      * @param groupIds: Comma-separated list of group IDs that the items will be unshared with.
      */
-    public void unshareItems(List<AgolItem> agolItems, String groupIds) throws IOException, AgolTransactionFailedException {
+    private void unshareItems(List<AgolItem> agolItems, String groupIds) throws IOException, AgolTransactionFailedException {
         String itemIds = "";
 
         for (AgolItem agolItem : agolItems) {
@@ -450,13 +441,12 @@ public class AgolService implements IAgolService {
         }
         unshareItems(itemIds, groupIds);
     }
-
     /**
-     * Manually unshare items
+     * Unshare items
      * @param itemIds: Comma-separated list of items to be unshared
      * @param groupIds: Comma-separated list of group IDs that the items will be unshared with.
      */
-    public void unshareItems(String itemIds, String groupIds) throws IOException, AgolTransactionFailedException {
+    private void unshareItems(String itemIds, String groupIds) throws IOException, AgolTransactionFailedException {
         String unshareItemsUrl = _userContentUrl + "/unshareItems";
 
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
@@ -476,7 +466,7 @@ public class AgolService implements IAgolService {
     }
 
     /**
-     * Update a list of items
+     * Update a list of items, don't touch the Share settings
      * @param agolItems
      */
     public void updateItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException {
@@ -484,14 +474,44 @@ public class AgolService implements IAgolService {
             updateItem(agolItem);
         }
     }
+    /**
+     * Update a list of items and adjust the Share settings for a selectable access type
+     * @param agolItems
+     * @param accessType
+     * @throws IOException
+     * @throws AgolTransactionFailedException
+     */
+    public void updateItems(List<AgolItem> agolItems, AccessType accessType) throws IOException, AgolTransactionFailedException {
+        updateItems(agolItems, accessType, "");
+    }
+    /**
+     * Update a list of items and adjust the Share settings for a selectable access type and groups
+     * @param agolItems
+     * @param accessType
+     * @param groupIds
+     * @throws IOException
+     * @throws AgolTransactionFailedException
+     */
+    public void updateItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException {
+        updateItems(agolItems);
 
+        // ToDo: unshare???
+        String itemIds = "";
+        for (AgolItem agolItem : agolItems) {
+            if (!itemIds.isEmpty()) {
+                itemIds += ",";
+            }
+            itemIds += agolItem.getId();
+        }
+        shareItems(itemIds, accessType, groupIds);
+    }
     /**
      * Update a specific item
      * @param agolItem
      * @throws IOException
      * @throws AgolTransactionFailedException
      */
-    public void updateItem(AgolItem agolItem) throws IOException, AgolTransactionFailedException {
+    private void updateItem(AgolItem agolItem) throws IOException, AgolTransactionFailedException {
         String userItemUrl = _userContentUrl + "/items/" + agolItem.getId();
         String updateItemUrl = userItemUrl + "/update";
 
