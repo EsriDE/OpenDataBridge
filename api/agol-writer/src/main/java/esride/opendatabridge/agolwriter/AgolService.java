@@ -18,17 +18,16 @@ import java.util.*;
  * Time: 13:22
  * To change this template use File | Settings | File Templates.
  */
-public class AgolService implements IAgolService {
+public class AgolService {
     private String _userName, _password,_referer, _token;
     private String _baseUrl, _rootUrl, _userContentUrl, _selfUrl, _contentUrl;
+    private String _userGroupIds, _orgId, _role;
     private Long _tokenExpires;
     private static final Logger log = Logger.getLogger(AgolService.class);
     private AgolItemFactory _agolItemFactory;
     private Map<String, ArrayList<AgolItem>> _agolItems = new HashMap<String, ArrayList<AgolItem>>();
     private HTTPRequest _httpRequest;
     private ObjectMapper _objectMapper;
-    private String _userGroupIds;
-    private String _orgId;
 
     /**
      * Setter for _agolItemFactory
@@ -103,6 +102,7 @@ public class AgolService implements IAgolService {
     private void fillUserDetails() throws IOException {
         _userGroupIds = "";
         _orgId = "";
+        _role = "";
 
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
 
@@ -130,6 +130,14 @@ public class AgolService implements IAgolService {
             JsonNode accountIdNode = rootNode.get("accountId");
             if (accountIdNode != null) {
                 _orgId = accountIdNode.toString().replace("\"", "");
+            }
+
+            JsonNode userNode = rootNode.get("user");
+            if (userNode!=null) {
+                JsonNode roleNode = userNode.get("role");
+                if (roleNode != null) {
+                    _role = roleNode.toString().replace("\"", "");
+                }
             }
         }
     }
@@ -216,7 +224,8 @@ public class AgolService implements IAgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> getAllItems(String searchString) throws IOException {
+    public Map<String, ArrayList<AgolItem>> getAllItems(String searchString, OwnerType ownerType) throws IOException {
+        searchString = "(" + searchString  + " AND " + createOwnerTypeSearchString(ownerType) + ")";
         fillAgolItems(searchString, 0, 0);
         return _agolItems;
     }
@@ -231,13 +240,7 @@ public class AgolService implements IAgolService {
     private String createSearchString(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException {
         String searchString =  "(";
 
-        if (ownerType.equals(OwnerType.USER)) {
-            // if logged-in user is not an admin, he has only write permission to his own items
-            searchString +=  "owner:" + _userName;
-        }
-        else if (ownerType.equals(OwnerType.ORG)) {
-            searchString += "accountid:" + getAccountId();
-        }
+        searchString += createOwnerTypeSearchString(ownerType);
 
         String searchItemTypes = "";
         for (String itemType : itemTypes) {
@@ -246,9 +249,8 @@ public class AgolService implements IAgolService {
             }
             searchItemTypes += "type:\"" + itemType + "\"";
         }
-        searchItemTypes = "(" + searchItemTypes + ")";
         if (!searchItemTypes.isEmpty()) {
-            searchString += " AND " + searchItemTypes;
+            searchString += " AND (" + searchItemTypes + ")";
         }
 
         if (!addendum.isEmpty()) {
@@ -257,6 +259,24 @@ public class AgolService implements IAgolService {
 
         searchString += ")";
 
+        return searchString;
+    }
+
+    /**
+     * Create search string for OwnerType
+     * @param ownerType
+     * @return
+     * @throws IOException
+     */
+    private String createOwnerTypeSearchString(OwnerType ownerType) throws IOException {
+        String searchString = "";
+        // If logged-in user is not an admin, he has only write permission to his own items. So he won't get more than those.
+        if (ownerType.equals(OwnerType.USER) || !_role.equals("account_admin")) {
+            searchString +=  "owner:" + _userName;
+        }
+        else if (ownerType.equals(OwnerType.ORG)) {
+            searchString += "accountid:" + getAccountId();
+        }
         return searchString;
     }
     /**
