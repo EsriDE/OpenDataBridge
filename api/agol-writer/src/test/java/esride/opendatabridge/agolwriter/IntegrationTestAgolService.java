@@ -65,9 +65,9 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
             List<AgolItem> agolItems = new ArrayList<AgolItem>();
             agolItems.add((testItem1));
-            String itemId = agolService.addItems(agolItems);
+            agolService.addItems(agolItems);
 
-            testItem2.setId(itemId);
+            testItem2.setId(testItem1.getId());
             List<AgolItem> updateItems = new ArrayList<AgolItem>();
             updateItems.add(testItem2);
             agolService.updateItems(updateItems);
@@ -87,9 +87,9 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
             List<AgolItem> agolItems = new ArrayList<AgolItem>();
             agolItems.add((testItem1));
-            String itemId = agolService.addItems(agolItems, AccessType.ORG);
+            agolService.addItems(agolItems, AccessType.ORG);
 
-            testItem2.setId(itemId);
+            testItem2.setId(testItem1.getId());
             List<AgolItem> updateItems = new ArrayList<AgolItem>();
             updateItems.add(testItem2);
             agolService.updateItems(updateItems, AccessType.SHARED, agolService.getUserGroupIds());
@@ -111,9 +111,9 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
             List<AgolItem> agolItems = new ArrayList<AgolItem>();
             agolItems.add((testItem1));
+            agolService.addItems(agolItems, AccessType.SHARED, userGroupIds);
 
-            String itemId = agolService.addItems(agolItems, AccessType.SHARED, userGroupIds);
-            testItem2.setId(itemId);
+            testItem2.setId(testItem1.getId());
             List<AgolItem> updateItems = new ArrayList<AgolItem>();
             updateItems.add(testItem2);
             agolService.updateItems(updateItems, AccessType.SHARED, firstGroup);

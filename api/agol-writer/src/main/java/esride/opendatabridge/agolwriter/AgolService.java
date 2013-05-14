@@ -18,7 +18,7 @@ import java.util.*;
  * Time: 13:22
  * To change this template use File | Settings | File Templates.
  */
-public class AgolService {
+public class AgolService implements IAgolService {
     private String _userName, _password,_referer, _token;
     private String _baseUrl, _rootUrl, _userContentUrl, _selfUrl, _contentUrl;
     private String _userGroupIds, _orgId, _role;
@@ -64,7 +64,7 @@ public class AgolService {
         _password = password;
         _referer = referer;
 
-        _rootUrl = _baseUrl + "/sharing";
+        _rootUrl = _baseUrl + "/sharing/rest";
         _userContentUrl = _rootUrl + "/content/users/" + _userName;
         _selfUrl = _rootUrl + "/community/self";
         _contentUrl = _rootUrl + "/content";
@@ -127,9 +127,9 @@ public class AgolService {
                 }
             }
 
-            JsonNode accountIdNode = rootNode.get("accountId");
-            if (accountIdNode != null) {
-                _orgId = accountIdNode.toString().replace("\"", "");
+            JsonNode orgIdNode = rootNode.get("orgId");
+            if (orgIdNode != null) {
+                _orgId = orgIdNode.toString().replace("\"", "");
             }
 
             JsonNode roleNode = rootNode.get("role");
@@ -149,11 +149,11 @@ public class AgolService {
         return _userGroupIds;
     }
     /**
-     * Get account ID of the logged-in user
-     * @return accountId
+     * Get organization ID of the logged-in user
+     * @return orgId
      * @throws IOException
      */
-    private String getAccountId() throws IOException {
+    private String getOrgId() throws IOException {
         if (_orgId == null) {    // first call
             fillUserDetails();
         }
@@ -279,11 +279,11 @@ public class AgolService {
     private String getOwnerTypeSearchString(OwnerType ownerType) throws IOException {
         String searchString = "";
         // If logged-in user is not an admin, he has only write permission to his own items. So he won't get more than those.
-        if (ownerType.equals(OwnerType.USER) || !getRole().equals("account_admin")) {
+        if (ownerType.equals(OwnerType.USER) || !getRole().equals("org_admin")) {
             searchString +=  "owner:" + _userName;
         }
         else if (ownerType.equals(OwnerType.ORG)) {
-            searchString += "accountid:" + getAccountId();
+            searchString += "orgid:" + getOrgId();
         }
         return searchString;
     }
@@ -366,8 +366,8 @@ public class AgolService {
      * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    public String addItems(List<AgolItem> agolItems) throws AgolTransactionFailedException, IOException {
-        return addItems(agolItems, AccessType.PUBLIC);
+    public void addItems(List<AgolItem> agolItems) throws AgolTransactionFailedException, IOException {
+        addItems(agolItems, AccessType.PUBLIC);
     }
     /**
      * Add a list of items and share with selectable access type
@@ -377,8 +377,8 @@ public class AgolService {
      * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    public String addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolTransactionFailedException, IOException {
-        return addItems(agolItems, accessType, "");
+    public void addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolTransactionFailedException, IOException {
+        addItems(agolItems, accessType, "");
     }
     /**
      * Add a list of items and share with selectable access type and groups
@@ -389,18 +389,18 @@ public class AgolService {
      * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    public String addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolTransactionFailedException, IOException {
+    public void addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolTransactionFailedException, IOException {
         String itemIds = "";
         for (AgolItem agolItem : agolItems) {
             if (!itemIds.isEmpty()) {
                 itemIds += ",";
             }
-            itemIds += addItem(agolItem);
+            addItem(agolItem);
+            itemIds += agolItem.getId();
         }
         if (itemIds!=null && !accessType.equals(AccessType.PRIVATE)) {
             shareItems(itemIds, accessType, groupIds);
         }
-        return itemIds;
     }
     /**
      * Add item
@@ -409,7 +409,7 @@ public class AgolService {
      * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    private String addItem(AgolItem agolItem) throws AgolTransactionFailedException, IOException {
+    private void addItem(AgolItem agolItem) throws AgolTransactionFailedException, IOException {
         String addItemUrl = _userContentUrl + "/addItem";
 
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
@@ -426,10 +426,7 @@ public class AgolService {
             {
                 throw new AgolTransactionFailedException("Add item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
-            JsonNode idNode = rootNode.get("id");
-            return idNode.asText();
         }
-        return null;
     }
 
     /**
@@ -448,7 +445,7 @@ public class AgolService {
             agolAttributes.put("everyone", "true");
         }
         else if (accessType.equals(AccessType.ORG)) {
-            agolAttributes.put("account", "true");
+            agolAttributes.put("org", "true");
         }
         agolAttributes.put("groups", groupIds);
         InputStream entities = _httpRequest.executePostRequest(publishItemUrl, agolAttributes, null);
@@ -485,7 +482,7 @@ public class AgolService {
 
         // ToDo: Diskutieren:
         // - unshareItems funktioniert offensichtlich nur für groups
-        // - um ORG- oder PUBLIC-Freigabe aufzuheben, muss ein shareItems mit account/everyone=false gesendet werden
+        // - um ORG- oder PUBLIC-Freigabe aufzuheben, muss ein shareItems mit org/everyone=false gesendet werden
         // Ist das hier ein Use Case??
         InputStream entities = _httpRequest.executePostRequest(unshareItemsUrl, agolAttributes, null);
         String errorItems = handleResultListErrors(entities);
