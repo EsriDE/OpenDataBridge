@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
- * User: gvs
- * Date: 07.03.13
- * Time: 14:10
+ * User: nik
+ * Date: 14.05.13
+ * Time: 13:26
  * To change this template use File | Settings | File Templates.
  */
 public class AgolItem {
