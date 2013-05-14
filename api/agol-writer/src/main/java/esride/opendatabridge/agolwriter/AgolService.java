@@ -132,12 +132,9 @@ public class AgolService {
                 _orgId = accountIdNode.toString().replace("\"", "");
             }
 
-            JsonNode userNode = rootNode.get("user");
-            if (userNode!=null) {
-                JsonNode roleNode = userNode.get("role");
-                if (roleNode != null) {
-                    _role = roleNode.toString().replace("\"", "");
-                }
+            JsonNode roleNode = rootNode.get("role");
+            if (roleNode != null) {
+                _role = roleNode.toString().replace("\"", "");
             }
         }
     }
@@ -161,6 +158,17 @@ public class AgolService {
             fillUserDetails();
         }
         return _orgId;
+    }
+    /**
+     * Get role of the logged-in user
+     * @return _role
+     * @throws IOException
+     */
+    private String getRole() throws IOException {
+        if (_role == null) {    // first call
+            fillUserDetails();
+        }
+        return _role;
     }
 
     /**
@@ -271,7 +279,7 @@ public class AgolService {
     private String createOwnerTypeSearchString(OwnerType ownerType) throws IOException {
         String searchString = "";
         // If logged-in user is not an admin, he has only write permission to his own items. So he won't get more than those.
-        if (ownerType.equals(OwnerType.USER) || !_role.equals("account_admin")) {
+        if (ownerType.equals(OwnerType.USER) || !getRole().equals("account_admin")) {
             searchString +=  "owner:" + _userName;
         }
         else if (ownerType.equals(OwnerType.ORG)) {
