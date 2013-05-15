@@ -18,13 +18,13 @@
         <constructor-arg type="java.lang.String" value="${test.service.referer}"/>
     </bean>
 
+    <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory" p:_objectMapper-ref="objectMapper">
+        <constructor-arg type="java.lang.Boolean" value="${test.service.propertiesToStrings}"/>
+    </bean>
+
     <bean class="com.fasterxml.jackson.databind.ObjectMapper" id="objectMapper" />
 
     <bean class="esride.opendatabridge.httptransport.HTTPRequest" id="httpRequest" />
-
-    <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory">
-        <constructor-arg type="java.lang.Boolean" value="${test.service.propertiesToStrings}"/>
-    </bean>
 
     <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String" id="jsonMap">
         <entry key="test01" value="${test.service.jsonItem1}" />

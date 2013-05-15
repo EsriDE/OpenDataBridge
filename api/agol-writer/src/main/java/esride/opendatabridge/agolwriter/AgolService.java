@@ -23,7 +23,7 @@ public class AgolService implements IAgolService {
     private String _baseUrl, _rootUrl, _userContentUrl, _selfUrl, _contentUrl;
     private String _userGroupIds, _orgId, _role;
     private Long _tokenExpires;
-    private static final Logger log = Logger.getLogger(AgolService.class);
+    private static final Logger _log = Logger.getLogger(AgolService.class);
     private AgolItemFactory _agolItemFactory;
     private Map<String, ArrayList<AgolItem>> _agolItems = new HashMap<String, ArrayList<AgolItem>>();
     private HTTPRequest _httpRequest;
@@ -336,8 +336,8 @@ public class AgolService implements IAgolService {
                 if(contains){
                     List<AgolItem> agolItemArrayList = _agolItems.get(strUrl);
                     agolItemArrayList.add(oneItem);
-                    if (log.isInfoEnabled()) {
-                        log.info("Duplicate entry in ArcGIS Online detected for URL " + strUrl);
+                    if (_log.isInfoEnabled()) {
+                        _log.info("Duplicate entry in ArcGIS Online detected for URL " + strUrl);
                     }
                     duplicateUrlsCount++;
                 }
@@ -348,8 +348,8 @@ public class AgolService implements IAgolService {
                     _agolItems.put(strUrl, agolItemArrayList);
                 }
             }
-            if (log.isInfoEnabled()) {
-                log.info(retrievedItemsCount + "/" + totalItemsCount + " retrieved. " + duplicateUrlsCount + " duplicate URLs found. " + _agolItems.size() + " _agolItems with different URLs found.");
+            if (_log.isInfoEnabled()) {
+                _log.info(retrievedItemsCount + "/" + totalItemsCount + " retrieved. " + duplicateUrlsCount + " duplicate URLs found. " + _agolItems.size() + " _agolItems with different URLs found.");
             }
 
             // Recursive call: Items are limited to 100 - if more than that are available, call again
@@ -632,8 +632,8 @@ public class AgolService implements IAgolService {
         agolAttributes.put("f", "json");
 
         if ((_token == null) || (System.currentTimeMillis() >= _tokenExpires)) {
-            if (log.isInfoEnabled()) {
-                log.info("Creating new token.");
+            if (_log.isInfoEnabled()) {
+                _log.info("Creating new token.");
             }
             createToken();
         }

@@ -2,6 +2,8 @@ package esride.opendatabridge.item;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -13,17 +15,38 @@ import java.util.*;
  */
 public class AgolItemFactory {
 
-    ObjectMapper objectMapper;
-    private static final Logger log = Logger.getLogger(AgolItemFactory.class.getName());
-    Boolean _propertiesToStrings;
+    private static final Logger _log = Logger.getLogger(AgolItemFactory.class.getName());
+    private Boolean _propertiesToStrings;
+    Properties _xpathValue;
+    private ArrayList<String> _validAgolItemProperties;
+    private ArrayList<String> _requiredAgolItemProperties;
+    private ObjectMapper _objectMapper;
+
+    /**
+     * Setter for _objectMapper
+     * @param objectMapper
+     */
+    public void set_objectMapper(ObjectMapper objectMapper) {
+        this._objectMapper = objectMapper;
+    }
 
     /**
      * Constructor
      * @param propertiesToStrings
      */
-    public AgolItemFactory(Boolean propertiesToStrings) {
+    public AgolItemFactory(Boolean propertiesToStrings) throws IOException {
         _propertiesToStrings = propertiesToStrings;
-        objectMapper = new ObjectMapper();
+
+//        _xpathValue = new Properties();
+//        _xpathValue.load(this.getClass().getResourceAsStream("/agolservice.properties"));
+
+        _requiredAgolItemProperties = new ArrayList<String>();
+        _requiredAgolItemProperties.add("id");
+        _validAgolItemProperties = new ArrayList<String>();
+        // ToDo: Not working. Why not working?
+//        _validAgolItemProperties = _objectMapper.readValue(_xpathValue.getProperty("validAgolItemProperties.xpath"), ArrayList.class);
+//        _validAgolItemProperties = _objectMapper.readValue("[\"access\",\"title\",\"thumbnail\",\"thumbnailURL\",\"metadata\",\"type\",\"typeKeywords\",\"description\",\"tags\",\"snippet\",\"extent\",\"spatialReference\",\"accessInformation\",\"licenseInfo\",\"culture\",\"serviceUsername\",\"servicePassword\",\"file\",\"url\",\"text\",\"relationshipType\",\"originItemId\",\"destinationItemId\",\"async\",\"multipart\",\"filename\"]", ArrayList.class);
+        _validAgolItemProperties.addAll(_requiredAgolItemProperties);
     }
 
     /**
@@ -32,7 +55,7 @@ public class AgolItemFactory {
      * @return
      */
     public AgolItem createAgolItem(String agolJsonItem) {
-        HashMap agolItemProperties = agolJsonToHashMap(agolJsonItem);
+        HashMap agolItemProperties = cleanAgolItemProperties(agolJsonToHashMap(agolJsonItem));
         AgolItem agolItem = new AgolItem(agolItemProperties);
         return agolItem;
     }
@@ -56,7 +79,7 @@ public class AgolItemFactory {
     private HashMap<String,String> agolJsonToHashMap(String agolJsonItem) {
         HashMap agolItemProperties = new HashMap();
         try {
-            agolItemProperties = objectMapper.readValue(agolJsonItem, HashMap.class);
+            agolItemProperties = _objectMapper.readValue(agolJsonItem, HashMap.class);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -70,7 +93,6 @@ public class AgolItemFactory {
     }
 
     // ToDo:
-    // - List of valid keys for item upload. Throw out invalid keys.
     // - Define keys that are obligatory to prevent cases like this AgolItem: error={code=400, messageCode=CONT_0001, message=Item '2C2cc78b3b57e64967aae845b937e92637' does not exist or is inaccessible., details=}
     /**
      * Clean a HashMap of ArcGIS Online Item from properties that are not accepted when uploading an item, from properties with null values and transform all values to Strings
@@ -83,24 +105,21 @@ public class AgolItemFactory {
 
         // Altering objects in a HashMap while iterating through it leads to null pointer errors - so we do everything in single loops.
         Iterator findNullItemsIterator = agolItemProperties.entrySet().iterator();
-        int iteCounter = 0;
-        long startTime = System.currentTimeMillis();
         while (findNullItemsIterator.hasNext()) {
             Map.Entry property = (Map.Entry) findNullItemsIterator.next();
+            Object propertyKey = property.getKey();
             Object propertyValue = property.getValue();
-            if (propertyValue == null) {
-                deleteAgolItemProperties.put(property.getKey(), propertyValue);
+            if ((propertyValue == null) || !_validAgolItemProperties.contains(propertyKey)) {
+                deleteAgolItemProperties.put(propertyKey, propertyValue);
             }
-            iteCounter++;
         }
         Iterator removeNullItemsIterator = deleteAgolItemProperties.entrySet().iterator();
         while (removeNullItemsIterator.hasNext()) {
             Map.Entry property = (Map.Entry) removeNullItemsIterator.next();
             agolItemProperties.remove(property.getKey());
-            if (log.isInfoEnabled()) {
-                log.info("Entry \"" + property.getKey() + "\" with null value removed.");
+            if (_log.isInfoEnabled()) {
+                _log.info("Entry \"" + property.getKey() + "\" with null value removed.");
             }
-            iteCounter++;
         }
         Iterator findUpdatePropertiesIterator = agolItemProperties.entrySet().iterator();
         while (findUpdatePropertiesIterator.hasNext()) {
@@ -111,22 +130,17 @@ public class AgolItemFactory {
                 if (!propertyValueClass.equals(String.class)) {
                     String stringPropertyValue = propertyValue.toString().replaceAll("\\[", "").replaceAll("\\]", "");
                     updateAgolItemProperties.put(property.getKey(), stringPropertyValue);
-                    if (log.isInfoEnabled()) {
-                        log.info(propertyValueClass.toString() + " value of key \"" + property.getKey() + "\" transformed to String value \"" + stringPropertyValue + "\"");
+                    if (_log.isInfoEnabled()) {
+                        _log.info(propertyValueClass.toString() + " value of key \"" + property.getKey() + "\" transformed to String value \"" + stringPropertyValue + "\"");
                     }
                 }
             }
-            iteCounter++;
         }
         Iterator updatePropertiesIterator = updateAgolItemProperties.entrySet().iterator();
         while (updatePropertiesIterator.hasNext()) {
             Map.Entry updateProperty = (Map.Entry) updatePropertiesIterator.next();
             agolItemProperties.remove(updateProperty.getKey());
             agolItemProperties.put(updateProperty.getKey(), updateProperty.getValue());
-            iteCounter++;
-        }
-        if (log.isInfoEnabled()) {
-            log.info(iteCounter + " iterations performed in " + (System.currentTimeMillis()-startTime) + " ms.");
         }
 
         return agolItemProperties;
