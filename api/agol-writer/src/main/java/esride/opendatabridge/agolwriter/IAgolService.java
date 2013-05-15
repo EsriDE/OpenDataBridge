@@ -4,14 +4,15 @@ import esride.opendatabridge.item.AgolItem;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
  * User: nik
- * Date: 14.05.13
- * Time: 16:46
+ * Date: 15.05.13
+ * Time: 11:33
  * To change this template use File | Settings | File Templates.
  */
 public interface IAgolService {
@@ -42,4 +43,8 @@ public interface IAgolService {
     void deleteItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException;
 
     void deleteItems(String itemIds) throws IOException, AgolTransactionFailedException;
+
+    AgolItem createAgolItem(HashMap agolItemProperties);
+
+    AgolItem mergeAgolItems(AgolItem sourceItem, AgolItem targetItem);
 }

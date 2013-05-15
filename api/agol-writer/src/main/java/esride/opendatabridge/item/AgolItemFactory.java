@@ -17,23 +17,42 @@ public class AgolItemFactory {
     private static final Logger log = Logger.getLogger(AgolItemFactory.class.getName());
     Boolean _propertiesToStrings;
 
+    /**
+     * Constructor
+     * @param propertiesToStrings
+     */
     public AgolItemFactory(Boolean propertiesToStrings) {
         _propertiesToStrings = propertiesToStrings;
         objectMapper = new ObjectMapper();
     }
 
-    public AgolItem createAgolItem(String agolJsonItem)
-    {
+    /**
+     * Create ArcGIS Online item from Esri JSON
+     * @param agolJsonItem
+     * @return
+     */
+    public AgolItem createAgolItem(String agolJsonItem) {
         HashMap agolItemProperties = agolJsonToHashMap(agolJsonItem);
         AgolItem agolItem = new AgolItem(agolItemProperties);
         return agolItem;
     }
-    public AgolItem createAgolItem(HashMap agolItemProperties)
-    {
+    /**
+     * Create ArcGIS Online Item from HashMap
+     * @param agolItemProperties
+     * @return
+     */
+    public AgolItem createAgolItem(HashMap agolItemProperties) {
+        if (_propertiesToStrings) {
+            agolItemProperties = cleanAgolItemProperties(agolItemProperties);
+        }
         AgolItem agolItem = new AgolItem(agolItemProperties);
         return agolItem;
     }
-
+    /**
+     * Transform Esri JSON to Hash Map
+     * @param agolJsonItem
+     * @return
+     */
     private HashMap<String,String> agolJsonToHashMap(String agolJsonItem) {
         HashMap agolItemProperties = new HashMap();
         try {
@@ -53,6 +72,11 @@ public class AgolItemFactory {
     // ToDo:
     // - List of valid keys for item upload. Throw out invalid keys.
     // - Define keys that are obligatory to prevent cases like this AgolItem: error={code=400, messageCode=CONT_0001, message=Item '2C2cc78b3b57e64967aae845b937e92637' does not exist or is inaccessible., details=}
+    /**
+     * Clean a HashMap of ArcGIS Online Item from properties that are not accepted when uploading an item, from properties with null values and transform all values to Strings
+     * @param agolItemProperties
+     * @return
+     */
     private HashMap cleanAgolItemProperties(HashMap agolItemProperties) {
         HashMap deleteAgolItemProperties = new HashMap();
         HashMap updateAgolItemProperties = new HashMap();

@@ -641,4 +641,24 @@ public class AgolService implements IAgolService {
         agolAttributes.put("token", _token);
         return agolAttributes;
     }
+
+    /**
+     * Wrapper: Create ArcGIS Online Item from HashMap
+     * @param agolItemProperties
+     * @return
+     */
+    public AgolItem createAgolItem(HashMap agolItemProperties) {
+        return _agolItemFactory.createAgolItem(agolItemProperties);
+    }
+
+    /**
+     * Merge 2 ArcGIS Online Items by copying metadata from source to target and leaving
+     * @param sourceItem
+     * @param targetItem
+     * @return
+     */
+    public AgolItem mergeAgolItems(AgolItem sourceItem, AgolItem targetItem) {
+        // ToDo: implement
+        return targetItem;
+    }
 }
