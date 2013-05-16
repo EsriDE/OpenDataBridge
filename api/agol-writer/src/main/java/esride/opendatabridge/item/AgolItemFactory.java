@@ -17,7 +17,7 @@ public class AgolItemFactory {
 
     private static final Logger _log = Logger.getLogger(AgolItemFactory.class.getName());
     private Boolean _propertiesToStrings;
-    Properties _xpathValue;
+    Properties _properties;
     private ArrayList<String> _validAgolItemProperties;
     private ArrayList<String> _requiredAgolItemProperties;
     private ObjectMapper _objectMapper;
@@ -37,15 +37,17 @@ public class AgolItemFactory {
     public AgolItemFactory(Boolean propertiesToStrings) throws IOException {
         _propertiesToStrings = propertiesToStrings;
 
-//        _xpathValue = new Properties();
-//        _xpathValue.load(this.getClass().getResourceAsStream("/agolservice.properties"));
+        _properties = new Properties();
+        _properties.load(this.getClass().getResourceAsStream("/validAgolItemProperties.properties"));
 
+        Collection vaiProperties = _properties.values();
+        _validAgolItemProperties = new ArrayList<String>();
+        _validAgolItemProperties.addAll(vaiProperties);
+
+        // add properties that are always required
         _requiredAgolItemProperties = new ArrayList<String>();
         _requiredAgolItemProperties.add("id");
-        _validAgolItemProperties = new ArrayList<String>();
-        // ToDo: Not working. Why not working?
-//        _validAgolItemProperties = _objectMapper.readValue(_xpathValue.getProperty("validAgolItemProperties.xpath"), ArrayList.class);
-//        _validAgolItemProperties = _objectMapper.readValue("[\"access\",\"title\",\"thumbnail\",\"thumbnailURL\",\"metadata\",\"type\",\"typeKeywords\",\"description\",\"tags\",\"snippet\",\"extent\",\"spatialReference\",\"accessInformation\",\"licenseInfo\",\"culture\",\"serviceUsername\",\"servicePassword\",\"file\",\"url\",\"text\",\"relationshipType\",\"originItemId\",\"destinationItemId\",\"async\",\"multipart\",\"filename\"]", ArrayList.class);
+
         _validAgolItemProperties.addAll(_requiredAgolItemProperties);
     }
 
@@ -56,6 +58,10 @@ public class AgolItemFactory {
      */
     public AgolItem createAgolItem(String agolJsonItem) {
         HashMap agolItemProperties = cleanAgolItemProperties(agolJsonToHashMap(agolJsonItem));
+        if (!validateAgolItem(agolItemProperties)) {
+            //ToDo: define error?
+             _log.warn("Not a valid ArcGIS Online item: " + agolItemProperties.toString());
+        }
         AgolItem agolItem = new AgolItem(agolItemProperties);
         return agolItem;
     }
@@ -68,8 +74,25 @@ public class AgolItemFactory {
         if (_propertiesToStrings) {
             agolItemProperties = cleanAgolItemProperties(agolItemProperties);
         }
+        if (!validateAgolItem(agolItemProperties)) {
+            _log.warn("Not a valid ArcGIS Online item: " + agolItemProperties.toString());
+        }
         AgolItem agolItem = new AgolItem(agolItemProperties);
         return agolItem;
+    }
+
+    /**
+     * Check if the ArcGIS Online item contains the required parameters to prevent cases like this AgolItem: error={code=400, messageCode=CONT_0001, message=Item '2C2cc78b3b57e64967aae845b937e92637' does not exist or is inaccessible., details=}
+     * @param agolItemProperties
+     * @return
+     */
+    private Boolean validateAgolItem(HashMap agolItemProperties) {
+        for (String requiredProperty : _requiredAgolItemProperties) {
+            if (!agolItemProperties.containsKey(requiredProperty)) {
+                return false;
+            }
+        }
+        return true;
     }
     /**
      * Transform Esri JSON to Hash Map
@@ -92,8 +115,6 @@ public class AgolItemFactory {
         return agolItemProperties;
     }
 
-    // ToDo:
-    // - Define keys that are obligatory to prevent cases like this AgolItem: error={code=400, messageCode=CONT_0001, message=Item '2C2cc78b3b57e64967aae845b937e92637' does not exist or is inaccessible., details=}
     /**
      * Clean a HashMap of ArcGIS Online Item from properties that are not accepted when uploading an item, from properties with null values and transform all values to Strings
      * @param agolItemProperties
