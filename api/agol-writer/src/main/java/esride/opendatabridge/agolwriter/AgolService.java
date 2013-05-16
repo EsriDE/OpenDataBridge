@@ -328,7 +328,7 @@ public class AgolService implements IAgolService {
 
             while (resultsIterator.hasNext()) {
                 JsonNode result = (JsonNode) resultsIterator.next();
-                String strUrl = result.findValue("url").toString();
+                String strUrl = result.findValue("url").toString().replaceAll("\"", "");
 
                 AgolItem oneItem = _agolItemFactory.createAgolItem(result.toString()); // fromAgolJson
 
@@ -395,8 +395,7 @@ public class AgolService implements IAgolService {
             if (!itemIds.isEmpty()) {
                 itemIds += ",";
             }
-            addItem(agolItem);
-            itemIds += agolItem.getId();
+            itemIds += addItem(agolItem);
         }
         if (itemIds!=null && !accessType.equals(AccessType.PRIVATE)) {
             shareItems(itemIds, accessType, groupIds);
@@ -409,7 +408,7 @@ public class AgolService implements IAgolService {
      * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    private void addItem(AgolItem agolItem) throws AgolTransactionFailedException, IOException {
+    private String addItem(AgolItem agolItem) throws AgolTransactionFailedException, IOException {
         String addItemUrl = _userContentUrl + "/addItem";
 
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
@@ -426,7 +425,10 @@ public class AgolService implements IAgolService {
             {
                 throw new AgolTransactionFailedException("Add item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
+
+            return rootNode.get("id").toString().replaceAll("\"", "");
         }
+        return null;
     }
 
     /**

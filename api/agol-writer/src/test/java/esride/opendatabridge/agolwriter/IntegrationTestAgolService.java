@@ -10,10 +10,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -109,11 +106,18 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             String firstGroup = userGroupIds.substring(0,userGroupIds.indexOf(","));
             AgolItem testItem1 = agolItemFactory.createAgolItem(jsonMap.get("test01"));
             AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
+
             List<AgolItem> agolItems = new ArrayList<AgolItem>();
+            String timestamp = new Long(new Date().getTime()/1000).toString();
+            String title = testItem1.getAttributes().get("title") + " " + timestamp;
+            testItem1.updateAttribute("title", title);
             agolItems.add((testItem1));
             agolService.addItems(agolItems, AccessType.SHARED, userGroupIds);
 
-            testItem2.setId(testItem1.getId());
+            Map<String, ArrayList<AgolItem>> returnTestItems = agolService.searchItems(title, OwnerType.USER);
+            ArrayList<AgolItem> returnAddedItems = returnTestItems.get(testItem1.getUrl());
+            AgolItem returnedItem = returnAddedItems.get(0);
+            testItem2.setId(returnedItem.getId());
             List<AgolItem> updateItems = new ArrayList<AgolItem>();
             updateItems.add(testItem2);
             agolService.updateItems(updateItems, AccessType.SHARED, firstGroup);
