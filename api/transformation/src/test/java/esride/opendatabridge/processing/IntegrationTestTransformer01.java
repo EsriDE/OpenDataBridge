@@ -13,6 +13,7 @@ import org.junit.After;
 
 import org.junit.Assert;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
@@ -43,12 +44,13 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         //ToDo: alle Daten loeschen
     }
 
+    @Test
     public void testInsert(){
         StartParameter param = null;
         String[] paramArray = new String[5];
         paramArray[0] = "-pid=Test01";
         paramArray[1] = "-readerid=csw";
-        paramArray[2] = "-searchstring=csw";
+        paramArray[2] = "-searchstring=";
         paramArray[3] = "-accesstype=PRIVATE";
         paramArray[4] = "-ownertype=USER";
         try {
