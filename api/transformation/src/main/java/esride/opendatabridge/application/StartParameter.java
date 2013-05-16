@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Contains the start parameter for the transformation process
  * User: sma
  * Date: 03.05.13
  * Time: 14:20
- * To change this template use File | Settings | File Templates.
  */
 public class StartParameter {
     
@@ -36,7 +35,37 @@ public class StartParameter {
      * parameter which definies if the process starts in a test mode
      */
     private static final String testArgs = "-test";
-    private boolean testAvailableValue = false;
+    private boolean testValue = false;
+
+    /**
+     * parameter which definies if the process should delete agol item objects
+     */
+    private static final String deleteArgs = "-deleteobj";
+    private boolean deleteValue = false;
+
+    /**
+     * parameter which definies if the process overwrite the access type in an update situation
+     */
+    private static final String overwriteAccessTypeArgs = "-overwriteaccesstype";
+    private boolean overwriteAccessTypeValue = false;
+
+    /**
+     * parameter which definies the search string
+     */
+    private static final String searchStringArgs = "-searchstring";
+    private String searchStringValue;
+
+    /**
+     * parameter which definies the accesstype of the items
+     */
+    private static final String accessTypeArgs = "-accesstype";
+    private String accessTypeValue;
+
+    /**
+     * parameter which definies the ownertype of the items
+     */
+    private static final String ownerTypeArgs = "-ownertype";
+    private String ownerTypeValue;
 
     public StartParameter(String[] startArgs) throws StartParameterException {
         this.startArgs = startArgs;
@@ -69,7 +98,27 @@ public class StartParameter {
                 readeridAvailable = true;
             }
             if(key.equals(testArgs)){
-                testAvailableValue = Boolean.parseBoolean(value);
+                testValue = Boolean.parseBoolean(value);
+            }
+
+            if(key.equals(deleteArgs)){
+                deleteValue = Boolean.parseBoolean(value);
+            }
+
+            if(key.equals(overwriteAccessTypeArgs)){
+                overwriteAccessTypeValue = Boolean.parseBoolean(value);
+            }
+            
+            if(key.equals(searchStringArgs)){
+                searchStringValue = value;
+            }
+
+            if(key.equals(accessTypeArgs)){
+                accessTypeValue = value;
+            }
+
+            if(key.equals(ownerTypeArgs)){
+                ownerTypeValue = value;
             }
 
         }
@@ -86,8 +135,28 @@ public class StartParameter {
     public String getReaderValue() {
         return readerValue;
     }
+    
+    public String getSearchStringValue(){
+        return searchStringValue;
+    }
+    
+    public String getAccessTypeValue(){
+        return accessTypeValue;
+    }
+    
+    public String getOwnerTypeValue(){
+        return ownerTypeValue;
+    }
 
-    public boolean isTestAvailableValue() {
-        return testAvailableValue;
+    public boolean isTestValue() {
+        return testValue;
+    }
+
+    public boolean isDeleteValue() {
+        return deleteValue;
+    }
+
+    public boolean isOverwriteAccessTypeValue(){
+        return overwriteAccessTypeValue;
     }
 }

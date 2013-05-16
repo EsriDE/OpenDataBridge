@@ -30,7 +30,8 @@
           p:httpRequest-ref="httpRequest"
           p:searchResponse-ref="searchResponse"/>
 
-    <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"/>
+    <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"
+            p:pathInfo="/itemgenerator/"/>
 
     <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
           p:generatorConfiguration-ref="itemConfig"

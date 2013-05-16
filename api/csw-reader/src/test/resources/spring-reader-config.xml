@@ -31,7 +31,8 @@
       p:requestTemplate-ref="generator"
       p:getRecordsResponse-ref="getRecordsResponse"/>
 
-<bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"/>
+<bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"
+      p:pathInfo="/itemgenerator/"/>
 
 <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
       p:generatorConfiguration-ref="itemConfig"
@@ -51,7 +52,8 @@
 <bean class="esride.opendatabridge.reader.csw.GetRecordsRequestTemplate" id="generator"
       p:templateLocation-ref="templateLocation"/>
 
-<bean class="esride.opendatabridge.reader.csw.templatefile.FileSysGetRecordsTemplateLocation" id="templateLocation"/>
+<bean class="esride.opendatabridge.reader.csw.templatefile.FileSysGetRecordsTemplateLocation" id="templateLocation"
+      p:pathInfo="/templates/"/>
 
     <util:map id="elemMap" key-type="java.lang.String" value-type="esride.opendatabridge.itemtransform.elemhandler.IElemHandler">
         <entry key="default" value-ref="defaultElemHandler"/>

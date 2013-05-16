@@ -13,7 +13,13 @@ import java.io.InputStream;
  */
 public class FileSysGetRecordsTemplateLocation implements IGetRecordsTemplateLocation {
 
+    private String pathInfo;
+
+    public void setPathInfo(String pathInfo) {
+        this.pathInfo = pathInfo;
+    }
+
     public InputStream getTemplateFile(String processId) {
-        return this.getClass().getResourceAsStream("/templates/" + processId + ".xml");
+        return this.getClass().getResourceAsStream(pathInfo + processId + ".xml");
     }
 }
