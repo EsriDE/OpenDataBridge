@@ -20,6 +20,12 @@ public class FileSysItemGeneratorConfiguration implements IItemGeneratorConfigur
     private static Logger sLogger = Logger.getLogger(FileSysItemGeneratorConfiguration.class);
     
     public HashMap<String, Properties> cachedProperties = new HashMap<String, Properties>();
+
+    private String pathInfo;
+
+    public void setPathInfo(String pathInfo) {
+        this.pathInfo = pathInfo;
+    }
     
     public Properties getItemGeneratorConfiguration(String processId, String resourceType) {
         String cacheId = processId + "|" + resourceType;
@@ -27,7 +33,7 @@ public class FileSysItemGeneratorConfiguration implements IItemGeneratorConfigur
             return cachedProperties.get(cacheId); 
         }
 
-        InputStream propertyStream = this.getClass().getResourceAsStream("/itemgenerator/" + processId + "/itemelement_" + resourceType + ".properties");
+        InputStream propertyStream = this.getClass().getResourceAsStream(pathInfo + processId + "/itemelement_" + resourceType + ".properties");
         Properties properties = new Properties();
         try {
             properties.load(propertyStream);

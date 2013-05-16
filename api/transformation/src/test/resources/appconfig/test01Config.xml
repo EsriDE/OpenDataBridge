@@ -9,11 +9,49 @@
 			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-<bean class="esride.opendatabridge.reader.csw.CSWReader" id="reader"  scope="prototype"
-      p:searchRequest-ref="getRecordsRequest"
-      p:capabilitiesMapper-ref="capabilitiesMap"
-      p:resourceMap-ref="resourceMap"
-      p:agolItemTransformer-ref="itemTransform"/>
+
+    <!-- AgolWriter bean components-->
+
+    <context:property-placeholder location="classpath:/agolservice/service.properties"/>
+
+    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest" p:_objectMapper-ref="objectMapper">
+        <constructor-arg type="java.lang.String" value="${test.service.url}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.username}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.referer}"/>
+    </bean>
+
+    <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory" p:_objectMapper-ref="objectMapper">
+        <constructor-arg type="java.lang.Boolean" value="${test.service.propertiesToStrings}"/>
+    </bean>
+
+    <bean class="com.fasterxml.jackson.databind.ObjectMapper" id="objectMapper" />
+
+    <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String" id="jsonMap">
+        <entry key="test01" value="${test.service.jsonItem1}" />
+        <entry key="test02" value="${test.service.jsonItem2}" />
+    </util:map>
+
+
+    <!-- HTTP bean component-->
+    <bean class="esride.opendatabridge.httptransport.HTTPRequest" id="httpRequest"/>
+
+    <!-- Reader bean components-->
+    <bean class="esride.opendatabridge.reader.factory.CatalogReaderFactory"
+          p:readerPool-ref="readerMap"/>
+
+    <util:map id="readerMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IReader">
+        <entry key="csw" value-ref="cswReader"/>
+    </util:map>
+
+    <!-- CSW-Adapter bean components-->
+    <bean class="esride.opendatabridge.processinfo.file.FileSystemProcessInfo" p:pathInfo="/cswadapter/"/>
+
+    <bean class="esride.opendatabridge.reader.csw.CSWReader" id="cswReader"
+          p:searchRequest-ref="getRecordsRequest"
+          p:capabilitiesMapper-ref="capabilitiesMap"
+          p:resourceMap-ref="resourceMap"
+          p:agolItemTransformer-ref="itemTransform"/>
 
     <util:map id="capabilitiesMap" key-type="java.lang.String" value-type="java.lang.String">
         <entry key="view" value="ogc"/>
@@ -21,39 +59,37 @@
         <entry key="kml" value="kml"/>
     </util:map>
 
-<util:map id="resourceMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IResource">
-    <entry key="view" value-ref="capabilitiesRequest"/>
-    <entry key="wms" value-ref="capabilitiesRequest"/>
-</util:map>
+    <util:map id="resourceMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IResource">
+        <entry key="view" value-ref="capabilitiesRequest"/>
+        <entry key="wms" value-ref="capabilitiesRequest"/>
+    </util:map>
 
-<bean class="esride.opendatabridge.reader.csw.CSWGetRecordsRequest" id="getRecordsRequest"
-      p:httpRequest-ref="mockHttp"
-      p:requestTemplate-ref="generator"
-      p:getRecordsResponse-ref="getRecordsResponse"/>
+    <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsRequest" id="getRecordsRequest"
+          p:httpRequest-ref="httpRequest"
+          p:requestTemplate-ref="generator"
+          p:getRecordsResponse-ref="getRecordsResponse"/>
 
-<bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"
-      p:pathInfo="/itemgenerator/"/>
+    <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"
+          p:pathInfo="/cswadapter/itemgenerator/"/>
 
-<bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
-      p:generatorConfiguration-ref="itemConfig"
-        p:elemHandlerMap-ref="elemMap"/>
+    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
+          p:generatorConfiguration-ref="itemConfig"
+          p:elemHandlerMap-ref="elemMap"/>
 
-<bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
-      p:itemElemExtractor-ref="itemGenerator"/>
+    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
+          p:itemElemExtractor-ref="itemGenerator"/>
 
-<bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesResource" id="capabilitiesRequest"
-      p:request-ref="mockHttp"/>
+    <bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesResource" id="capabilitiesRequest"
+          p:request-ref="httpRequest"/>
 
-<bean class="esride.opendatabridge.reader.csw.CSWGetRecordsResponse" id="getRecordsResponse"/>
-
-<bean class="esride.opendatabridge.reader.mock.MockHTTPRequest" id="mockHttp"/>
+    <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsResponse" id="getRecordsResponse"/>
 
 
-<bean class="esride.opendatabridge.reader.csw.GetRecordsRequestTemplate" id="generator"
-      p:templateLocation-ref="templateLocation"/>
+    <bean class="esride.opendatabridge.reader.csw.GetRecordsRequestTemplate" id="generator"
+          p:templateLocation-ref="templateLocation"/>
 
-<bean class="esride.opendatabridge.reader.csw.templatefile.FileSysGetRecordsTemplateLocation" id="templateLocation"
-      p:pathInfo="/templates/"/>
+    <bean class="esride.opendatabridge.reader.csw.templatefile.FileSysGetRecordsTemplateLocation" id="templateLocation"
+          p:pathInfo="/cswadapter/templates/"/>
 
     <util:map id="elemMap" key-type="java.lang.String" value-type="esride.opendatabridge.itemtransform.elemhandler.IElemHandler">
         <entry key="default" value-ref="defaultElemHandler"/>
@@ -94,6 +130,5 @@
         <entry key="mozilla" value="Mozilla Public License 1.0 (MPL)"/>
         <entry key="other-closed" value="Andere eingeschränkte Lizenz"/>
     </util:map>
-
 
 </beans>

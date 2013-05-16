@@ -17,7 +17,8 @@
             p:generatorConfiguration-ref="generatorConfig"
             p:elemHandlerMap-ref="elemMap"/>
     
-    <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="generatorConfig"/>
+    <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="generatorConfig"
+          p:pathInfo="/itemgenerator/"/>
     
     <util:map id="elemMap" key-type="java.lang.String" value-type="esride.opendatabridge.itemtransform.elemhandler.IElemHandler">
         <entry key="default" value-ref="defaultElemHandler"/>
