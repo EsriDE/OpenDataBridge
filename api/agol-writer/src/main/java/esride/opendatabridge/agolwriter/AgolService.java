@@ -438,40 +438,32 @@ public class AgolService implements IAgolService {
      * @param groupIds
      * @throws IOException
      */
-    private void shareItems(String itemIds, AccessType accessType, String groupIds) throws IOException {
+    private void shareItems(String itemIds, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException {
         String publishItemUrl = _userContentUrl + "/shareItems";
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
 
         agolAttributes.put("items", itemIds);
+
+        String everyone = "false";
+        String org = "false";
         if (accessType.equals(AccessType.PUBLIC)) {
-            agolAttributes.put("everyone", "true");
+            everyone = "true";
         }
         else if (accessType.equals(AccessType.ORG)) {
-            agolAttributes.put("org", "true");
+            org = "true";
         }
-        agolAttributes.put("groups", groupIds);
+        agolAttributes.put("everyone", everyone);
+        agolAttributes.put("org", org);
+        // PRIVATE items are not shared with anyone. Set AccessType.SHARED to share only with groups.
+        if (!accessType.equals((AccessType.PRIVATE))) {
+            agolAttributes.put("groups", groupIds);
+        }
         InputStream entities = _httpRequest.executePostRequest(publishItemUrl, agolAttributes, null);
 
         handleResultListErrors(entities);
     }
     /**
-     * Unshare items
-     * @param agolItems
-     * @param groupIds: Comma-separated list of group IDs that the items will be unshared with.
-     */
-    private void unshareItems(List<AgolItem> agolItems, String groupIds) throws IOException, AgolTransactionFailedException {
-        String itemIds = "";
-
-        for (AgolItem agolItem : agolItems) {
-            if (!itemIds.isEmpty()) {
-                itemIds += ",";
-            }
-            itemIds += agolItem.getId();
-        }
-        unshareItems(itemIds, groupIds);
-    }
-    /**
-     * Unshare items
+     * Unshare items with the groups listed in groupIds
      * @param itemIds: Comma-separated list of items to be unshared
      * @param groupIds: Comma-separated list of group IDs that the items will be unshared with.
      */
@@ -482,10 +474,6 @@ public class AgolService implements IAgolService {
         agolAttributes.put("items", itemIds);
         agolAttributes.put("groups", groupIds);
 
-        // ToDo: Diskutieren:
-        // - unshareItems funktioniert offensichtlich nur für groups
-        // - um ORG- oder PUBLIC-Freigabe aufzuheben, muss ein shareItems mit org/everyone=false gesendet werden
-        // Ist das hier ein Use Case??
         InputStream entities = _httpRequest.executePostRequest(unshareItemsUrl, agolAttributes, null);
         String errorItems = handleResultListErrors(entities);
 
@@ -524,7 +512,6 @@ public class AgolService implements IAgolService {
     public void updateItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException {
         updateItems(agolItems);
 
-        // ToDo: unshare???
         String itemIds = "";
         for (AgolItem agolItem : agolItems) {
             if (!itemIds.isEmpty()) {
@@ -532,6 +519,7 @@ public class AgolService implements IAgolService {
             }
             itemIds += agolItem.getId();
         }
+        unshareItems(itemIds, getUserGroupIds());
         shareItems(itemIds, accessType, groupIds);
     }
     /**

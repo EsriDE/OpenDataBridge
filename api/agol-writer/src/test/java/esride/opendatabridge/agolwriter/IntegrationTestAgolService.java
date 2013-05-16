@@ -104,6 +104,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
         try {
             String userGroupIds = agolService.getUserGroupIds();
             String firstGroup = userGroupIds.substring(0,userGroupIds.indexOf(","));
+            String secondGroup = userGroupIds.substring(userGroupIds.indexOf(",")+1, userGroupIds.length());
             AgolItem testItem1 = agolItemFactory.createAgolItem(jsonMap.get("test01"));
             AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
 
@@ -112,7 +113,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             String title = testItem1.getAttributes().get("title") + " " + timestamp;
             testItem1.updateAttribute("title", title);
             agolItems.add((testItem1));
-            agolService.addItems(agolItems, AccessType.SHARED, userGroupIds);
+            agolService.addItems(agolItems, AccessType.ORG, firstGroup); //userGroupIds);
 
             Map<String, ArrayList<AgolItem>> returnTestItems = agolService.searchItems(title, OwnerType.USER);
             ArrayList<AgolItem> returnAddedItems = returnTestItems.get(testItem1.getUrl());
@@ -120,7 +121,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             testItem2.setId(returnedItem.getId());
             List<AgolItem> updateItems = new ArrayList<AgolItem>();
             updateItems.add(testItem2);
-            agolService.updateItems(updateItems, AccessType.SHARED, firstGroup);
+            agolService.updateItems(updateItems, AccessType.PRIVATE, secondGroup);
 
             List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
             deleteAgolItems.add((testItem2));
