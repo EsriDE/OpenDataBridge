@@ -648,7 +648,6 @@ public class AgolService implements IAgolService {
      * @return
      */
     public AgolItem mergeAgolItems(AgolItem sourceItem, AgolItem targetItem) {
-        // ToDo: implement
-        return targetItem;
+        return _agolItemFactory.mergeAgolItems(sourceItem, targetItem);
     }
 }

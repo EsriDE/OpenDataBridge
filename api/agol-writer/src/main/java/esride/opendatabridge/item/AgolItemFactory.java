@@ -242,4 +242,25 @@ public class AgolItemFactory {
 
         return jsonText;
     }
+
+
+    /**
+     * Merge 2 ArcGIS Online Items by copying metadata from source to target and leaving
+     * @param sourceItem
+     * @param targetItem
+     * @return
+     */
+    public AgolItem mergeAgolItems(AgolItem sourceItem, AgolItem targetItem) {
+        Iterator attributesIterator = sourceItem.getAttributes().entrySet().iterator();
+        while (attributesIterator.hasNext()) {
+            Map.Entry attribute = (Map.Entry) attributesIterator.next();
+            if (targetItem.getAttributes().containsKey(attribute.getKey())) {
+                targetItem.updateAttribute(attribute.getKey().toString(), attribute.getValue().toString());
+            }
+            else {
+                targetItem.getAttributes().put(attribute.getKey().toString(), attribute.getValue().toString());
+            }
+        }
+        return targetItem;
+    }
 }
