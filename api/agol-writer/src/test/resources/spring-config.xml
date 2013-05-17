@@ -22,6 +22,8 @@
         <constructor-arg type="java.lang.Boolean" value="${test.service.propertiesToStrings}"/>
     </bean>
 
+    <bean class="esride.opendatabridge.agolwriter.IntegrationTestAgolService" id="integrationtestagolservice" />
+
     <bean class="com.fasterxml.jackson.databind.ObjectMapper" id="objectMapper" />
 
     <bean class="esride.opendatabridge.httptransport.HTTPRequest" id="httpRequest" />
@@ -29,6 +31,7 @@
     <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String" id="jsonMap">
         <entry key="test01" value="${test.service.jsonItem1}" />
         <entry key="test02" value="${test.service.jsonItem2}" />
+        <entry key="odHashMap" value="${test.service.odHashMap}" />
     </util:map>
 
 </beans>

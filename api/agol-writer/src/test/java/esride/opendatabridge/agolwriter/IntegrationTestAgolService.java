@@ -1,5 +1,7 @@
 package esride.opendatabridge.agolwriter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import esride.opendatabridge.item.AgolItem;
 import esride.opendatabridge.item.AgolItemFactory;
 import org.junit.Assert;
@@ -28,6 +30,16 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     private AgolItemFactory agolItemFactory;
     @Resource
     private HashMap<String,String> jsonMap;
+    @Autowired
+    private ObjectMapper _objectMapper;
+
+    /**
+     * Setter for _objectMapper
+     * @param
+     */
+    /*public void set_objectMapper(ObjectMapper objectMapper) {
+        this._objectMapper = objectMapper;
+    } */
 
     @Test
     public void testGetAllItems() {
@@ -167,5 +179,15 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void testCreateItemFromODHashMap() throws IOException {
+        HashMap<String, String> odHashMap = new HashMap<String, String>();
+
+        String jsonString = jsonMap.get("odHashMap");
+        odHashMap = _objectMapper.readValue(jsonString, HashMap.class);
+        AgolItem agolItem = agolItemFactory.createAgolItem(odHashMap);
+        Assert.assertNotNull("No item", agolItem);
     }
 }

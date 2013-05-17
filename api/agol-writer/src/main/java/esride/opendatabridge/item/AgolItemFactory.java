@@ -93,6 +93,7 @@ public class AgolItemFactory {
      * @return
      */
     private Boolean validateAgolItem(HashMap agolItemProperties) {
+        // ToDo: put required keys ("type", what else??) into _requiredAgolItemPropertyKeys
         if (agolItemProperties.containsKey("error")) {
             return false;
         }
@@ -126,20 +127,42 @@ public class AgolItemFactory {
      */
     private HashMap cleanAgolItemProperties(HashMap agolItemProperties) {
         HashMap deleteAgolItemProperties = new HashMap();
-        HashMap updateAgolItemProperties = new HashMap();
         HashMap textAgolItemProperties = new HashMap();
+        HashMap agolItemPropertiesUpdated = new HashMap();
 
         // Altering objects in a HashMap while iterating through it leads to null pointer errors - so we do everything in single loops.
-        Iterator findRemovePropertiesIterator = agolItemProperties.entrySet().iterator();
+        Iterator agolPrefixPropertiesIterator = agolItemProperties.entrySet().iterator();
+        while (agolPrefixPropertiesIterator.hasNext()) {
+            Map.Entry property = (Map.Entry) agolPrefixPropertiesIterator.next();
+            String propertyValue = property.getValue().toString();
+            // Leave out entries with null values
+            if (propertyValue!=null) {
+                String propertyKey = property.getKey().toString();
+                // Remove "agol." prefix from keys
+                if (propertyKey.startsWith("agol.")) {
+                    propertyKey = propertyKey.toString().replace("agol.", "");
+                    if (_log.isInfoEnabled()) {
+                        _log.info("\".agol\" prefix removed from key \"" + propertyKey + "\".");
+                    }
+                }
+                // Transform all values to Strings
+                if (!property.getValue().equals(String.class)) {
+                    propertyValue = propertyValue.toString().replaceAll("\\[", "").replaceAll("\\]", "");
+                    if (_log.isInfoEnabled()) {
+                        _log.info("\"" + property.getKey() + "\" value updated: " + propertyValue);
+                    }
+                }
+                agolItemPropertiesUpdated.put(propertyKey, propertyValue);
+            }
+        }
+
+        // Remove null and invalid values. Combine special values to "text" property.
+        Iterator findRemovePropertiesIterator = agolItemPropertiesUpdated.entrySet().iterator();
         while (findRemovePropertiesIterator.hasNext()) {
             Map.Entry property = (Map.Entry) findRemovePropertiesIterator.next();
             Object propertyKey = property.getKey();
             Object propertyValue = property.getValue();
-            // Remove null and invalid values. Combine special values to "text" property.
-            if ((propertyValue == null)
-                    || !_validAgolItemPropertyKeys.contains(propertyKey)
-                    || propertyKey.equals("text")
-                    || _textAgolItemPropertyKeys.contains(propertyKey)) {
+            if (!_validAgolItemPropertyKeys.contains(propertyKey) || propertyKey.equals("text") || _textAgolItemPropertyKeys.contains(propertyKey)) {
                 if (_textAgolItemPropertyKeys.contains(propertyKey)) {
                     textAgolItemProperties.put(propertyKey, propertyValue);
                 }
@@ -149,38 +172,15 @@ public class AgolItemFactory {
         Iterator removePropertiesIterator = deleteAgolItemProperties.entrySet().iterator();
         while (removePropertiesIterator.hasNext()) {
             Map.Entry property = (Map.Entry) removePropertiesIterator.next();
-            agolItemProperties.remove(property.getKey());
+            agolItemPropertiesUpdated.remove(property.getKey());
             if (_log.isInfoEnabled()) {
                 _log.info("Entry \"" + property.getKey() + "\" removed.");
             }
         }
-        Iterator findUpdatePropertiesIterator = agolItemProperties.entrySet().iterator();
-        while (findUpdatePropertiesIterator.hasNext()) {
-            Map.Entry property = (Map.Entry) findUpdatePropertiesIterator.next();
-            Object propertyValue = property.getValue();
-            if (propertyValue!=null) {
-                Class propertyValueClass = propertyValue.getClass();
-                // Transform all values to Strings and remove "agol." prefix from keys
-                if (!propertyValueClass.equals(String.class) || (property.getKey().toString().startsWith("agol."))) {
-                    String stringPropertyValue = propertyValue.toString().replaceAll("\\[", "").replaceAll("\\]", "");
-                    String agolKey = property.getKey().toString().replace("agol.", "");
-                    updateAgolItemProperties.put(agolKey, stringPropertyValue);
-                    if (_log.isInfoEnabled()) {
-                        _log.info("Entry \"" + agolKey + "\" updated.");
-                    }
-                }
-            }
-        }
-        Iterator updatePropertiesIterator = updateAgolItemProperties.entrySet().iterator();
-        while (updatePropertiesIterator.hasNext()) {
-            Map.Entry updateProperty = (Map.Entry) updatePropertiesIterator.next();
-            agolItemProperties.remove(updateProperty.getKey());
-            agolItemProperties.put(updateProperty.getKey(), updateProperty.getValue());
-        }
 
-        agolItemProperties.put("text", createTextAgolItemProperty(textAgolItemProperties));
+        agolItemPropertiesUpdated.put("text", createTextAgolItemProperty(textAgolItemProperties));
 
-        return agolItemProperties;
+        return agolItemPropertiesUpdated;
     }
 
     /**
@@ -189,27 +189,46 @@ public class AgolItemFactory {
      * @return
      */
     private String createTextAgolItemProperty(HashMap textAgolItemProperties) {
+        /* ToDo: missing propertied:
+
+    "copyright": "none",
+    "format": null,
+    "mapUrl": "http://gateway.hamburg.de/OGCFassade/BSU_WMS_APRO.aspx%3F",
+    "spatialReferences": [
+        4326,
+        25832,
+        31467,
+        4258,
+        3034,
+        3042,
+        3043,
+        3044
+    ],
+    "title": "Web Map Service apro_wms",
+    "url": "http://gateway.hamburg.de/OGCFassade/BSU_WMS_APRO.aspx",
+
+         */
+
+
+
         String layerids = "";
         String layertitles = "";
         String jsonText = "{";
 
         Iterator textAgolItemPropertiesIterator = textAgolItemProperties.entrySet().iterator();
         while (textAgolItemPropertiesIterator.hasNext()) {
-            if (!jsonText.equals("")) {
-                jsonText += ",";
-            }
             Map.Entry textProperty = (Map.Entry) textAgolItemPropertiesIterator.next();
             if (textProperty.getKey().equals("serviceversion")) {
-                jsonText += "\"version\":\"" + textProperty.getValue() + "\"";
+                jsonText += "\"version\":\"" + textProperty.getValue() + "\",";
             }
             else if (textProperty.getKey().equals("maxheight")) {
-                jsonText += "\"maxHeight\":\"" + textProperty.getValue() + "\"";
+                jsonText += "\"maxHeight\":\"" + textProperty.getValue() + "\",";
             }
             else if (textProperty.getKey().equals("maxwidth")) {
-                jsonText += "\"maxWidth\":\"" + textProperty.getValue() + "\"";
+                jsonText += "\"maxWidth\":\"" + textProperty.getValue() + "\",";
             }
             else if (textProperty.getKey().equals("maxwidth")) {
-                jsonText += "\"maxWidth\":\"" + textProperty.getValue() + "\"";
+                jsonText += "\"maxWidth\":\"" + textProperty.getValue() + "\",";
             }
             else if (textProperty.getKey().equals("layerids")) {
                 layerids = textProperty.getValue().toString();
@@ -220,9 +239,6 @@ public class AgolItemFactory {
         }
 
         if (!layerids.equals("")) {
-            if (!jsonText.equals("")) {
-                jsonText += ",";
-            }
             jsonText += "\"layers\":[";
             String jsonLayers = "";
             String[] layerIdsArray = layerids.split(",");
