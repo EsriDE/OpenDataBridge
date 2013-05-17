@@ -2,11 +2,8 @@ package esride.opendatabridge.application;
 
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Contains the start parameter for the transformation process
+ * Contains the start parameter for the transformation process.
  * User: sma
  * Date: 03.05.13
  * Time: 14:20

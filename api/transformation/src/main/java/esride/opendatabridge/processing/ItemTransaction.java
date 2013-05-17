@@ -1,6 +1,7 @@
 package esride.opendatabridge.processing;
 
 import esride.opendatabridge.item.AgolItem;
+import esride.opendatabridge.reader.TransformedItem;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,6 +19,8 @@ public class ItemTransaction {
     
     private AgolItem agolItem;
 
+    private TransformedItem transformedItem;
+
     public int getTransactionStatus() {
         return transactionStatus;
     }
@@ -32,5 +35,13 @@ public class ItemTransaction {
 
     public void setAgolItem(AgolItem agolItem) {
         this.agolItem = agolItem;
+    }
+
+    public TransformedItem getTransformedItem() {
+        return transformedItem;
+    }
+
+    public void setTransformedItem(TransformedItem transformedItem) {
+        this.transformedItem = transformedItem;
     }
 }

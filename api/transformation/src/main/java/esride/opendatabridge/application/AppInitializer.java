@@ -1,5 +1,6 @@
 package esride.opendatabridge.application;
 
+import esride.opendatabridge.agolwriter.IAgolService;
 import esride.opendatabridge.processinfo.IProcessInfo;
 import esride.opendatabridge.reader.IReader;
 import esride.opendatabridge.reader.ReaderException;
@@ -10,15 +11,17 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
+ * The AppInitializer manages the main components ({@link esride.opendatabridge.agolwriter.AgolService AgolService} and Catalog Adapter
+ * via {@link esride.opendatabridge.reader.factory.CatalogReaderFactory CatalogReaderFactory}) via Spring configuration
  * User: sma
  * Date: 03.05.13
  * Time: 14:50
- * To change this template use File | Settings | File Templates.
  */
 public class AppInitializer {
     
     private IReader reader;
+
+    private IAgolService agolService;
 
     public AppInitializer(StartParameter startParam) throws ReaderException {
 
@@ -32,9 +35,16 @@ public class AppInitializer {
         //ReaderFactory initialisieren
         CatalogReaderFactory factory = context.getBean("readerfactory", CatalogReaderFactory.class);        
         reader = factory.newReaderInstance(startParam.getReaderValue(), properties, startParam.getPidValue());
+
+        //AgolService auslesen
+        agolService = context.getBean("agolservice", IAgolService.class);
     }
 
     public IReader getReader() {
         return reader;
+    }
+
+    public IAgolService getAgolService(){
+        return agolService;
     }
 }
