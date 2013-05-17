@@ -83,7 +83,7 @@ public class StartParameter {
             
             
             
-            if(key == null || value == null || key.trim().length() == 0 || value.trim().length() == 0){
+            if(key == null || key.trim().length() == 0){
                 throw new StartParameterException("Please check the program parameters. " + pidArgs + " and " + readeridArgs);
             }
             if(key.equals(pidArgs)){
