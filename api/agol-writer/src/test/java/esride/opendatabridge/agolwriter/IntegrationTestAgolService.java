@@ -56,6 +56,16 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     }
 
     @Test
+    public void testSearchUser() {
+        try {
+            Map<String, ArrayList<AgolItem>> agolItems = agolService.searchItems("", OwnerType.USER);
+            Assert.assertNotNull("List of ArcGIS Online items is empty.", agolItems);
+        } catch (IOException e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
     public void testAddPublicUpdateDeleteItem(){
         try {
             AgolItem testItem1 = agolItemFactory.createAgolItem(jsonMap.get("test01"));

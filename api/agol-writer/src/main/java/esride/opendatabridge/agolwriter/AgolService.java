@@ -233,15 +233,15 @@ public class AgolService implements IAgolService {
      * @throws IOException
      */
     public Map<String, ArrayList<AgolItem>> searchItems(String searchString, OwnerType ownerType) throws IOException {
-        searchString = "(";
+        String searchStringTotal = "(";
         if (!searchString.equals("")) {
-            searchString += searchString + " AND ";
+            searchStringTotal += searchString + " AND ";
         }
         if (ownerType==null) {
             ownerType = OwnerType.USER;
         }
-        searchString += getOwnerTypeSearchString(ownerType) + ")";
-        fillAgolItems(searchString, 0, 0);
+        searchStringTotal += getOwnerTypeSearchString(ownerType) + ")";
+        fillAgolItems(searchStringTotal, 0, 0);
         return _agolItems;
     }
     /**
