@@ -92,16 +92,22 @@ public class Transformer {
         while(iter.hasNext()){
             String key = iter.next();
             ItemContainer containerElement = itemContainer.get(key);
-            List<ItemTransaction> itemTransList = containerElement.getItemsForPublishing(agolService);
+            List<ItemTransaction> itemTransList = containerElement.getItemsForPublishing();
             for(ItemTransaction itemTrans : itemTransList){
                 int status = itemTrans.getTransactionStatus();
                 switch (status){
                     case 1:
-                        insertList.add(itemTrans.getAgolItem());    
+                        AgolItem agolItem = agolService.createAgolItem(itemTrans.getTransformedItem().getItemElements());
+                        insertList.add(agolItem);
+                        break;
                     case 2:
-                        updateList.add(itemTrans.getAgolItem());
+                        AgolItem newAgolItem = agolService.createAgolItem(itemTrans.getTransformedItem().getItemElements());
+                        AgolItem updateAgolItem = agolService.mergeAgolItems(itemTrans.getAgolItem(), newAgolItem);
+                        updateList.add(updateAgolItem);
+                        break;
                     case 3:
                         deleteList.add(itemTrans.getAgolItem());
+                        break;
                     default:
                         sLogger.warn("Wrong status number: " + status);
                 }
