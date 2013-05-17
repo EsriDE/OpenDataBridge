@@ -45,11 +45,8 @@ public class AgolItemFactory {
         _validAgolItemPropertyKeys = new ArrayList<String>();
         _validAgolItemPropertyKeys.addAll(vaiProperties);
 
-        // add properties that are always required
-        _requiredAgolItemPropertyKeys = new ArrayList<String>();
-        _requiredAgolItemPropertyKeys.add("id");
-
-        _validAgolItemPropertyKeys.addAll(_requiredAgolItemPropertyKeys);
+        // without an id, no update is possible - can not be thrown out
+        _validAgolItemPropertyKeys.add("id");
 
         // properties that come in from the catalogues, but don't match Agol fields: to be combined to JSON "text" field
         _textAgolItemPropertyKeys = new ArrayList<String>();
@@ -96,10 +93,8 @@ public class AgolItemFactory {
      * @return
      */
     private Boolean validateAgolItem(HashMap agolItemProperties) {
-        for (String requiredProperty : _requiredAgolItemPropertyKeys) {
-            if (!agolItemProperties.containsKey(requiredProperty)) {
-                return false;
-            }
+        if (agolItemProperties.containsKey("error")) {
+            return false;
         }
         return true;
     }
