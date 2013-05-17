@@ -233,7 +233,11 @@ public class AgolService implements IAgolService {
      * @throws IOException
      */
     public Map<String, ArrayList<AgolItem>> searchItems(String searchString, OwnerType ownerType) throws IOException {
-        searchString = "(" + searchString  + " AND " + getOwnerTypeSearchString(ownerType) + ")";
+        searchString = "(";
+        if (!searchString.equals("")) {
+            searchString += searchString + " AND ";
+        }
+        searchString += getOwnerTypeSearchString(ownerType) + ")";
         fillAgolItems(searchString, 0, 0);
         return _agolItems;
     }

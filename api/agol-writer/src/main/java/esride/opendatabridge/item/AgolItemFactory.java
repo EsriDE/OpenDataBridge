@@ -239,7 +239,7 @@ public class AgolItemFactory {
             }
             jsonText += jsonLayers + "]";
         }
-
+        jsonText += "}";
         return jsonText;
     }
 
