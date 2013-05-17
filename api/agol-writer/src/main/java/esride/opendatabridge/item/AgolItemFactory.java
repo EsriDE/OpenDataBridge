@@ -18,8 +18,9 @@ public class AgolItemFactory {
     private static final Logger _log = Logger.getLogger(AgolItemFactory.class.getName());
     private Boolean _propertiesToStrings;
     Properties _properties;
-    private ArrayList<String> _validAgolItemProperties;
-    private ArrayList<String> _requiredAgolItemProperties;
+    private ArrayList<String> _validAgolItemPropertyKeys;
+    private ArrayList<String> _requiredAgolItemPropertyKeys;
+    private ArrayList<String> _textAgolItemPropertyKeys;
     private ObjectMapper _objectMapper;
 
     /**
@@ -41,14 +42,22 @@ public class AgolItemFactory {
         _properties.load(this.getClass().getResourceAsStream("/validAgolItemProperties.properties"));
 
         Collection vaiProperties = _properties.values();
-        _validAgolItemProperties = new ArrayList<String>();
-        _validAgolItemProperties.addAll(vaiProperties);
+        _validAgolItemPropertyKeys = new ArrayList<String>();
+        _validAgolItemPropertyKeys.addAll(vaiProperties);
 
         // add properties that are always required
-        _requiredAgolItemProperties = new ArrayList<String>();
-        _requiredAgolItemProperties.add("id");
+        _requiredAgolItemPropertyKeys = new ArrayList<String>();
+        _requiredAgolItemPropertyKeys.add("id");
 
-        _validAgolItemProperties.addAll(_requiredAgolItemProperties);
+        _validAgolItemPropertyKeys.addAll(_requiredAgolItemPropertyKeys);
+
+        // properties that come in from the catalogues, but don't match Agol fields: to be combined to JSON "text" field
+        _textAgolItemPropertyKeys = new ArrayList<String>();
+        _textAgolItemPropertyKeys.add("serviceversion");
+        _textAgolItemPropertyKeys.add("maxheight");
+        _textAgolItemPropertyKeys.add("maxwidth");
+        _textAgolItemPropertyKeys.add("layerids");
+        _textAgolItemPropertyKeys.add("layertitles");
     }
 
     /**
@@ -87,7 +96,7 @@ public class AgolItemFactory {
      * @return
      */
     private Boolean validateAgolItem(HashMap agolItemProperties) {
-        for (String requiredProperty : _requiredAgolItemProperties) {
+        for (String requiredProperty : _requiredAgolItemPropertyKeys) {
             if (!agolItemProperties.containsKey(requiredProperty)) {
                 return false;
             }
@@ -123,23 +132,31 @@ public class AgolItemFactory {
     private HashMap cleanAgolItemProperties(HashMap agolItemProperties) {
         HashMap deleteAgolItemProperties = new HashMap();
         HashMap updateAgolItemProperties = new HashMap();
+        HashMap textAgolItemProperties = new HashMap();
 
         // Altering objects in a HashMap while iterating through it leads to null pointer errors - so we do everything in single loops.
-        Iterator findNullItemsIterator = agolItemProperties.entrySet().iterator();
-        while (findNullItemsIterator.hasNext()) {
-            Map.Entry property = (Map.Entry) findNullItemsIterator.next();
+        Iterator findRemovePropertiesIterator = agolItemProperties.entrySet().iterator();
+        while (findRemovePropertiesIterator.hasNext()) {
+            Map.Entry property = (Map.Entry) findRemovePropertiesIterator.next();
             Object propertyKey = property.getKey();
             Object propertyValue = property.getValue();
-            if ((propertyValue == null) || !_validAgolItemProperties.contains(propertyKey)) {
+            // Remove null and invalid values. Combine special values to "text" property.
+            if ((propertyValue == null)
+                    || !_validAgolItemPropertyKeys.contains(propertyKey)
+                    || propertyKey.equals("text")
+                    || _textAgolItemPropertyKeys.contains(propertyKey)) {
+                if (_textAgolItemPropertyKeys.contains(propertyKey)) {
+                    textAgolItemProperties.put(propertyKey, propertyValue);
+                }
                 deleteAgolItemProperties.put(propertyKey, propertyValue);
             }
         }
-        Iterator removeNullItemsIterator = deleteAgolItemProperties.entrySet().iterator();
-        while (removeNullItemsIterator.hasNext()) {
-            Map.Entry property = (Map.Entry) removeNullItemsIterator.next();
+        Iterator removePropertiesIterator = deleteAgolItemProperties.entrySet().iterator();
+        while (removePropertiesIterator.hasNext()) {
+            Map.Entry property = (Map.Entry) removePropertiesIterator.next();
             agolItemProperties.remove(property.getKey());
             if (_log.isInfoEnabled()) {
-                _log.info("Entry \"" + property.getKey() + "\" with null value removed.");
+                _log.info("Entry \"" + property.getKey() + "\" removed.");
             }
         }
         Iterator findUpdatePropertiesIterator = agolItemProperties.entrySet().iterator();
@@ -148,11 +165,13 @@ public class AgolItemFactory {
             Object propertyValue = property.getValue();
             if (propertyValue!=null) {
                 Class propertyValueClass = propertyValue.getClass();
-                if (!propertyValueClass.equals(String.class)) {
+                // Transform all values to Strings and remove "agol." prefix from keys
+                if (!propertyValueClass.equals(String.class) || (property.getKey().toString().startsWith("agol."))) {
                     String stringPropertyValue = propertyValue.toString().replaceAll("\\[", "").replaceAll("\\]", "");
-                    updateAgolItemProperties.put(property.getKey(), stringPropertyValue);
+                    String agolKey = property.getKey().toString().replace("agol.", "");
+                    updateAgolItemProperties.put(agolKey, stringPropertyValue);
                     if (_log.isInfoEnabled()) {
-                        _log.info(propertyValueClass.toString() + " value of key \"" + property.getKey() + "\" transformed to String value \"" + stringPropertyValue + "\"");
+                        _log.info("Entry \"" + agolKey + "\" updated.");
                     }
                 }
             }
@@ -164,6 +183,68 @@ public class AgolItemFactory {
             agolItemProperties.put(updateProperty.getKey(), updateProperty.getValue());
         }
 
+        agolItemProperties.put("text", createTextAgolItemProperty(textAgolItemProperties));
+
         return agolItemProperties;
+    }
+
+    /**
+     * Create JSON String from HashMap
+     * @param textAgolItemProperties
+     * @return
+     */
+    private String createTextAgolItemProperty(HashMap textAgolItemProperties) {
+        String layerids = "";
+        String layertitles = "";
+        String jsonText = "{";
+
+        Iterator textAgolItemPropertiesIterator = textAgolItemProperties.entrySet().iterator();
+        while (textAgolItemPropertiesIterator.hasNext()) {
+            if (!jsonText.equals("")) {
+                jsonText += ",";
+            }
+            Map.Entry textProperty = (Map.Entry) textAgolItemPropertiesIterator.next();
+            if (textProperty.getKey().equals("serviceversion")) {
+                jsonText += "\"version\":\"" + textProperty.getValue() + "\"";
+            }
+            else if (textProperty.getKey().equals("maxheight")) {
+                jsonText += "\"maxHeight\":\"" + textProperty.getValue() + "\"";
+            }
+            else if (textProperty.getKey().equals("maxwidth")) {
+                jsonText += "\"maxWidth\":\"" + textProperty.getValue() + "\"";
+            }
+            else if (textProperty.getKey().equals("maxwidth")) {
+                jsonText += "\"maxWidth\":\"" + textProperty.getValue() + "\"";
+            }
+            else if (textProperty.getKey().equals("layerids")) {
+                layerids = textProperty.getValue().toString();
+            }
+            else if (textProperty.getKey().equals("layertitles")) {
+                layertitles = textProperty.getValue().toString();
+            }
+        }
+
+        if (!layerids.equals("")) {
+            if (!jsonText.equals("")) {
+                jsonText += ",";
+            }
+            jsonText += "\"layers\":[";
+            String jsonLayers = "";
+            String[] layerIdsArray = layerids.split(",");
+            String[] layerTitlesArray = layertitles.split(",");
+            for (int i=0; i<layerIdsArray.length; i++) {
+                if (!jsonLayers.equals("")) {
+                    jsonLayers += ",";
+                }
+                jsonLayers += "{\"name\":\"" + layerIdsArray[i] + "\",\"title\":\"";
+                if (i<layerTitlesArray.length) {
+                    jsonLayers += layerTitlesArray[i];
+                }
+                jsonLayers += "\"}";
+            }
+            jsonText += jsonLayers + "]";
+        }
+
+        return jsonText;
     }
 }

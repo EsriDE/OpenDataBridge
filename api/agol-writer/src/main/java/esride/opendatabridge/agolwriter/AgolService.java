@@ -432,7 +432,7 @@ public class AgolService implements IAgolService {
     }
 
     /**
-     * Share items to everyone, to your organization or to specific groups
+     * Share or unshare items to everyone or to your organization. Share items to specific groups.
      * @param itemIds
      * @param accessType
      * @param groupIds

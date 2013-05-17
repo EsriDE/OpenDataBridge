@@ -143,7 +143,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     @Test
     public void testGetItem(){
         try {
-            agolService.getItem("2C2cc78b3b57e64967aae845b937e92637");
+            agolService.getItem("e0d01999fce04369b67eeda30d572bd7");
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
