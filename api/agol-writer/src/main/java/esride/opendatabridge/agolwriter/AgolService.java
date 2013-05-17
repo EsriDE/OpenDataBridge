@@ -237,6 +237,9 @@ public class AgolService implements IAgolService {
         if (!searchString.equals("")) {
             searchString += searchString + " AND ";
         }
+        if (ownerType==null) {
+            ownerType = OwnerType.USER;
+        }
         searchString += getOwnerTypeSearchString(ownerType) + ")";
         fillAgolItems(searchString, 0, 0);
         return _agolItems;
