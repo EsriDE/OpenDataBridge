@@ -10,7 +10,7 @@
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <bean class="esride.opendatabridge.processinfo.file.FileSystemProcessInfo" id="processinfo"
-            p:pathInfo="/process/"/>
+            p:pathInfo="/xxx"/>
 
 
     <bean class="esride.opendatabridge.reader.factory.CatalogReaderFactory" id="readerfactory"

@@ -65,7 +65,7 @@
           p:getRecordsResponse-ref="getRecordsResponse"/>
 
     <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"
-          p:pathInfo="/cswadapter/itemgenerator/"/>
+          p:pathInfo="/cswadapter/"/>
 
     <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
           p:generatorConfiguration-ref="itemConfig"
@@ -84,20 +84,40 @@
           p:templateLocation-ref="templateLocation"/>
 
     <bean class="esride.opendatabridge.reader.csw.templatefile.FileSysGetRecordsTemplateLocation" id="templateLocation"
-          p:pathInfo="/cswadapter/templates/"/>
+          p:pathInfo="/cswadapter/"/>
 
     <util:map id="elemMap" key-type="java.lang.String" value-type="esride.opendatabridge.itemtransform.elemhandler.IElemHandler">
+        <entry key="wmsUrl" value-ref="wmsUrlElemHandler"/>
         <entry key="default" value-ref="defaultElemHandler"/>
         <entry key="string" value-ref="stringElemHandler"/>
         <entry key="nodeset" value-ref="nodesetElemHandler"/>
         <entry key="licenseCodeList" value-ref="licenseCodeListElemHandler"/>
+        <entry key="epsgCodeList" value-ref="epsgCodeListElemHandler"/>
     </util:map>
 
+    <bean id="wmsUrlElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.WmsUrlHandler"/>
     <bean id="defaultElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.DefaultElemHandler"/>
     <bean id="stringElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.StringElemHandler"/>
     <bean id="nodesetElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.NodesetElemHandler"/>
     <bean id="licenseCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CodeListElemHandler"
           p:codeListMap-ref="licenseMap"/>
+    <bean id="epsgCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CodeListElemHandler"
+          p:codeListMap-ref="epsgMap"/>
+
+    <util:map id="epsgMap" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="CRS:84" value="4326"/>
+        <entry key="EPSG:4326" value="4326"/>
+        <entry key="EPSG:25832" value="25832"/>
+        <entry key="EPSG:25833" value="25833"/>
+        <entry key="EPSG:31466" value="31466"/>
+        <entry key="EPSG:31467" value="31467"/>
+        <entry key="EPSG:31468" value="31468"/>
+        <entry key="EPSG:31469" value="31469"/>
+        <entry key="EPSG:4258" value="4258"/>
+        <entry key="EPSG:3034" value="3034"/>
+        <entry key="EPSG:3035" value="3035"/>
+        <entry key="EPSG:3044" value="3044"/>
+    </util:map>
 
     <util:map id="licenseMap" key-type="java.lang.String" value-type="java.lang.String">
         <entry key="dl-de-by-1.0" value="Datenlizenz Deutschland Namensnennung"/>
