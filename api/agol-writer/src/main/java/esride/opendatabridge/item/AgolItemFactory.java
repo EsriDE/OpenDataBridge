@@ -20,6 +20,7 @@ public class AgolItemFactory {
     Properties _properties;
     private ArrayList<String> _validAgolItemPropertyKeys;
     private ArrayList<String> _requiredAgolItemPropertyKeys;
+    private ArrayList<String> _exclusiveTextAgolItemPropertyKeys;
     private ArrayList<String> _textAgolItemPropertyKeys;
     private ObjectMapper _objectMapper;
 
@@ -49,12 +50,20 @@ public class AgolItemFactory {
         _validAgolItemPropertyKeys.add("id");
 
         // properties that come in from the catalogues, but don't match Agol fields: to be combined to JSON "text" field
+        _exclusiveTextAgolItemPropertyKeys = new ArrayList<String>();
+        _exclusiveTextAgolItemPropertyKeys.add("serviceversion");
+        _exclusiveTextAgolItemPropertyKeys.add("maxheight");
+        _exclusiveTextAgolItemPropertyKeys.add("maxwidth");
+        _exclusiveTextAgolItemPropertyKeys.add("layerids");
+        _exclusiveTextAgolItemPropertyKeys.add("layertitles");
+
         _textAgolItemPropertyKeys = new ArrayList<String>();
-        _textAgolItemPropertyKeys.add("serviceversion");
-        _textAgolItemPropertyKeys.add("maxheight");
-        _textAgolItemPropertyKeys.add("maxwidth");
-        _textAgolItemPropertyKeys.add("layerids");
-        _textAgolItemPropertyKeys.add("layertitles");
+        _textAgolItemPropertyKeys.add("copyright");
+        _textAgolItemPropertyKeys.add("format");
+        _textAgolItemPropertyKeys.add("mapUrl");
+        _textAgolItemPropertyKeys.add("spatialReferences");
+        _textAgolItemPropertyKeys.add("title");
+        _textAgolItemPropertyKeys.add("url");
     }
 
     /**
@@ -126,7 +135,6 @@ public class AgolItemFactory {
      * @return
      */
     private HashMap cleanAgolItemProperties(HashMap agolItemProperties) {
-        HashMap deleteAgolItemProperties = new HashMap();
         HashMap textAgolItemProperties = new HashMap();
         HashMap agolItemPropertiesUpdated = new HashMap();
 
@@ -134,52 +142,34 @@ public class AgolItemFactory {
         Iterator agolPrefixPropertiesIterator = agolItemProperties.entrySet().iterator();
         while (agolPrefixPropertiesIterator.hasNext()) {
             Map.Entry property = (Map.Entry) agolPrefixPropertiesIterator.next();
-            String propertyValue = property.getValue().toString();
             // Leave out entries with null values
-            if (propertyValue!=null) {
+            if (property.getValue()!=null) {
                 String propertyKey = property.getKey().toString();
+                String propertyValue = property.getValue().toString();
                 // Remove "agol." prefix from keys
                 if (propertyKey.startsWith("agol.")) {
                     propertyKey = propertyKey.toString().replace("agol.", "");
                     if (_log.isInfoEnabled()) {
-                        _log.info("\".agol\" prefix removed from key \"" + propertyKey + "\".");
+                        _log.info("\"agol.\" prefix removed from key \"" + propertyKey + "\".");
                     }
                 }
                 // Transform all values to Strings
-                if (!property.getValue().equals(String.class)) {
+                if (!property.getValue().getClass().equals(String.class)) {
                     propertyValue = propertyValue.toString().replaceAll("\\[", "").replaceAll("\\]", "");
                     if (_log.isInfoEnabled()) {
-                        _log.info("\"" + property.getKey() + "\" value updated: " + propertyValue);
+                        _log.info("\"" + propertyKey + "\" value updated: " + propertyValue);
                     }
                 }
-                agolItemPropertiesUpdated.put(propertyKey, propertyValue);
-            }
-        }
-
-        // Remove null and invalid values. Combine special values to "text" property.
-        Iterator findRemovePropertiesIterator = agolItemPropertiesUpdated.entrySet().iterator();
-        while (findRemovePropertiesIterator.hasNext()) {
-            Map.Entry property = (Map.Entry) findRemovePropertiesIterator.next();
-            Object propertyKey = property.getKey();
-            Object propertyValue = property.getValue();
-            if (!_validAgolItemPropertyKeys.contains(propertyKey) || propertyKey.equals("text") || _textAgolItemPropertyKeys.contains(propertyKey)) {
-                if (_textAgolItemPropertyKeys.contains(propertyKey)) {
+                if (_exclusiveTextAgolItemPropertyKeys.contains(propertyKey)) {
                     textAgolItemProperties.put(propertyKey, propertyValue);
                 }
-                deleteAgolItemProperties.put(propertyKey, propertyValue);
-            }
-        }
-        Iterator removePropertiesIterator = deleteAgolItemProperties.entrySet().iterator();
-        while (removePropertiesIterator.hasNext()) {
-            Map.Entry property = (Map.Entry) removePropertiesIterator.next();
-            agolItemPropertiesUpdated.remove(property.getKey());
-            if (_log.isInfoEnabled()) {
-                _log.info("Entry \"" + property.getKey() + "\" removed.");
+                else if (_validAgolItemPropertyKeys.contains(propertyKey) && !propertyKey.equals("text")) {
+                    agolItemPropertiesUpdated.put(propertyKey, propertyValue);
+                }
             }
         }
 
         agolItemPropertiesUpdated.put("text", createTextAgolItemProperty(textAgolItemProperties));
-
         return agolItemPropertiesUpdated;
     }
 
