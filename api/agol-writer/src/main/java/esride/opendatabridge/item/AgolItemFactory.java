@@ -79,6 +79,7 @@ public class AgolItemFactory {
         if (!validateAgolItem(agolItemProperties)) {
             //ToDo: define error?
              _log.warn("Not a valid ArcGIS Online item: " + agolItemProperties.toString());
+            return null;
         }
         AgolItem agolItem = new AgolItem(agolItemProperties);
         return agolItem;
@@ -94,6 +95,7 @@ public class AgolItemFactory {
         }
         if (!validateAgolItem(agolItemProperties)) {
             _log.warn("Not a valid ArcGIS Online item: " + agolItemProperties.toString());
+            return null;
         }
         AgolItem agolItem = new AgolItem(agolItemProperties);
         return agolItem;

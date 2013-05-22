@@ -24,11 +24,25 @@ public class AgolItem {
     }
 
     public String getUrl() {
-        return _itemAttributes.get("url");
+        if (_itemAttributes.get("url")!=null) {
+            return _itemAttributes.get("url");
+        }
+        return "";
     }
 
     public String getId() {
-        return _itemAttributes.get("id");
+        if (_itemAttributes.get("id")!=null) {
+            return _itemAttributes.get("id");
+        }
+        return "";
+    }
+
+    public String getTitle() {
+        return _itemAttributes.get("title").toString();
+    }
+
+    public String getType() {
+        return _itemAttributes.get("type").toString();
     }
 
     public void setId(String id) {
