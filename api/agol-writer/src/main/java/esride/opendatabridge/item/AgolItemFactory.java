@@ -160,10 +160,12 @@ public class AgolItemFactory {
                         _log.info("\"" + propertyKey + "\" value updated: " + propertyValue);
                     }
                 }
-                if (_exclusiveTextAgolItemPropertyKeys.contains(propertyKey)) {
+                if (_exclusiveTextAgolItemPropertyKeys.contains(propertyKey)
+                        || _textAgolItemPropertyKeys.contains(propertyKey)) {
                     textAgolItemProperties.put(propertyKey, propertyValue);
                 }
-                else if (_validAgolItemPropertyKeys.contains(propertyKey) && !propertyKey.equals("text")) {
+                else if (_validAgolItemPropertyKeys.contains(propertyKey)
+                        && !propertyKey.equals("text")) {
                     agolItemPropertiesUpdated.put(propertyKey, propertyValue);
                 }
             }
