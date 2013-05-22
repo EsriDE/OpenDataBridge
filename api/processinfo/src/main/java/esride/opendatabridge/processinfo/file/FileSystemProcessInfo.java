@@ -28,7 +28,7 @@ public class FileSystemProcessInfo implements IProcessInfo {
     public HashMap<String, String> getProperties(String processId)  {
         
         //Datei holen
-        InputStream propertiesStream = this.getClass().getResourceAsStream(mPathInfo + processId + ".properties");
+        InputStream propertiesStream = this.getClass().getResourceAsStream(mPathInfo + processId + "/catalog.properties");
         Properties prop = new Properties();
 
         HashMap<String, String> propertyMap= new HashMap<String, String>();

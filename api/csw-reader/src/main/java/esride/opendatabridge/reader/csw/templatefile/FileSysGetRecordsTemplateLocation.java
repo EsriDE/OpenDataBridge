@@ -20,6 +20,6 @@ public class FileSysGetRecordsTemplateLocation implements IGetRecordsTemplateLoc
     }
 
     public InputStream getTemplateFile(String processId) {
-        return this.getClass().getResourceAsStream(pathInfo + processId + ".xml");
+        return this.getClass().getResourceAsStream(pathInfo + processId + "/templates/getrecords.xml");
     }
 }

@@ -37,7 +37,7 @@ public class UnitTestAgolJsonTransformer extends AbstractJUnit4SpringContextTest
 
 
 
-            InputStream capabilitiesStream = this.getClass().getResourceAsStream("/itemgenerator/test01/capabilities.xml");
+            InputStream capabilitiesStream = this.getClass().getResourceAsStream("/test/test01/capabilities.xml");
 
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
             builderFactory.setNamespaceAware(false);
@@ -64,7 +64,7 @@ public class UnitTestAgolJsonTransformer extends AbstractJUnit4SpringContextTest
             }
 
 
-            InputStream metadataStream = this.getClass().getResourceAsStream("/itemgenerator/test01/metadata.xml");
+            InputStream metadataStream = this.getClass().getResourceAsStream("/test/test01/metadata.xml");
             MetadataSet container2 = new MetadataSet();
             container2.setMetadataType("csw");
 

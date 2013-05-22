@@ -89,12 +89,20 @@ public class CkanSearchResponse {
 
                         String conactedXPath = xpathValue.getProperty("resourceurl.prefix.xpath") + resourceTypeList.get(k) + xpathValue.getProperty("resourceurl.suffix.xpath");
                         String resourceUrl = xPath.evaluate(conactedXPath, metaDocument);
-                        object.setResourceUrl(resourceUrl);
+                        //only take the base-URL without (if type ==WMS)
+                        if(resourceUrl != null && resourceUrl.contains("?") && resourceTypeList.get(k).equalsIgnoreCase("WMS")){
+                            String baseUrl = resourceUrl.substring(0, resourceUrl.indexOf('?'));
+                            object.setResourceUrl(baseUrl);
+                        }else{
+                            object.setResourceUrl(resourceUrl);    
+                        }
+                        
+                        
 
                         String fileIdentifier = xPath.evaluate(xpathValue.getProperty("fileidentifier.xpath"), metaDocument) + "-" + resourceTypeList.get(k);
                         object.setMetadataFileIdentifier(fileIdentifier);
 
-                        if(resourceTypeList.get(k).equals("WMS") || resourceTypeList.get(k).equals("KML")){
+                        if(resourceTypeList.get(k).equalsIgnoreCase("WMS") || resourceTypeList.get(k).equalsIgnoreCase("KML")){
                             object.setCapabilitiesUrl(resourceUrl);
                         }
                         

@@ -81,9 +81,15 @@ public class CSWGetRecordsResponse {
                     //fileIdentifier
                     object.setMetadataFileIdentifier(xPath.evaluate(xpathValue.getProperty("csw.reader.fileidentifier.xpath"), metaDocument));
                     //resourceUrl
-                    object.setResourceUrl(xPath.evaluate(resourceUrl, metaDocument));
+                    if(resourceUrl != null && resourceUrl.contains("?") && (resourceType.equalsIgnoreCase("WMS") || resourceType.equalsIgnoreCase("VIEW"))){
+                        String baseUrl = resourceUrl.substring(0, resourceUrl.indexOf('?'));
+                        object.setResourceUrl(baseUrl);
+                    }else{
+                        object.setResourceUrl(resourceUrl);
+                    }
+                    //object.setResourceUrl(xPath.evaluate(resourceUrl, metaDocument));
                     //capabilitiesUrl
-                    String capabilitiesXPath = xpathValue.getProperty("csw.reader." + resourceTypeXPath + ".capbilitiesurl.xpath");
+                    String capabilitiesXPath = xpathValue.getProperty("csw.reader." + resourceType.toLowerCase() + ".capbilitiesurl.xpath");
                     if(capabilitiesXPath != null && capabilitiesXPath.trim().length() > 0){
                         object.setCapabilitiesUrl(xPath.evaluate(capabilitiesXPath, metaDocument));
                     }

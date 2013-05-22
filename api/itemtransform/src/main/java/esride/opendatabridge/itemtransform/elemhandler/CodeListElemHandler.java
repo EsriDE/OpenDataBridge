@@ -3,6 +3,7 @@ package esride.opendatabridge.itemtransform.elemhandler;
 import esride.opendatabridge.itemtransform.ItemGenerationException;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -37,13 +38,24 @@ public class CodeListElemHandler implements IElemHandler {
     public String handleElement(String element, Document xmlDoc) {
         try {
             if(xmlDoc != null){
-                String value =  (String)xPath.evaluate(element, xmlDoc, XPathConstants.STRING);
-                if(!codeListMap.containsKey(value)){
-                    return value;
+                NodeList nodeList = (NodeList)xPath.evaluate(element, xmlDoc, XPathConstants.NODESET);
+                StringBuffer buffer = new StringBuffer();
+                int nodeListLength = nodeList.getLength();
+                for(int j=0; j<nodeListLength; j++){
+                    String value;
+                    if(!codeListMap.containsKey(nodeList.item(j).getNodeValue())){
+                        value = nodeList.item(j).getNodeValue();
+                    }else{
+                        value = codeListMap.get(nodeList.item(j).getNodeValue());
+                    }
+
+                    buffer.append(value);
+                    if(j < nodeListLength-1){
+                        buffer.append(",");
+                    }
                 }
-                return codeListMap.get(value);
-                
-            }else{
+                return buffer.toString();
+            } else{
                 sLogger.warn("No document found for");
                 return null;
             }

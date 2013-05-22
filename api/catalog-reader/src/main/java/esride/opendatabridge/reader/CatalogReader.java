@@ -113,7 +113,7 @@ public abstract class CatalogReader implements IReader {
             IResource resource = resourceMap.get(object.getResourceType().toLowerCase());
             if(resource != null){
                 try {
-                    object.setCapabilitiesDoc(resource.getRecourceMetadata(object.getResourceUrl(), object.getResourceType()));
+                    object.setCapabilitiesDoc(resource.getRecourceMetadata(object.getCapabilitiesUrl(), object.getResourceType()));
                     object.setCapabilitiesType(capabilitiesMapper.get(object.getResourceType().toLowerCase()));
                 } catch (ResourceException e) {
                     sLogger.error("The Resource (" + object.getResourceUrl() + ") is not available. " +

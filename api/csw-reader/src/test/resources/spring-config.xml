@@ -13,7 +13,7 @@
                 p:templateLocation-ref="templateLocation"/>
 
     <bean class="esride.opendatabridge.reader.csw.templatefile.FileSysGetRecordsTemplateLocation" id="templateLocation"
-            p:pathInfo="/templates/"/>
+            p:pathInfo="/cswadapter/"/>
 
 
 </beans>

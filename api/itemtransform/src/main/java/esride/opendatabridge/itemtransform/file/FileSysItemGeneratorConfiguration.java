@@ -33,7 +33,7 @@ public class FileSysItemGeneratorConfiguration implements IItemGeneratorConfigur
             return cachedProperties.get(cacheId); 
         }
 
-        InputStream propertyStream = this.getClass().getResourceAsStream(pathInfo + processId + "/itemelement_" + resourceType + ".properties");
+        InputStream propertyStream = this.getClass().getResourceAsStream(pathInfo + processId + "/itemgenerator/itemelement_" + resourceType + ".properties");
         Properties properties = new Properties();
         try {
             properties.load(propertyStream);
