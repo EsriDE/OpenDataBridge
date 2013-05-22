@@ -25,7 +25,6 @@ public class AgolService implements IAgolService {
     private Long _tokenExpires;
     private static final Logger _log = Logger.getLogger(AgolService.class);
     private AgolItemFactory _agolItemFactory;
-    //private Map<String, ArrayList<AgolItem>> _agolItems = new HashMap<String, ArrayList<AgolItem>>();
     private HTTPRequest _httpRequest;
     private ObjectMapper _objectMapper;
 
@@ -185,11 +184,11 @@ public class AgolService implements IAgolService {
             JsonNode rootNode = _objectMapper.readTree(entities);
             JsonNode errorNode = rootNode.get("error");
             if (errorNode!=null) {
-                throw new AgolTransactionFailedException("Get item failed with error " + errorNode.get("code") +  "." + errorNode.get("message"));
+                throw new AgolTransactionFailedException("Getting item with ID " + itemId + " failed with error " + errorNode.get("code") +  "." + errorNode.get("message"));
             }
             return _agolItemFactory.createAgolItem(rootNode.toString());
         }
-        throw new AgolTransactionFailedException("Getting item " + itemId + " failed with no result.");
+        throw new AgolTransactionFailedException("Getting item with ID " + itemId + " failed with no result.");
     }
 
     /**
@@ -450,7 +449,7 @@ public class AgolService implements IAgolService {
             JsonNode errorNode = rootNode.get("error");
             if (errorNode != null)
             {
-                throw new AgolTransactionFailedException("Add item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
+                throw new AgolTransactionFailedException("Adding item \"" + agolItem.getTitle().toString() + "\" with ID " + agolItem.getId().toString() + "failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
 
             return rootNode.get("id").toString().replaceAll("\"", "");
@@ -489,7 +488,7 @@ public class AgolService implements IAgolService {
 
         String errorItems =  handleResultListErrors(entities);
         if (!errorItems.isEmpty()) {
-            throw new AgolTransactionFailedException("Share items failed for the following items: \n" + errorItems);
+            throw new AgolTransactionFailedException("Sharing the following items failed: \n" + errorItems);
         }
     }
     /**
@@ -508,7 +507,7 @@ public class AgolService implements IAgolService {
 
         String errorItems = handleResultListErrors(entities);
         if (!errorItems.isEmpty()) {
-            throw new AgolTransactionFailedException("Unshare items failed for the following items: \n" + errorItems);
+            throw new AgolTransactionFailedException("Unsharing the following items failed: \n" + errorItems);
         }
     }
 
@@ -573,7 +572,7 @@ public class AgolService implements IAgolService {
             JsonNode errorNode = rootNode.get("error");
             if (errorNode != null)
             {
-                throw new AgolTransactionFailedException("Update Item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
+                throw new AgolTransactionFailedException("Updating item \"" + agolItem.getTitle().toString() + "\" with ID " + agolItem.getId().toString() + "failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
         }
     }
@@ -608,7 +607,7 @@ public class AgolService implements IAgolService {
         InputStream entities = _httpRequest.executePostRequest(deleteItemsUrl, agolAttributes, null);
         String errorItems =  handleResultListErrors(entities);
         if (!errorItems.isEmpty()) {
-            throw new AgolTransactionFailedException("Delete items failed for the following items: \n" + errorItems);
+            throw new AgolTransactionFailedException("Deleting the following items failed: \n" + errorItems);
         }
     }
 
