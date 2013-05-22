@@ -12,6 +12,7 @@ import esride.opendatabridge.reader.IReader;
 import esride.opendatabridge.reader.ReaderException;
 
 import esride.opendatabridge.reader.factory.CatalogReaderFactory;
+import org.apache.log4j.Logger;
 import org.junit.After;
 
 import org.junit.Assert;
@@ -33,6 +34,8 @@ import java.util.*;
  */
 @ContextConfiguration(locations = {"classpath:appconfig/test01Config.xml"})
 public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTests {
+    
+    private static Logger sLogger = Logger.getLogger(IntegrationTestTransformer01.class);
 
     @Autowired
     private CatalogReaderFactory readerFactory;
@@ -127,6 +130,15 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         transform.executeProcessTransformation(reader, agolService, insertParam.isDeleteValue(), insertParam.isOverwriteAccessTypeValue(),insertParam.getSearchStringValue(), insertParam.getAccessTypeValue(), insertParam.getOwnerTypeValue());
 
         //Just for test purpose (count the number of items)
+        synchronized(this){
+            try {
+                sLogger.info("Wait 50 seconds after delete");
+                this.wait(50000);
+                sLogger.info("Gon on");
+            } catch (InterruptedException e) {
+                //ToDo: Exception Handling
+            }
+        }
         Map<String, ArrayList<AgolItem>> agolItemMap = null;
         try {
             agolItemMap =  agolService.searchItems(searchString, OwnerType.ORG);
@@ -141,6 +153,15 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
     private void deleteAllItems(List<AgolItem> agolItem){
         try {
             agolService.deleteItems(agolItem);
+            synchronized(this){
+                try {
+                    sLogger.info("Wait 60 seconds after delete");
+                    this.wait(60000);
+                    sLogger.info("Gon on");
+                } catch (InterruptedException e) {
+                    //ToDo: Exception Handling
+                }
+            }
             Map<String, ArrayList<AgolItem>> agolItemMap = agolService.searchItems("type:WMS", OwnerType.ORG);
             Assert.assertTrue(agolItemMap.size() == 0);
         } catch (IOException e) {
