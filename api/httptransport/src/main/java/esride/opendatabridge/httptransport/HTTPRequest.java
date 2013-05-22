@@ -194,7 +194,7 @@ public class HTTPRequest implements IHTTPRequest{
             String propertyValue = property.getValue().toString();
             contentList.add(new BasicNameValuePair(propertyKey, propertyValue));
         }
-        UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(contentList);
+        UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(contentList, "UTF-8");
         return urlEncodedFormEntity;
     }
 
