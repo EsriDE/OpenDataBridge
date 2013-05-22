@@ -185,28 +185,6 @@ public class AgolItemFactory {
      * @return
      */
     private String createTextAgolItemProperty(HashMap textAgolItemProperties) {
-        /* ToDo: missing propertied:
-
-    "copyright": "none",
-    "format": null,
-    "mapUrl": "http://gateway.hamburg.de/OGCFassade/BSU_WMS_APRO.aspx%3F",
-    "spatialReferences": [
-        4326,
-        25832,
-        31467,
-        4258,
-        3034,
-        3042,
-        3043,
-        3044
-    ],
-    "title": "Web Map Service apro_wms",
-    "url": "http://gateway.hamburg.de/OGCFassade/BSU_WMS_APRO.aspx",
-
-         */
-
-
-
         String layerids = "";
         String layertitles = "";
         String jsonText = "{";
@@ -225,6 +203,27 @@ public class AgolItemFactory {
             }
             else if (textProperty.getKey().equals("maxwidth")) {
                 jsonText += "\"maxWidth\":\"" + textProperty.getValue() + "\",";
+            }
+            else if (textProperty.getKey().equals("title")) {
+                jsonText += "\"title\":\"" + textProperty.getValue() + "\",";
+            }
+            else if (textProperty.getKey().equals("url")) {
+                jsonText += "\"url\":\"" + textProperty.getValue() + "\",";
+            }
+            else if (textProperty.getKey().equals("url")) {
+                jsonText += "\"mapUrl\":\"" + textProperty.getValue() + "\",";
+            }
+            else if (textProperty.getKey().equals("url")) {
+                jsonText += "\"mapUrl\":\"" + textProperty.getValue() + "\",";
+            }
+            else if (textProperty.getKey().equals("copyright")) {
+                jsonText += "\"copyright\":\"" + textProperty.getValue() + "\",";
+            }
+            else if (textProperty.getKey().equals("format")) {
+                jsonText += "\"format\":\"" + textProperty.getValue() + "\",";
+            }
+            else if (textProperty.getKey().equals("spatialReferences")) {
+                jsonText += "\"spatialReferences\":[" + textProperty.getValue() + "],";
             }
             else if (textProperty.getKey().equals("layerids")) {
                 layerids = textProperty.getValue().toString();
