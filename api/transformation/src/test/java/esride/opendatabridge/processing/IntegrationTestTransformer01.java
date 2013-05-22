@@ -1,9 +1,12 @@
 package esride.opendatabridge.processing;
 
+import esride.opendatabridge.agolwriter.AgolTransactionFailedException;
 import esride.opendatabridge.agolwriter.IAgolService;
 
+import esride.opendatabridge.agolwriter.OwnerType;
 import esride.opendatabridge.application.StartParameter;
 import esride.opendatabridge.application.StartParameterException;
+import esride.opendatabridge.item.AgolItem;
 import esride.opendatabridge.processinfo.IProcessInfo;
 import esride.opendatabridge.reader.IReader;
 import esride.opendatabridge.reader.ReaderException;
@@ -18,8 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
+import java.io.IOException;
+import java.util.*;
+
 /**
- * This class contains testcases against the CSW Adapter
+ * This class contains testcases against the CSW Adapter. Before testing: Please check the number of Metadata records for each request
  * User: sma
  * Date: 16.05.13
  * Time: 14:20
@@ -44,7 +50,7 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         //ToDo: alle Daten loeschen
     }
 
-    @Test
+
     public void testInsert(){
         StartParameter param = null;
         String[] paramArray = new String[5];
@@ -67,5 +73,80 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         }
         Transformer transform = new Transformer();
         transform.executeProcessTransformation(reader, agolService, param.isDeleteValue(), param.isOverwriteAccessTypeValue(),param.getSearchStringValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());
+    }
+
+    @Test
+    public void testInsertUpdateWithDeleteOption(){
+
+        //first Time
+        this.executeProcess("Test01", "type:WMS" , "true",  56);
+        //second Time
+        Map<String, ArrayList<AgolItem>> agolItemMap = this.executeProcess("Test02", "type:WMS", "true", 3);
+        
+        
+        ArrayList<AgolItem> deleteList = new ArrayList<AgolItem>();
+        Set<String> agolItemKeySet = agolItemMap.keySet();
+        Iterator<String> agolItemIter = agolItemKeySet.iterator();
+        while(agolItemIter.hasNext()){
+            ArrayList<AgolItem> agolItemArray = agolItemMap.get(agolItemIter.next());
+            for(int i=0; i<agolItemArray.size(); i++){
+                deleteList.add(agolItemArray.get(i));
+            }
+            
+        }
+        
+        //clean up
+        deleteAllItems(deleteList);
+
+    }
+
+    private Map<String, ArrayList<AgolItem>> executeProcess(String processId, String searchString, String deleteStrategy, int numberOfExpectedCatalogRecords){
+        //Do Insert
+        StartParameter insertParam = null;
+        String[] insertParamArray = new String[6];
+        insertParamArray[0] = "-pid=" + processId;
+        insertParamArray[1] = "-readerid=csw";
+        insertParamArray[2] = "-searchstring=" + searchString;
+        insertParamArray[3] = "-accesstype=PRIVATE";
+        insertParamArray[4] = "-ownertype=ORG";
+        insertParamArray[5] = "-deleteobj=" + deleteStrategy;
+        try {
+            insertParam = new StartParameter(insertParamArray);
+        } catch (StartParameterException e) {
+            Assert.fail(e.getMessage());
+        }
+
+
+        IReader reader = null;
+        try {
+            reader = readerFactory.newReaderInstance(insertParam.getReaderValue(), processInfo.getProperties(insertParam.getPidValue()), insertParam.getPidValue());
+        } catch (ReaderException e) {
+            Assert.fail(e.getMessage());
+        }
+        Transformer transform = new Transformer();
+        transform.executeProcessTransformation(reader, agolService, insertParam.isDeleteValue(), insertParam.isOverwriteAccessTypeValue(),insertParam.getSearchStringValue(), insertParam.getAccessTypeValue(), insertParam.getOwnerTypeValue());
+
+        //Just for test purpose (count the number of items)
+        Map<String, ArrayList<AgolItem>> agolItemMap = null;
+        try {
+            agolItemMap =  agolService.searchItems(searchString, OwnerType.ORG);
+            int agolSize = agolItemMap.size();
+            Assert.assertTrue(agolSize == numberOfExpectedCatalogRecords);
+        } catch (IOException e) {
+            Assert.fail(e.getMessage());
+        }
+        return agolItemMap;
+    }
+
+    private void deleteAllItems(List<AgolItem> agolItem){
+        try {
+            agolService.deleteItems(agolItem);
+            Map<String, ArrayList<AgolItem>> agolItemMap = agolService.searchItems("type:WMS", OwnerType.ORG);
+            Assert.assertTrue(agolItemMap.size() == 0);
+        } catch (IOException e) {
+            Assert.fail(e.getMessage());
+        } catch (AgolTransactionFailedException e) {
+            Assert.fail(e.getMessage());
+        }
     }
 }
