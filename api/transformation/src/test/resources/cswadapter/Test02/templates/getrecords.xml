@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" xmlns:ogc="http://www.opengis.net/ogc" service="CSW" version="2.0.2"
+                resultType="results" ElementSetName="full"
+                outputFormat="application/xml" outputSchema="$csw_request_getrecords_template_outputschema$"
+                startPosition="$csw_request_getrecords_template_startPosition$" maxRecords="$csw_request_getrecords_template_maxRecords$">
+    <csw:Query typeNames="$csw_request_getrecords_template_typenames$">
+        <csw:ElementSetName>full</csw:ElementSetName>
+        <csw:Constraint version="1.1.0">
+            <ogc:Filter>
+                <ogc:Or>
+                    <ogc:PropertyIsEqualTo>
+                        <ogc:PropertyName>apiso:Identifier</ogc:PropertyName>
+                        <ogc:Literal>DA94F04F-7074-4505-85B2-A0BB1F70DA8F</ogc:Literal>
+                    </ogc:PropertyIsEqualTo>
+                    <ogc:PropertyIsEqualTo>
+                        <ogc:PropertyName>apiso:Identifier</ogc:PropertyName>
+                        <ogc:Literal>D2026D39-8667-44C9-B252-B2D3D70F5B13</ogc:Literal>
+                    </ogc:PropertyIsEqualTo>
+                    <ogc:PropertyIsEqualTo>
+                        <ogc:PropertyName>apiso:Identifier</ogc:PropertyName>
+                        <ogc:Literal>4DE5A407-647F-4BBA-B0D0-4DFBFE6CB5FB</ogc:Literal>
+                    </ogc:PropertyIsEqualTo>
+                </ogc:Or>
+            </ogc:Filter>
+        </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>

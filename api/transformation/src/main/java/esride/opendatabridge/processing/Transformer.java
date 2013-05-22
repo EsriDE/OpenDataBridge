@@ -116,13 +116,19 @@ public class Transformer {
         }
 
         try {
-            agolService.addItems(insertList, AccessType.valueOf(accessType));
-            if(overwriteAccessType){
-                agolService.updateItems(updateList, AccessType.valueOf(accessType));
-            }else{
-                agolService.updateItems(updateList);
+            if(insertList.size()>0){
+                agolService.addItems(insertList, AccessType.valueOf(accessType));
             }
-            if(deleteStrategy){
+            if(overwriteAccessType){
+                if(updateList.size() > 0){
+                    agolService.updateItems(updateList, AccessType.valueOf(accessType));
+                }
+            }else{
+                if(updateList.size() > 0){
+                    agolService.updateItems(updateList);
+                }
+            }
+            if(deleteStrategy && deleteList.size() > 0){
                 agolService.deleteItems(deleteList);
             }
         } catch (AgolTransactionFailedException e) {
