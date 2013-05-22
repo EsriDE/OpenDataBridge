@@ -45,9 +45,11 @@ public class AgolItemFactory {
         Collection vaiProperties = _properties.values();
         _validAgolItemPropertyKeys = new ArrayList<String>();
         _validAgolItemPropertyKeys.addAll(vaiProperties);
+        _validAgolItemPropertyKeys.add("id");   // without an id, no update is possible - can not be thrown out, but is not required for adding an AgolItem
 
-        // without an id, no update is possible - can not be thrown out
-        _validAgolItemPropertyKeys.add("id");
+        _requiredAgolItemPropertyKeys = new ArrayList<String>();
+        _requiredAgolItemPropertyKeys.add("type");
+        _requiredAgolItemPropertyKeys.add("title");
 
         // properties that come in from the catalogues, but don't match Agol fields: to be combined to JSON "text" field
         _exclusiveTextAgolItemPropertyKeys = new ArrayList<String>();
@@ -57,10 +59,11 @@ public class AgolItemFactory {
         _exclusiveTextAgolItemPropertyKeys.add("layerids");
         _exclusiveTextAgolItemPropertyKeys.add("layertitles");
 
+        // properties that come in from the catalogues, that go into the JSON "text" field, but also match Agol fields
         _textAgolItemPropertyKeys = new ArrayList<String>();
         _textAgolItemPropertyKeys.add("copyright");
         _textAgolItemPropertyKeys.add("format");
-        _textAgolItemPropertyKeys.add("mapUrl");
+//        _textAgolItemPropertyKeys.add("mapUrl");
         _textAgolItemPropertyKeys.add("spatialReferences");
         _textAgolItemPropertyKeys.add("title");
         _textAgolItemPropertyKeys.add("url");
@@ -164,7 +167,8 @@ public class AgolItemFactory {
                         || _textAgolItemPropertyKeys.contains(propertyKey)) {
                     textAgolItemProperties.put(propertyKey, propertyValue);
                 }
-                else if (_validAgolItemPropertyKeys.contains(propertyKey)
+                if (_validAgolItemPropertyKeys.contains(propertyKey)
+                        && !_exclusiveTextAgolItemPropertyKeys.contains(propertyKey)
                         && !propertyKey.equals("text")) {
                     agolItemPropertiesUpdated.put(propertyKey, propertyValue);
                 }
