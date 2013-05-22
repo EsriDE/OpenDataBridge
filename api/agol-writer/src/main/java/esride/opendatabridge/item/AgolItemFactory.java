@@ -105,7 +105,14 @@ public class AgolItemFactory {
      * @return
      */
     private Boolean validateAgolItem(HashMap agolItemProperties) {
-        // ToDo: put required keys ("type", what else??) into _requiredAgolItemPropertyKeys
+        Iterator requiredAgolItemPropertyKeysIterator = _requiredAgolItemPropertyKeys.iterator();
+        while (requiredAgolItemPropertyKeysIterator.hasNext()) {
+            Map.Entry property = (Map.Entry) requiredAgolItemPropertyKeysIterator.next();
+            if (!agolItemProperties.containsKey(property.getKey())) {
+                // ToDo: Define error, return missing properties
+                return false;
+            }
+        }
         if (agolItemProperties.containsKey("error")) {
             return false;
         }

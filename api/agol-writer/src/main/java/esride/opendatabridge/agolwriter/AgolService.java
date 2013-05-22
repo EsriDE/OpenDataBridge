@@ -273,7 +273,6 @@ public class AgolService implements IAgolService {
         }
 
         searchString += ")";
-
         return searchString;
     }
 
@@ -373,7 +372,7 @@ public class AgolService implements IAgolService {
      * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    public void addItems(List<AgolItem> agolItems) throws AgolTransactionFailedException, IOException {
+    public void addItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException {
         addItems(agolItems, AccessType.PUBLIC);
     }
     /**
@@ -384,7 +383,7 @@ public class AgolService implements IAgolService {
      * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    public void addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolTransactionFailedException, IOException {
+    public void addItems(List<AgolItem> agolItems, AccessType accessType) throws IOException, AgolTransactionFailedException {
         addItems(agolItems, accessType, "");
     }
     /**
@@ -396,16 +395,34 @@ public class AgolService implements IAgolService {
      * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    public void addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolTransactionFailedException, IOException {
+    public void addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException {
         String itemIds = "";
+        String errorMessages = "";
         for (AgolItem agolItem : agolItems) {
-            if (!itemIds.isEmpty()) {
-                itemIds += ",";
+            try {
+                if (!itemIds.isEmpty() && !itemIds.endsWith(",")) {
+                    itemIds += ",";
+                }
+                itemIds += addItem(agolItem);
+            } catch (AgolTransactionFailedException e) {
+                if (!errorMessages.isEmpty() && !errorMessages.endsWith("\n")) {
+                    errorMessages += "\n";
+                }
+                errorMessages += e.getMessage();
             }
-            itemIds += addItem(agolItem);
         }
         if (itemIds!=null && !accessType.equals(AccessType.PRIVATE)) {
-            shareItems(itemIds, accessType, groupIds);
+            try {
+                shareItems(itemIds, accessType, groupIds);
+            } catch (AgolTransactionFailedException e) {
+                if (!errorMessages.isEmpty() && !errorMessages.endsWith("\n")) {
+                    errorMessages += "\n";
+                }
+                errorMessages += e.getMessage();
+            }
+        }
+        if (!errorMessages.isEmpty()) {
+            throw new AgolTransactionFailedException(errorMessages);
         }
     }
     /**
@@ -467,7 +484,10 @@ public class AgolService implements IAgolService {
         }
         InputStream entities = _httpRequest.executePostRequest(publishItemUrl, agolAttributes, null);
 
-        handleResultListErrors(entities);
+        String errorItems =  handleResultListErrors(entities);
+        if (!errorItems.isEmpty()) {
+            throw new AgolTransactionFailedException("Share items failed for the following items: \n" + errorItems);
+        }
     }
     /**
      * Unshare items with the groups listed in groupIds
@@ -482,8 +502,8 @@ public class AgolService implements IAgolService {
         agolAttributes.put("groups", groupIds);
 
         InputStream entities = _httpRequest.executePostRequest(unshareItemsUrl, agolAttributes, null);
-        String errorItems = handleResultListErrors(entities);
 
+        String errorItems = handleResultListErrors(entities);
         if (!errorItems.isEmpty()) {
             throw new AgolTransactionFailedException("Unshare items failed for the following items: \n" + errorItems);
         }
