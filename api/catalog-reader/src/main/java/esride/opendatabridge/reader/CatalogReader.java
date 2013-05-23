@@ -116,7 +116,7 @@ public abstract class CatalogReader implements IReader {
                     object.setCapabilitiesDoc(resource.getRecourceMetadata(object.getCapabilitiesUrl(), object.getResourceType()));
                     object.setCapabilitiesType(capabilitiesMapper.get(object.getResourceType().toLowerCase()));
                 } catch (ResourceException e) {
-                    sLogger.error("The Resource (" + object.getResourceUrl() + ") is not available. " +
+                    sLogger.error("The Resource (" + object.getCapabilitiesUrl() + ") is not available. " +
                             "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
                     failureList.add(object);
                 }
@@ -156,7 +156,7 @@ public abstract class CatalogReader implements IReader {
                 HashMap<String, String> agolItems = agolItemTransformer.transform2AgolItem(resource, processId);
                 TransformedItem item = new TransformedItem();
                 item.setItemElements(agolItems);
-                item.setResourceUrl(metadataObjectList.get(i).getResourceUrl());
+                //item.setResourceUrl(metadataObjectList.get(i).getResourceUrl());
                 lTransformedItems.add(item);
                 if(sLogger.isDebugEnabled()){
                     sLogger.debug("Item elements:---------------------");
@@ -166,11 +166,13 @@ public abstract class CatalogReader implements IReader {
                     while(keyIter.hasNext()){
                         String key = keyIter.next();
                         String value = agolItems.get(key);
+                        if(value != null){
                         int valueLength = value.length();
-                        if(valueLength > 150){
-                            sLogger.debug("Item: " + key + ": Value: " + value.substring(0,150) + "...");
-                        }else{
-                            sLogger.debug("Item: " + key + ": Value: " + agolItems.get(key));
+                            if(valueLength > 150){
+                                sLogger.debug("Item: " + key + ": Value: " + value.substring(0,150) + "...");
+                            }else{
+                                sLogger.debug("Item: " + key + ": Value: " + agolItems.get(key));
+                            }
                         }
 
                     }
@@ -189,7 +191,7 @@ public abstract class CatalogReader implements IReader {
         if(failureList.size() > 0){
             sLogger.info("Please check the following urls. They are not accessible during the transformation");
             for (MetadataObject aFailureList : failureList) {
-                sLogger.info(aFailureList.getResourceUrl());
+                sLogger.info(aFailureList.getCapabilitiesUrl());
             }
         }
         sLogger.info("CatalogReader: Harvesting and transformation process finished");

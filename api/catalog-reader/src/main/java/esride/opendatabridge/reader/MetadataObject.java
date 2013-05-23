@@ -54,13 +54,13 @@ public class MetadataObject {
         this.metadataFileIdentifier = metadataFileIdentifier;
     }
 
-    public String getResourceUrl() {
+    /*public String getResourceUrl() {
         return resourceUrl;
     }
 
     public void setResourceUrl(String wmsUrl) {
         this.resourceUrl = wmsUrl;
-    }
+    } */
 
     public String getCapabilitiesUrl() {
         return capabilitiesUrl;

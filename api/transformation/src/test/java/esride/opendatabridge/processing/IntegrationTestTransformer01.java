@@ -54,6 +54,7 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
     }
 
 
+    @Test
     public void testInsert(){
         StartParameter param = null;
         String[] paramArray = new String[5];
@@ -78,7 +79,7 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         transform.executeProcessTransformation(reader, agolService, param.isDeleteValue(), param.isOverwriteAccessTypeValue(),param.getSearchStringValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());
     }
 
-    @Test
+    //@Test
     public void testInsertUpdateWithDeleteOption(){
 
         //first Time

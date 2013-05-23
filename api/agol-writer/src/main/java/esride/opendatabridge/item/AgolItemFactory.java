@@ -184,7 +184,7 @@ public class AgolItemFactory {
             }
         }
 
-        if (agolItemProperties.get("type").equals("WMS")) {
+        if (agolItemPropertiesUpdated.get("type").equals("WMS")) {
             agolItemPropertiesUpdated.put("text", createTextAgolItemProperty(textAgolItemProperties));
         }
         return agolItemPropertiesUpdated;

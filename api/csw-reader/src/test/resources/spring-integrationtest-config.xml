@@ -70,7 +70,7 @@
     <bean id="nodesetElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.NodesetElemHandler"/>
     <bean id="licenseCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CodeListElemHandler"
           p:codeListMap-ref="licenseMap"/>
-    <bean id="epsgCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CodeListElemHandler"
+    <bean id="epsgCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CrsHandler"
           p:codeListMap-ref="epsgMap"/>
 
     <util:map id="epsgMap" key-type="java.lang.String" value-type="java.lang.String">
@@ -86,6 +86,10 @@
         <entry key="EPSG:3034" value="3034"/>
         <entry key="EPSG:3035" value="3035"/>
         <entry key="EPSG:3044" value="3044"/>
+        <entry key="EPSG:2397" value="2397"/>
+        <entry key="EPSG:2398" value="2398"/>
+        <entry key="EPSG:2399" value="2399"/>
+        <entry key="EPSG:3857" value="3857"/>
     </util:map>
 
     <util:map id="licenseMap" key-type="java.lang.String" value-type="java.lang.String">

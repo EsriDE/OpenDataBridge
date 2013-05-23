@@ -46,19 +46,19 @@ public class UnitTestItemContainer extends TestCase {
         HashMap<String, String> item04Map = new HashMap<String, String>();
         item04Map.put("agol.title", "Insert Test 01");
         insert01.setItemElements(item04Map);
-        insert01.setResourceUrl("http://test.wms.de");
+        //insert01.setResourceUrl("http://test.wms.de");
 
         TransformedItem insert02 = new TransformedItem();
         HashMap<String, String> item05Map = new HashMap<String, String>();
         item05Map.put("agol.title", "Insert Test 02");
         insert02.setItemElements(item05Map);
-        insert02.setResourceUrl("http://test.wms.de");
+        //insert02.setResourceUrl("http://test.wms.de");
 
         TransformedItem update01 = new TransformedItem();
         HashMap<String, String> item06Map = new HashMap<String, String>();
         item06Map.put("agol.title", "Update Test");
         update01.setItemElements(item06Map);
-        update01.setResourceUrl("http://test.wms.de");
+        //update01.setResourceUrl("http://test.wms.de");
 
         List<TransformedItem> transformedIemList = new ArrayList<TransformedItem>(3);
         transformedIemList.add(insert01);

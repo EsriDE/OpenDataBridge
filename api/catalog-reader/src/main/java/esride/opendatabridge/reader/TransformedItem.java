@@ -13,15 +13,18 @@ public class TransformedItem {
     
     private HashMap<String, String> itemElements;
     
-    private String resourceUrl;
+    //private String resourceUrl;
 
     public String getResourceUrl() {
-        return resourceUrl;
+        if(itemElements != null){
+            return itemElements.get("agol.url");
+        }
+        return null;
     }
 
-    public void setResourceUrl(String resourceUrl) {
+    /*public void setResourceUrl(String resourceUrl) {
         this.resourceUrl = resourceUrl;
-    }
+    } */
 
     public HashMap<String, String> getItemElements() {
         return itemElements;

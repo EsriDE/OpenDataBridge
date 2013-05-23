@@ -8,13 +8,13 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 
 /**
- * Created by IntelliJ IDEA.
  * User: sma
  * Date: 21.05.13
  * Time: 15:21
- * To change this template use File | Settings | File Templates.
  */
 public class WmsUrlHandler implements IElemHandler{
     private static Logger sLogger = Logger.getLogger(WmsUrlHandler.class);

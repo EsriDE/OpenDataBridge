@@ -77,16 +77,16 @@ public class CSWGetRecordsResponse {
                     String resourceTypeXPath = xpathValue.getProperty("csw.reader.resourcetype.xpath");
                     String resourceType = xPath.evaluate(resourceTypeXPath, metaDocument);
 
-                    String resourceUrl = xpathValue.getProperty("csw.reader." + resourceType + ".resourceurl.xpath");
+                    //String resourceUrl = xpathValue.getProperty("csw.reader." + resourceType + ".resourceurl.xpath");
                     //fileIdentifier
                     object.setMetadataFileIdentifier(xPath.evaluate(xpathValue.getProperty("csw.reader.fileidentifier.xpath"), metaDocument));
                     //resourceUrl
-                    if(resourceUrl != null && resourceUrl.contains("?") && (resourceType.equalsIgnoreCase("WMS") || resourceType.equalsIgnoreCase("VIEW"))){
+                    /*if(resourceUrl != null && resourceUrl.contains("?") && (resourceType.equalsIgnoreCase("WMS") || resourceType.equalsIgnoreCase("VIEW"))){
                         String baseUrl = resourceUrl.substring(0, resourceUrl.indexOf('?'));
                         object.setResourceUrl(baseUrl);
                     }else{
                         object.setResourceUrl(resourceUrl);
-                    }
+                    } */
                     //object.setResourceUrl(xPath.evaluate(resourceUrl, metaDocument));
                     //capabilitiesUrl
                     String capabilitiesXPath = xpathValue.getProperty("csw.reader." + resourceType.toLowerCase() + ".capbilitiesurl.xpath");

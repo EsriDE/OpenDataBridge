@@ -88,14 +88,14 @@ public class CkanSearchResponse {
                         object.setResourceType(resourceTypeList.get(k));
 
                         String conactedXPath = xpathValue.getProperty("resourceurl.prefix.xpath") + resourceTypeList.get(k) + xpathValue.getProperty("resourceurl.suffix.xpath");
-                        String resourceUrl = xPath.evaluate(conactedXPath, metaDocument);
-                        //only take the base-URL without (if type ==WMS)
-                        if(resourceUrl != null && resourceUrl.contains("?") && resourceTypeList.get(k).equalsIgnoreCase("WMS")){
-                            String baseUrl = resourceUrl.substring(0, resourceUrl.indexOf('?'));
-                            object.setResourceUrl(baseUrl);
-                        }else{
-                            object.setResourceUrl(resourceUrl);    
-                        }
+                        String capabilitiesUrl = xPath.evaluate(conactedXPath, metaDocument);
+
+                        /*if(resourceUrl != null && resourceUrl.contains("?") && resourceTypeList.get(k).equalsIgnoreCase("WMS")){
+                           String baseUrl = resourceUrl.substring(0, resourceUrl.indexOf('?'));
+                           object.setResourceUrl(baseUrl);
+                       }else{
+                           object.setResourceUrl(resourceUrl);
+                       } */
                         
                         
 
@@ -103,7 +103,7 @@ public class CkanSearchResponse {
                         object.setMetadataFileIdentifier(fileIdentifier);
 
                         if(resourceTypeList.get(k).equalsIgnoreCase("WMS") || resourceTypeList.get(k).equalsIgnoreCase("KML")){
-                            object.setCapabilitiesUrl(resourceUrl);
+                            object.setCapabilitiesUrl(capabilitiesUrl);
                         }
                         
                         metadataObjectList.add(object);
