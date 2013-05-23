@@ -172,9 +172,8 @@ public class AgolItemFactory {
                         _log.info("\"" + propertyKey + "\" value updated: " + propertyValue);
                     }
                 }
-                if (agolItemProperties.get("type").equals("WMS")
-                        && (_exclusiveTextAgolItemPropertyKeys.contains(propertyKey)
-                        || _textAgolItemPropertyKeys.contains(propertyKey))) {
+                if (_exclusiveTextAgolItemPropertyKeys.contains(propertyKey)
+                    || _textAgolItemPropertyKeys.contains(propertyKey)) {
                     textAgolItemProperties.put(propertyKey, propertyValue);
                 }
                 if (_validAgolItemPropertyKeys.contains(propertyKey)
@@ -261,6 +260,11 @@ public class AgolItemFactory {
             }
             jsonText += jsonLayers + "]";
         }
+
+        if (jsonText.endsWith(",")) {
+            jsonText = jsonText.substring(0, jsonText.length()-1);
+        }
+
         jsonText += "}";
         return jsonText;
     }
