@@ -125,7 +125,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     public void testAddGroupsUpdateDeleteItem(){
         try {
             String userGroupIds = agolService.getUserGroupIds();
-            String firstGroup = userGroupIds.substring(0,userGroupIds.indexOf(","));
+            String firstGroup = userGroupIds.substring(0, userGroupIds.indexOf(","));
             String secondGroup = userGroupIds.substring(userGroupIds.indexOf(",")+1, userGroupIds.length());
             AgolItem testItem1 = agolItemFactory.createAgolItem(jsonMap.get("test01"));
             AgolItem testItem2 = agolItemFactory.createAgolItem(jsonMap.get("test02"));
@@ -147,6 +147,33 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
 
             List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
             deleteAgolItems.add((testItem2));
+            agolService.deleteItems(deleteAgolItems);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddDeleteKmlItem(){
+        try {
+            String userGroupIds = agolService.getUserGroupIds();
+            String firstGroup = userGroupIds.substring(0,userGroupIds.indexOf(","));
+            AgolItem kmlTestItem = agolItemFactory.createAgolItem(jsonMap.get("test03"));
+
+            List<AgolItem> agolItems = new ArrayList<AgolItem>();
+            String timestamp = new Long(new Date().getTime()/1000).toString();
+            String title = kmlTestItem.getAttributes().get("title") + " " + timestamp;
+            kmlTestItem.updateAttribute("title", title);
+            agolItems.add((kmlTestItem));
+            agolService.addItems(agolItems, AccessType.ORG, firstGroup);
+
+            Map<String, ArrayList<AgolItem>> returnTestItems = agolService.searchItems(title, OwnerType.USER);
+            ArrayList<AgolItem> returnAddedItems = returnTestItems.get(kmlTestItem.getUrl());
+            AgolItem returnedItem = returnAddedItems.get(0);
+            kmlTestItem.setId(returnedItem.getId());
+
+            List<AgolItem> deleteAgolItems = new ArrayList<AgolItem>();
+            deleteAgolItems.add((kmlTestItem));
             agolService.deleteItems(deleteAgolItems);
         } catch (Exception e) {
             Assert.fail(e.getMessage());

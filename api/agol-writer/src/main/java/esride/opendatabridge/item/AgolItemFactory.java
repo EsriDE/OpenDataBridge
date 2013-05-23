@@ -107,10 +107,10 @@ public class AgolItemFactory {
      * @return
      */
     private Boolean validateAgolItem(HashMap agolItemProperties) {
-        Iterator requiredAgolItemPropertyKeysIterator = _requiredAgolItemPropertyKeys.iterator();
+        Iterator<String> requiredAgolItemPropertyKeysIterator = _requiredAgolItemPropertyKeys.iterator();
         while (requiredAgolItemPropertyKeysIterator.hasNext()) {
-            Map.Entry property = (Map.Entry) requiredAgolItemPropertyKeysIterator.next();
-            if (!agolItemProperties.containsKey(property.getKey())) {
+            String propertyKey = requiredAgolItemPropertyKeysIterator.next();
+            if (!agolItemProperties.containsKey(propertyKey)) {
                 // ToDo: Define error, return missing properties
                 return false;
             }
@@ -172,8 +172,9 @@ public class AgolItemFactory {
                         _log.info("\"" + propertyKey + "\" value updated: " + propertyValue);
                     }
                 }
-                if (_exclusiveTextAgolItemPropertyKeys.contains(propertyKey)
-                        || _textAgolItemPropertyKeys.contains(propertyKey)) {
+                if (agolItemProperties.get("type").equals("WMS")
+                        && (_exclusiveTextAgolItemPropertyKeys.contains(propertyKey)
+                        || _textAgolItemPropertyKeys.contains(propertyKey))) {
                     textAgolItemProperties.put(propertyKey, propertyValue);
                 }
                 if (_validAgolItemPropertyKeys.contains(propertyKey)
@@ -184,7 +185,9 @@ public class AgolItemFactory {
             }
         }
 
-        agolItemPropertiesUpdated.put("text", createTextAgolItemProperty(textAgolItemProperties));
+        if (agolItemProperties.get("type").equals("WMS")) {
+            agolItemPropertiesUpdated.put("text", createTextAgolItemProperty(textAgolItemProperties));
+        }
         return agolItemPropertiesUpdated;
     }
 
@@ -217,13 +220,12 @@ public class AgolItemFactory {
                 jsonText += "\"title\":\"" + textProperty.getValue() + "\",";
             }
             else if (textProperty.getKey().equals("url")) {
-                jsonText += "\"url\":\"" + textProperty.getValue() + "\",";
-            }
-            else if (textProperty.getKey().equals("url")) {
-                jsonText += "\"mapUrl\":\"" + textProperty.getValue() + "\",";
-            }
-            else if (textProperty.getKey().equals("url")) {
-                jsonText += "\"mapUrl\":\"" + textProperty.getValue() + "\",";
+                String url = textProperty.getValue().toString();
+                jsonText += "\"url\":\"" + url + "\",";
+                if (!url.endsWith("?")) {
+                    url = url + "?";
+                }
+                jsonText += "\"mapUrl\":\"" + url + "\",";
             }
             else if (textProperty.getKey().equals("copyright")) {
                 jsonText += "\"copyright\":\"" + textProperty.getValue() + "\",";
