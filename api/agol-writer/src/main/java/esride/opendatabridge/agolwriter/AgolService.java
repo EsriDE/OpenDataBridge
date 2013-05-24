@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -91,6 +92,12 @@ public class AgolService implements IAgolService {
             _token = tokenNode.asText();
             String tokenExpires = rootNode.get("expires").toString();
             _tokenExpires = Long.valueOf(tokenExpires);
+
+            if (_log.isInfoEnabled()) {
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+                Date resultdate = new Date(_tokenExpires);
+                _log.info("New token " + tokenNode + " created. Expires at " + resultdate + ".");
+            }
         }
     }
 
@@ -134,6 +141,10 @@ public class AgolService implements IAgolService {
             JsonNode roleNode = rootNode.get("role");
             if (roleNode != null) {
                 _role = roleNode.toString().replace("\"", "");
+            }
+
+            if (_log.isInfoEnabled()) {
+                _log.info("User details acquired.");
             }
         }
     }
@@ -186,7 +197,14 @@ public class AgolService implements IAgolService {
             if (errorNode!=null) {
                 throw new AgolTransactionFailedException("Getting item with ID " + itemId + " failed with error " + errorNode.get("code") +  "." + errorNode.get("message"));
             }
-            return _agolItemFactory.createAgolItem(rootNode.toString());
+            AgolItem agolItem = _agolItemFactory.createAgolItem(rootNode.toString());
+
+            if (errorNode==null)  {
+                if (_log.isInfoEnabled()) {
+                    _log.info("Item \"" + agolItem.getTitle() +"\" (" + agolItem.getType() + ") with ID \"" + agolItem.getId() + "\" found.");
+                }
+            }
+            return agolItem;
         }
         throw new AgolTransactionFailedException("Getting item with ID " + itemId + " failed with no result.");
     }
@@ -447,12 +465,18 @@ public class AgolService implements IAgolService {
             JsonNode rootNode = _objectMapper.readTree(entities);
 
             JsonNode errorNode = rootNode.get("error");
-            if (errorNode != null)
-            {
+            if (errorNode != null) {
                 throw new AgolTransactionFailedException("Adding item \"" + agolItem.getTitle().toString() + "\" with ID " + agolItem.getId().toString() + "failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
 
-            return rootNode.get("id").toString().replaceAll("\"", "");
+            String itemId = rootNode.get("id").toString().replaceAll("\"", "");
+            if (errorNode == null) {
+                if (_log.isInfoEnabled()) {
+                    _log.info("Item \"" + agolItem.getTitle() +"\" (" + agolItem.getType() + ") was added to your ArcGIS Online account with ID " + itemId + ".");
+                }
+            }
+
+            return itemId;
         }
         return null;
     }
@@ -490,6 +514,15 @@ public class AgolService implements IAgolService {
         if (!errorItems.isEmpty()) {
             throw new AgolTransactionFailedException("Sharing the following items failed: \n" + errorItems);
         }
+        else {
+            if (_log.isInfoEnabled()) {
+                String groupsLog = "";
+                if (!groupIds.isEmpty()) {
+                    groupsLog = " to groups " + groupIds;
+                }
+                _log.info("Items \"" + itemIds +"\" have been shared with access type " + accessType.toString() + groupsLog + ".");
+            }
+        }
     }
     /**
      * Unshare items with the groups listed in groupIds
@@ -508,6 +541,11 @@ public class AgolService implements IAgolService {
         String errorItems = handleResultListErrors(entities);
         if (!errorItems.isEmpty()) {
             throw new AgolTransactionFailedException("Unsharing the following items failed: \n" + errorItems);
+        }
+        else {
+            if (_log.isInfoEnabled()) {
+                _log.info("Items \"" + itemIds +"\" have been unshared from groups " + groupIds + ".");
+            }
         }
     }
 
@@ -574,6 +612,11 @@ public class AgolService implements IAgolService {
             {
                 throw new AgolTransactionFailedException("Updating item \"" + agolItem.getTitle().toString() + "\" with ID " + agolItem.getId().toString() + "failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
+            else {
+                if (_log.isInfoEnabled()) {
+                    _log.info("Item \"" + agolItem.getTitle() +"\" (" + agolItem.getType() + ") with ID \"" + agolItem.getId() + "\" was updated in your ArcGIS Online account.");
+                }
+            }
         }
     }
 
@@ -608,6 +651,11 @@ public class AgolService implements IAgolService {
         String errorItems =  handleResultListErrors(entities);
         if (!errorItems.isEmpty()) {
             throw new AgolTransactionFailedException("Deleting the following items failed: \n" + errorItems);
+        }
+        else {
+            if (_log.isInfoEnabled()) {
+                _log.info("Items \"" + itemIds +"\" have been deleted from your ArcGIS Online account.");
+            }
         }
     }
 
@@ -651,9 +699,6 @@ public class AgolService implements IAgolService {
         agolAttributes.put("f", "json");
 
         if ((_token == null) || (System.currentTimeMillis() >= _tokenExpires)) {
-            if (_log.isInfoEnabled()) {
-                _log.info("Creating new token.");
-            }
             createToken();
         }
 

@@ -161,15 +161,15 @@ public class AgolItemFactory {
                 // Remove "agol." prefix from keys
                 if (propertyKey.startsWith("agol.")) {
                     propertyKey = propertyKey.toString().replace("agol.", "");
-                    if (_log.isInfoEnabled()) {
-                        _log.info("\"agol.\" prefix removed from key \"" + propertyKey + "\".");
+                    if (_log.isDebugEnabled()) {
+                        _log.debug("\"agol.\" prefix removed from key \"" + propertyKey + "\".");
                     }
                 }
                 // Transform all values to Strings
                 if (!property.getValue().getClass().equals(String.class)) {
                     propertyValue = propertyValue.toString().replaceAll("\\[", "").replaceAll("\\]", "");
-                    if (_log.isInfoEnabled()) {
-                        _log.info("\"" + propertyKey + "\" value updated: " + propertyValue);
+                    if (_log.isDebugEnabled()) {
+                        _log.debug("\"" + propertyKey + "\" value updated: " + propertyValue);
                     }
                 }
                 if (_exclusiveTextAgolItemPropertyKeys.contains(propertyKey)
