@@ -3,7 +3,7 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
     <appender name="LOGFILE" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${filepath}/logs/opendatabridge.log"/>
+        <param name="File" value="${opendatabridge.home}/logs/opendatabridge.log"/>
         <param name="Threshold" value="INFO"/>
         <param name="MaxFileSize" value="5000KB"/>
         <param name="MaxBackupIndex" value="3"/>
@@ -12,7 +12,6 @@
         </layout>
     </appender>
 
-    <!-- Gateway-->
     <logger name="esride.opendatabridge">
         <level value="INFO"/>
     </logger>

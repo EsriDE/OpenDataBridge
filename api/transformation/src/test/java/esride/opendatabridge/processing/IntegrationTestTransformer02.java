@@ -54,6 +54,10 @@ public class IntegrationTestTransformer02 extends AbstractJUnit4SpringContextTes
             Assert.fail(e.getMessage());
         }
         Transformer transform = new Transformer();
-        transform.executeProcessTransformation(reader, agolService, param.isDeleteValue(), param.isOverwriteAccessTypeValue(),param.getSearchStringValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());
+        try {
+            transform.executeProcessTransformation(reader, agolService, param.isDeleteValue(), param.isOverwriteAccessTypeValue(),param.getSearchStringValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());
+        } catch (TransformerException e) {
+            Assert.fail(e.getMessage());
+        }
     }
 }

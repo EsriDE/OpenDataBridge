@@ -95,12 +95,13 @@ public class WmsThumbnailHandler implements IElemHandler {
 
             wmsThumbnailUrl.append("&BBOX=");
             wmsThumbnailUrl.append((String)xPath.evaluate(bboxXPath, xmlDoc, XPathConstants.STRING));
+            return wmsThumbnailUrl.toString();
         } catch (XPathExpressionException e) {
             String lMessage = "Cannot evaluate xpath as a string: " + element;
             sLogger.error(lMessage);
             throw new ItemGenerationException(lMessage, e);
         }
-        return null;
+
 
     }
 }

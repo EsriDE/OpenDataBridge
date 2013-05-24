@@ -1,0 +1,47 @@
+(c) ESRI Deutschland GmbH, 2013-05-01
+
+3rd PARTY LIBRARIES AND LICENSES FOR OpenData Bridge
+==============================================================================================================================================================
+
+The OpenData Bridge make use of 3rd party libraries that are provided under individual licenses.
+This file contains a list of all libraries and their according licenses.
+If necessary, please find the full license text in separate files that are available in the same folder as this file.
+
+Apache License 2.0
+------------------
+* License Text: apache2.0.txt
+* Libraries:
+commons-codec-1.6.jar
+commons-logging-1.1.1.jar
+httpclient-4.2.3.jar
+httpcore-4.2.2.jar
+jackson-annotations-2.1.4.jar
+jackson-core-2.1.4.jar
+jackson-databind-2.1.4.jar
+jackson-dataformat-xml-2.1.4.jar
+jackson-module-jaxb-annotations-2.1.4.jar
+log4j-1.2.14.jar
+spring-aop-3.0.6.RELEASE.jar
+spring-asm-3.0.6.RELEASE.jar
+spring-beans-3.0.6.RELEASE.jar
+spring-context-3.0.6.RELEASE.jar
+spring-core-3.0.6.RELEASE.jar
+spring-expression-3.0.6.RELEASE.jar
+stax2-api-3.1.1.jar
+stax-api-1.0-2.jar
+xml-resolver-1.1.jar
+
+Public Domain
+-------------
+* License Text: nn
+* Libraries:
+aopalliance-1.0.jar
+
+Individual BSD-style
+--------------------
+* License Text: [libname].txt
+* Libraries:
+antlr-runtime-3.3.jar
+stringtemplate-4.0.2.jar
+
+

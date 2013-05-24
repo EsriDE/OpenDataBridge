@@ -6,9 +6,21 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>localapp</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>localapp</name>
        <dependencies>
+           <dependency>
+               <groupId>${project.groupId}</groupId>
+               <artifactId>agol-writer</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>${project.groupId}</groupId>
+               <artifactId>transformation</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>log4j</groupId>
+               <artifactId>log4j</artifactId>
+           </dependency>
            <dependency>
                <groupId>${project.groupId}</groupId>
                <artifactId>processinfo</artifactId>
@@ -16,6 +28,14 @@
            <dependency>
                <groupId>${project.groupId}</groupId>
                <artifactId>catalog-reader</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>${project.groupId}</groupId>
+               <artifactId>csw-reader</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>${project.groupId}</groupId>
+               <artifactId>ckan-reader</artifactId>
            </dependency>
            <dependency>
                <groupId>org.springframework</groupId>
@@ -29,9 +49,26 @@
                <groupId>org.springframework</groupId>
                <artifactId>spring-context</artifactId>
            </dependency>
-           <dependency>
-               <groupId>log4j</groupId>
-               <artifactId>log4j</artifactId>
-           </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

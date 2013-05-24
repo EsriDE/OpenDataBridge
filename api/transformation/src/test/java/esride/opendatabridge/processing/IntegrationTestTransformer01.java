@@ -77,7 +77,11 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
             Assert.fail(e.getMessage()); 
         }
         Transformer transform = new Transformer();
-        transform.executeProcessTransformation(reader, agolService, param.isDeleteValue(), param.isOverwriteAccessTypeValue(),param.getSearchStringValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());
+        try {
+            transform.executeProcessTransformation(reader, agolService, param.isDeleteValue(), param.isOverwriteAccessTypeValue(),param.getSearchStringValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());
+        } catch (TransformerException e) {
+            Assert.fail(e.getMessage());
+        }
     }
 
     //@Test
@@ -129,7 +133,11 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
             Assert.fail(e.getMessage());
         }
         Transformer transform = new Transformer();
-        transform.executeProcessTransformation(reader, agolService, insertParam.isDeleteValue(), insertParam.isOverwriteAccessTypeValue(),insertParam.getSearchStringValue(), insertParam.getAccessTypeValue(), insertParam.getOwnerTypeValue());
+        try {
+            transform.executeProcessTransformation(reader, agolService, insertParam.isDeleteValue(), insertParam.isOverwriteAccessTypeValue(),insertParam.getSearchStringValue(), insertParam.getAccessTypeValue(), insertParam.getOwnerTypeValue());
+        } catch (TransformerException e) {
+            Assert.fail(e.getMessage());
+        }
 
         //Just for test purpose (count the number of items)
         synchronized(this){
