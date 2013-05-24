@@ -27,7 +27,7 @@ public interface IAgolService {
      * @param itemId
      * @return
      */
-    AgolItem getItem(String itemId) throws IOException, AgolTransactionFailedException;
+    AgolItem getItem(String itemId) throws IOException, AgolTransactionFailedException, AgolItemInvalidException;
 
     /**
      * Get all items of a specific type, that are owned by logged-in user. If logged-in user is not an admin, he has only write permission to his own items. This is probably the standard use case.
@@ -35,7 +35,7 @@ public interface IAgolService {
      * @return
      * @throws java.io.IOException
      */
-    Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes) throws IOException;
+    Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes) throws IOException, AgolItemInvalidException;
 
     /**
      * Get all items with selectable access type
@@ -44,7 +44,7 @@ public interface IAgolService {
      * @return
      * @throws java.io.IOException
      */
-    Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType) throws IOException;
+    Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType) throws IOException, AgolItemInvalidException;
 
     /**
      * Get all items with selectable access type
@@ -54,7 +54,7 @@ public interface IAgolService {
      * @return
      * @throws java.io.IOException
      */
-    Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException;
+    Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException, AgolItemInvalidException;
 
     /**
      * Get all items that match the search string
@@ -62,7 +62,7 @@ public interface IAgolService {
      * @return
      * @throws java.io.IOException
      */
-    Map<String, ArrayList<AgolItem>> searchItems(String searchString, OwnerType ownerType) throws IOException;
+    Map<String, ArrayList<AgolItem>> searchItems(String searchString, OwnerType ownerType) throws IOException, AgolItemInvalidException;
 
     /**
      * Add a list of items and share publically
@@ -140,7 +140,7 @@ public interface IAgolService {
      * @param agolItemProperties
      * @return
      */
-    AgolItem createAgolItem(HashMap agolItemProperties);
+    AgolItem createAgolItem(HashMap agolItemProperties) throws AgolItemInvalidException;
 
     /**
      * Merge 2 ArcGIS Online Items by copying metadata from source to target and leaving

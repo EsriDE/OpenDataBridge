@@ -51,6 +51,8 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             Assert.assertNotNull("List of Agol items is empty.", agolItems);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
+        } catch (AgolItemInvalidException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
@@ -64,6 +66,8 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             Assert.assertNotNull("List of ArcGIS Online items is empty.", agolItems);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
+        } catch (AgolItemInvalidException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
@@ -74,6 +78,8 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             Assert.assertNotNull("List of ArcGIS Online items is empty.", agolItems);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
+        } catch (AgolItemInvalidException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
@@ -209,7 +215,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
     }
 
     @Test
-    public void testCreateItemFromODHashMap() throws IOException {
+    public void testCreateItemFromODHashMap() throws IOException, AgolItemInvalidException {
         HashMap<String, String> odHashMap = new HashMap<String, String>();
 
         String jsonString = jsonMap.get("odHashMap");

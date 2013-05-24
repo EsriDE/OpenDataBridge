@@ -1,10 +1,7 @@
 package esride.opendatabridge.processing;
 
 
-import esride.opendatabridge.agolwriter.AccessType;
-import esride.opendatabridge.agolwriter.AgolTransactionFailedException;
-import esride.opendatabridge.agolwriter.IAgolService;
-import esride.opendatabridge.agolwriter.OwnerType;
+import esride.opendatabridge.agolwriter.*;
 import esride.opendatabridge.item.AgolItem;
 import esride.opendatabridge.reader.IReader;
 import esride.opendatabridge.reader.ReaderException;
@@ -45,8 +42,10 @@ public class Transformer {
             itemMap =  agolService.searchItems(searchString, OwnerType.valueOf(ownerType));
         } catch (IOException e) {
             //ToDo: Exception Handling  
+        } catch (AgolItemInvalidException e) {
+            e.printStackTrace();  //ToDo: Exception Handling
         }
-        
+
         if(itemMap != null){
             Set<String> keys = itemMap.keySet();
             Iterator<String> keyIter = keys.iterator();
@@ -97,11 +96,21 @@ public class Transformer {
                 int status = itemTrans.getTransactionStatus();
                 switch (status){
                     case 1:
-                        AgolItem agolItem = agolService.createAgolItem(itemTrans.getTransformedItem().getItemElements());
+                        AgolItem agolItem = null;
+                        try {
+                            agolItem = agolService.createAgolItem(itemTrans.getTransformedItem().getItemElements());
+                        } catch (AgolItemInvalidException e) {
+                            e.printStackTrace();  //ToDo: Exception Handling
+                        }
                         insertList.add(agolItem);
                         break;
                     case 2:
-                        AgolItem newAgolItem = agolService.createAgolItem(itemTrans.getTransformedItem().getItemElements());
+                        AgolItem newAgolItem = null;
+                        try {
+                            newAgolItem = agolService.createAgolItem(itemTrans.getTransformedItem().getItemElements());
+                        } catch (AgolItemInvalidException e) {
+                            e.printStackTrace();  //ToDo: Exception Handling
+                        }
                         AgolItem updateAgolItem = agolService.mergeAgolItems(itemTrans.getAgolItem(), newAgolItem);
                         updateList.add(updateAgolItem);
                         break;

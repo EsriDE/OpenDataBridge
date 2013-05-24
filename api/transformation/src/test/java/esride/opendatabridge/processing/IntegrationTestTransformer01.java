@@ -1,5 +1,6 @@
 package esride.opendatabridge.processing;
 
+import esride.opendatabridge.agolwriter.AgolItemInvalidException;
 import esride.opendatabridge.agolwriter.AgolTransactionFailedException;
 import esride.opendatabridge.agolwriter.IAgolService;
 
@@ -147,6 +148,8 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
             Assert.assertTrue(agolSize == numberOfExpectedCatalogRecords);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
+        } catch (AgolItemInvalidException e) {
+            e.printStackTrace();  //ToDo: Exception Handling
         }
         return agolItemMap;
     }
@@ -163,7 +166,12 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
                     //ToDo: Exception Handling
                 }
             }
-            Map<String, ArrayList<AgolItem>> agolItemMap = agolService.searchItems("type:WMS", OwnerType.ORG);
+            Map<String, ArrayList<AgolItem>> agolItemMap = null;
+            try {
+                agolItemMap = agolService.searchItems("type:WMS", OwnerType.ORG);
+            } catch (AgolItemInvalidException e) {
+                e.printStackTrace();  //ToDo: Exception Handling
+            }
             Assert.assertTrue(agolItemMap.size() == 0);
         } catch (IOException e) {
             Assert.fail(e.getMessage());

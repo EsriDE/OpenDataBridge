@@ -1,6 +1,7 @@
 package esride.opendatabridge.item;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import esride.opendatabridge.agolwriter.AgolItemInvalidException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -73,30 +74,26 @@ public class AgolItemFactory {
      * Create ArcGIS Online item from Esri JSON
      * @param agolJsonItem
      * @return
+     * @throws AgolItemInvalidException
      */
-    public AgolItem createAgolItem(String agolJsonItem) {
+    public AgolItem createAgolItem(String agolJsonItem) throws AgolItemInvalidException {
         HashMap agolItemProperties = cleanAgolItemProperties(agolJsonToHashMap(agolJsonItem));
-        if (!validateAgolItem(agolItemProperties)) {
-            //ToDo: define error?
-             _log.warn("Not a valid ArcGIS Online item: " + agolItemProperties.toString());
-            return null;
-        }
+        validateAgolItem(agolItemProperties);
         AgolItem agolItem = new AgolItem(agolItemProperties);
         return agolItem;
     }
+
     /**
      * Create ArcGIS Online Item from HashMap
      * @param agolItemProperties
      * @return
+     * @throws AgolItemInvalidException
      */
-    public AgolItem createAgolItem(HashMap agolItemProperties) {
+    public AgolItem createAgolItem(HashMap agolItemProperties) throws AgolItemInvalidException {
         if (_propertiesToStrings) {
             agolItemProperties = cleanAgolItemProperties(agolItemProperties);
         }
-        if (!validateAgolItem(agolItemProperties)) {
-            _log.warn("Not a valid ArcGIS Online item: " + agolItemProperties.toString());
-            return null;
-        }
+        validateAgolItem(agolItemProperties);
         AgolItem agolItem = new AgolItem(agolItemProperties);
         return agolItem;
     }
@@ -105,18 +102,32 @@ public class AgolItemFactory {
      * Check if the ArcGIS Online item contains the required parameters to prevent cases like this AgolItem: error={code=400, messageCode=CONT_0001, message=Item '2C2cc78b3b57e64967aae845b937e92637' does not exist or is inaccessible., details=}
      * @param agolItemProperties
      * @return
+     * @throws AgolItemInvalidException
      */
-    private Boolean validateAgolItem(HashMap agolItemProperties) {
+    private Boolean validateAgolItem(HashMap agolItemProperties) throws AgolItemInvalidException {
         Iterator<String> requiredAgolItemPropertyKeysIterator = _requiredAgolItemPropertyKeys.iterator();
         while (requiredAgolItemPropertyKeysIterator.hasNext()) {
             String propertyKey = requiredAgolItemPropertyKeysIterator.next();
             if (!agolItemProperties.containsKey(propertyKey)) {
-                // ToDo: Define error, return missing properties
-                return false;
+                String errorMessage = "";
+                if (agolItemProperties.containsKey("title")) {
+                    errorMessage = agolItemProperties.get("title").toString() + " is not ";
+                }
+                else {
+                    errorMessage = "Not ";
+                }
+                throw new AgolItemInvalidException(errorMessage + "a valid ArcGIS Online item: " + propertyKey + " is missing.");
             }
         }
         if (agolItemProperties.containsKey("error")) {
-            return false;
+            String errorMessage = "";
+            if (agolItemProperties.containsKey("title")) {
+                errorMessage = agolItemProperties.get("title").toString() + " is not ";
+            }
+            else {
+                errorMessage = "Not ";
+            }
+            throw new AgolItemInvalidException(errorMessage + "a valid ArcGIS Online item: Contains key \"error\".");
         }
         return true;
     }
@@ -271,7 +282,7 @@ public class AgolItemFactory {
 
 
     /**
-     * Merge 2 ArcGIS Online Items by copying metadata from source to target and leaving
+     * Merge 2 ArcGIS Online Items by copying metadata from source to target. Overwrites existing values, adds new values and values untouched, that are only in the targetItem.
      * @param sourceItem
      * @param targetItem
      * @return

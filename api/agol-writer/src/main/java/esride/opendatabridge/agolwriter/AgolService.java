@@ -186,7 +186,7 @@ public class AgolService implements IAgolService {
      * @param itemId
      * @return
      */
-    public AgolItem getItem(String itemId) throws IOException, AgolTransactionFailedException {
+    public AgolItem getItem(String itemId) throws IOException, AgolTransactionFailedException, AgolItemInvalidException {
         String itemUrl = _contentUrl + "/items/" + itemId;
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
         InputStream entities = _httpRequest.executePostRequest(itemUrl, agolAttributes, null);
@@ -215,7 +215,7 @@ public class AgolService implements IAgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes) throws IOException {
+    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes) throws IOException, AgolItemInvalidException {
         return searchItems(itemTypes, OwnerType.USER);
     }
     /**
@@ -225,7 +225,7 @@ public class AgolService implements IAgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType) throws IOException {
+    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType) throws IOException, AgolItemInvalidException {
         String searchString = getSearchString(itemTypes, ownerType, "");
         Map<String, ArrayList<AgolItem>> _agolItems = new HashMap<String, ArrayList<AgolItem>>();
         fillAgolItems(_agolItems, searchString, 0, 0);
@@ -239,7 +239,7 @@ public class AgolService implements IAgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException {
+    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException, AgolItemInvalidException {
         String searchString = getSearchString(itemTypes, ownerType, addendum);
         Map<String, ArrayList<AgolItem>> _agolItems = new HashMap<String, ArrayList<AgolItem>>();
         fillAgolItems(_agolItems, searchString, 0, 0);
@@ -251,7 +251,7 @@ public class AgolService implements IAgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> searchItems(String searchString, OwnerType ownerType) throws IOException {
+    public Map<String, ArrayList<AgolItem>> searchItems(String searchString, OwnerType ownerType) throws IOException, AgolItemInvalidException {
         Map<String, ArrayList<AgolItem>> _agolItems = new HashMap<String, ArrayList<AgolItem>>();
         String searchStringTotal = "(";
         if (!searchString.equals("")) {
@@ -319,7 +319,7 @@ public class AgolService implements IAgolService {
      * @param startWithItemNumber: Integer value for recursive calls - 100 items are the maximum return number for one HTTP request
      * @throws IOException
      */
-    private void fillAgolItems(Map<String, ArrayList<AgolItem>> _agolItems, String searchString, int startWithItemNumber, int alreadyRetrieved) throws IOException {
+    private void fillAgolItems(Map<String, ArrayList<AgolItem>> _agolItems, String searchString, int startWithItemNumber, int alreadyRetrieved) throws IOException, AgolItemInvalidException {
         int agolItemsPaginationNextStart;
         int totalItemsCount;
         int retrievedItemsCount;
@@ -725,7 +725,7 @@ public class AgolService implements IAgolService {
      * @param agolItemProperties
      * @return
      */
-    public AgolItem createAgolItem(HashMap agolItemProperties) {
+    public AgolItem createAgolItem(HashMap agolItemProperties) throws AgolItemInvalidException {
         return _agolItemFactory.createAgolItem(agolItemProperties);
     }
 
