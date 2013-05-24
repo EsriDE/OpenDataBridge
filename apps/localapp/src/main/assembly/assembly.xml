@@ -1,0 +1,53 @@
+<assembly>
+    <id>deploy</id>
+    <formats>
+        <format>dir</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <directory>src/main/bin</directory>
+            <includes>
+                <include>*.bat</include>
+                <include>*.sh</include>
+            </includes>
+            <outputDirectory>bin</outputDirectory>
+            <filtered>false</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/license</directory>
+            <includes>
+                <include>*.txt</include>
+            </includes>
+            <outputDirectory>license</outputDirectory>
+            <filtered>false</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <outputDirectory>classes</outputDirectory>
+            <filtered>false</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/logs</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <outputDirectory>logs</outputDirectory>
+            <filtered>false</filtered>
+        </fileSet>
+
+    </fileSets>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</assembly>

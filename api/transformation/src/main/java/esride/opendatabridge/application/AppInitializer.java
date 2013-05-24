@@ -29,7 +29,7 @@ public class AppInitializer {
         ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"appconfig/transformerConfig.xml"});
 
         //Auslesen der Process Informationen
-        IProcessInfo processInfo = context.getBean("processinfo", IProcessInfo.class);
+        IProcessInfo processInfo = context.getBean(startParam.getReaderValue() + "ProcessInfo", IProcessInfo.class);
         HashMap<String, String> properties = processInfo.getProperties(startParam.getPidValue());
 
         //ReaderFactory initialisieren

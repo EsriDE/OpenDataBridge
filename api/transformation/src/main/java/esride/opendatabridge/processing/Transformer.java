@@ -33,18 +33,21 @@ public class Transformer {
      * @param agolService the ArcGIS Online adapter
      * @param deleteStrategy if deleteStrategy=false, no agolItem would be deleted if no corresponding catalogItem exists
      * @param overwriteAccessType if overwriteShareType=true, the submitted accessType will be used and overwrite the existing one in an update situation
+     * @param searchString the query statement for the Agol service query
      * @param accessType the flag for the access type. Allowed values are PRIVATE, SHARED, ORG, PUBLIC
      * @param ownerType the flag for the owner type. Allowed values are  USER, ORG
+     * @throws TransformerException if the transformation process failed
      */
     public void executeProcessTransformation(IReader reader, IAgolService agolService, 
                                              boolean deleteStrategy, boolean overwriteAccessType,
-                                             String searchString, String accessType, String ownerType){
+                                             String searchString, String accessType, String ownerType) throws TransformerException {
         HashMap<String, ItemContainer> itemContainer = new HashMap<String, ItemContainer>();
         Map<String, ArrayList<AgolItem>> itemMap = null;
         try {
             itemMap =  agolService.searchItems(searchString, OwnerType.valueOf(ownerType));
         } catch (IOException e) {
-            //ToDo: Exception Handling  
+            sLogger.error("Exception during ArcGIS Online Search", e);
+            throw new TransformerException("Exception during ArcGIS Online Search", e);
         }
         
         if(itemMap != null){
@@ -52,6 +55,9 @@ public class Transformer {
             Iterator<String> keyIter = keys.iterator();
             while(keyIter.hasNext()){
                 String key = keyIter.next();
+                if(sLogger.isDebugEnabled()){
+                    sLogger.debug("URL from ArcGIS Online: " + key);
+                }
                 ItemContainer elem = new ItemContainer();
                 elem.setAgolItems(itemMap.get(key));
                 itemContainer.put(key,elem);
@@ -63,7 +69,8 @@ public class Transformer {
         try {
             transformedItemList = reader.getItemsFromCatalog();
         } catch (ReaderException e) {
-            //ToDo: Exception Handling 
+            sLogger.error("Exception during Catalog Search", e);
+            throw new TransformerException("Exception during Catalog Search", e);
         }
 
         if(transformedItemList != null){
@@ -84,7 +91,8 @@ public class Transformer {
 
         Set<String> keySet = itemContainer.keySet();
         Iterator<String> iter = keySet.iterator();
-        
+
+        sLogger.info("Sorting " + itemContainer.size() + " items for insert, update and delete");
         List<AgolItem> insertList = new ArrayList<AgolItem>();
         List<AgolItem> updateList = new ArrayList<AgolItem>();
         List<AgolItem> deleteList = new ArrayList<AgolItem>();
@@ -95,6 +103,9 @@ public class Transformer {
             List<ItemTransaction> itemTransList = containerElement.getItemsForPublishing();
             for(ItemTransaction itemTrans : itemTransList){
                 int status = itemTrans.getTransactionStatus();
+                if(sLogger.isDebugEnabled()){
+                    sLogger.debug("Item Container. URL: " + key + " and Transaction Status: " + status);
+                }
                 switch (status){
                     case 1:
                         AgolItem agolItem = agolService.createAgolItem(itemTrans.getTransformedItem().getItemElements());
@@ -115,6 +126,10 @@ public class Transformer {
             }
         }
 
+        sLogger.info("Number of insert items: " + insertList.size());
+        sLogger.info("Number of update items: " + updateList.size());
+        sLogger.info("Number of delete items: " + deleteList.size() + ". Delete option enabled: " + deleteStrategy);
+
         try {
             if(insertList.size()>0){
                 agolService.addItems(insertList, AccessType.valueOf(accessType));
@@ -132,16 +147,14 @@ public class Transformer {
                 agolService.deleteItems(deleteList);
             }
         } catch (AgolTransactionFailedException e) {
-            //ToDo: Exception Handling
+            sLogger.warn("Some transactions failed. See Logfile for more details");
+
         } catch (IOException e) {
-            //ToDo: Exception Handling
+            sLogger.error("Exception during ArcGIS Online Transaction", e);
+            throw new TransformerException("Exception during ArcGIS Online Transaction", e);
         }
 
 
     }
-
-    public void testProcessTransformation(){}
-   
-
 
 }

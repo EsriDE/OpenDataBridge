@@ -3,6 +3,7 @@ package esride.opendatabridge.application;
 
 import esride.opendatabridge.agolwriter.IAgolService;
 import esride.opendatabridge.processing.Transformer;
+import esride.opendatabridge.processing.TransformerException;
 import esride.opendatabridge.reader.IReader;
 import esride.opendatabridge.reader.ReaderException;
 import org.apache.log4j.Logger;
@@ -54,9 +55,14 @@ public class AppStarter {
 
         sLogger.info("Application Start: Start Harvesting, Transformation and Publishing the ArcGIS Online Items");
         Transformer transformer = new Transformer();
-        transformer.executeProcessTransformation(reader, agolService, startParam.isDeleteValue(),
-                startParam.isOverwriteAccessTypeValue(), startParam.getSearchStringValue(),
-                startParam.getAccessTypeValue(), startParam.getOwnerTypeValue());
+        try {
+            transformer.executeProcessTransformation(reader, agolService, startParam.isDeleteValue(),
+                    startParam.isOverwriteAccessTypeValue(), startParam.getSearchStringValue(),
+                    startParam.getAccessTypeValue(), startParam.getOwnerTypeValue());
+        } catch (TransformerException e) {
+            sLogger.error("Application Start: Terminate OpenDataBridge. Cause: " + e.getMessage());
+            System.exit(2);
+        }
 
         sLogger.info("---------- OpenDataBridge Transformation Process finished-----------------");
         sLogger.info("For detailed information please have s look into the log file of this process");

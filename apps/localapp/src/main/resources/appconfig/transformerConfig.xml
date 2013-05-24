@@ -8,17 +8,199 @@
 			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    
+    <context:property-placeholder location="classpath:/agolservice/service.properties"/>
 
-    <bean class="esride.opendatabridge.processinfo.file.FileSystemProcessInfo" id="processinfo"
-            p:pathInfo="/xxx"/>
+    <!-- +++++++++++++++++++++++++++-->
+    <!-- AgolWriter bean components-->
+    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest" p:_objectMapper-ref="objectMapper">
+        <constructor-arg type="java.lang.String" value="${test.service.url}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.username}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.referer}"/>
+    </bean>
 
+    <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory" p:_objectMapper-ref="objectMapper">
+        <constructor-arg type="java.lang.Boolean" value="${test.service.propertiesToStrings}"/>
+    </bean>
 
-    <bean class="esride.opendatabridge.reader.factory.CatalogReaderFactory" id="readerfactory"
-            p:readerPool-ref="readerPool"/>
+    <bean class="com.fasterxml.jackson.databind.ObjectMapper" id="objectMapper" />
+    <!-- +++++++++++++++++++++++++++-->
 
-    <util:map map-class="java.util.HashMap" id="readerPool"
-              key-type="java.lang.String"
-              value-type="esride.opendatabridge.reader.IReader">
-        <!--<entry key="" value-ref=""/>-->
+    <!-- +++++++++++++++++++++++++++-->
+    <!-- Resource (Capabilities, KML) bean components-->
+    <bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesResource" id="capabilitiesRequest"
+          p:request-ref="httpRequest"/>
+
+    <bean class="esride.opendatabridge.reader.kml.KmlResource" id="kmlRequest"
+          p:httpRequest-ref="httpRequest"
+          p:outSR="%7B%22wkid%22:4326%7D"
+          p:utilityServiceUrl="http://utility.arcgis.com/sharing/kml"/>
+
+    <util:map id="capabilitiesMap" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="view" value="ogc"/>
+        <entry key="wms" value="ogc"/>
+        <entry key="kml" value="kml"/>
     </util:map>
+
+    <util:map id="resourceMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IResource">
+        <entry key="view" value-ref="capabilitiesRequest"/>
+        <entry key="wms" value-ref="capabilitiesRequest"/>
+        <entry key="kml" value-ref="kmlRequest"/>
+    </util:map>
+    <!-- +++++++++++++++++++++++++++-->
+
+    <!-- +++++++++++++++++++++++++++-->
+    <!-- HTTP bean component-->
+    <bean class="esride.opendatabridge.httptransport.HTTPRequest" id="httpRequest"/>
+    <!-- +++++++++++++++++++++++++++-->
+
+    <!-- +++++++++++++++++++++++++++-->
+    <!-- Ckan-Adapter bean components-->
+    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemCkanTransform"
+          p:itemElemExtractor-ref="itemCkanGenerator"/>
+
+    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemCkanGenerator"
+          p:generatorConfiguration-ref="itemCkanConfig"
+          p:elemHandlerMap-ref="elemMap"/>
+
+    <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemCkanConfig"
+          p:pathInfo="/ckanadapter/"/>
+
+    <bean class="esride.opendatabridge.reader.ckan.CkanReader" id="ckanReader"  scope="prototype"
+          p:searchRequest-ref="searchRequest"
+          p:capabilitiesMapper-ref="capabilitiesMap"
+          p:resourceMap-ref="resourceMap"
+          p:agolItemTransformer-ref="itemCkanTransform"/>
+    
+    <bean class="esride.opendatabridge.processinfo.file.FileSystemProcessInfo" p:pathInfo="/ckanadapter/"
+            id="ckanProcessInfo"/>
+
+    <bean class="esride.opendatabridge.reader.ckan.CkanSearchRequest" id="searchRequest"
+          p:httpRequest-ref="httpRequest"
+          p:searchResponse-ref="searchResponse"/>
+
+    <bean class="esride.opendatabridge.reader.ckan.CkanSearchResponse" id="searchResponse"
+          p:supportedResourceTypes-ref="supportedTypeList"/>
+
+    <util:list value-type="java.lang.String" id="supportedTypeList">
+        <value>WMS</value>
+        <value>KML</value>
+        <value>CSV</value>
+    </util:list>
+    <!-- +++++++++++++++++++++++++++-->
+
+    <!-- +++++++++++++++++++++++++++-->
+    <!-- Reader bean components-->
+    <bean class="esride.opendatabridge.reader.factory.CatalogReaderFactory" id="readerfactory"
+          p:readerPool-ref="readerMap"/>
+
+    <util:map id="readerMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IReader">
+        <entry key="csw" value-ref="cswReader"/>
+        <entry key="ckan" value-ref="ckanReader"/>
+    </util:map>
+    <!-- +++++++++++++++++++++++++++-->
+
+    <!-- +++++++++++++++++++++++++++-->
+    <!-- CSW-Adapter bean components-->
+    <bean class="esride.opendatabridge.processinfo.file.FileSystemProcessInfo" p:pathInfo="/cswadapter/" 
+          id="cswProcessInfo"/>
+
+    <bean class="esride.opendatabridge.reader.csw.CSWReader" id="cswReader"
+          p:searchRequest-ref="getRecordsRequest"
+          p:capabilitiesMapper-ref="capabilitiesMap"
+          p:resourceMap-ref="resourceMap"
+          p:agolItemTransformer-ref="itemCswTransform"/>   
+
+    <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsRequest" id="getRecordsRequest"
+          p:httpRequest-ref="httpRequest"
+          p:requestTemplate-ref="generator"
+          p:getRecordsResponse-ref="getRecordsResponse"/>
+
+    <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemCswConfig"
+          p:pathInfo="/cswadapter/"/>
+    
+    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemCswGenerator"
+          p:generatorConfiguration-ref="itemCswConfig"
+          p:elemHandlerMap-ref="elemMap"/>
+   
+    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemCswTransform"
+          p:itemElemExtractor-ref="itemCswGenerator"/>    
+   
+    <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsResponse" id="getRecordsResponse"/>
+
+    <bean class="esride.opendatabridge.reader.csw.GetRecordsRequestTemplate" id="generator"
+          p:templateLocation-ref="templateLocation"/>
+
+    <bean class="esride.opendatabridge.reader.csw.templatefile.FileSysGetRecordsTemplateLocation" id="templateLocation"
+          p:pathInfo="/cswadapter/"/>
+    <!-- +++++++++++++++++++++++++++-->
+
+    <!-- +++++++++++++++++++++++++++-->
+    <!-- Handler components-->
+    <util:map id="elemMap" key-type="java.lang.String" value-type="esride.opendatabridge.itemtransform.elemhandler.IElemHandler">
+        <entry key="wmsUrl" value-ref="wmsUrlElemHandler"/>
+        <entry key="default" value-ref="defaultElemHandler"/>
+        <entry key="string" value-ref="stringElemHandler"/>
+        <entry key="nodeset" value-ref="nodesetElemHandler"/>
+        <entry key="licenseCodeList" value-ref="licenseCodeListElemHandler"/>
+        <entry key="epsgCodeList" value-ref="epsgCodeListElemHandler"/>
+    </util:map>
+
+    <bean id="wmsUrlElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.WmsUrlHandler"/>
+    <bean id="defaultElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.DefaultElemHandler"/>
+    <bean id="stringElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.StringElemHandler"/>
+    <bean id="nodesetElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.NodesetElemHandler"/>
+    <bean id="licenseCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CodeListElemHandler"
+          p:codeListMap-ref="licenseMap"/>
+    <bean id="epsgCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CrsHandler"
+          p:codeListMap-ref="epsgMap"/>
+
+    <util:map id="epsgMap" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="CRS:84" value="4326"/>
+        <entry key="EPSG:4326" value="4326"/>
+        <entry key="EPSG:25832" value="25832"/>
+        <entry key="EPSG:25833" value="25833"/>
+        <entry key="EPSG:31466" value="31466"/>
+        <entry key="EPSG:31467" value="31467"/>
+        <entry key="EPSG:31468" value="31468"/>
+        <entry key="EPSG:31469" value="31469"/>
+        <entry key="EPSG:4258" value="4258"/>
+        <entry key="EPSG:3034" value="3034"/>
+        <entry key="EPSG:3035" value="3035"/>
+        <entry key="EPSG:3044" value="3044"/>
+        <entry key="EPSG:2397" value="2397"/>
+        <entry key="EPSG:2398" value="2398"/>
+        <entry key="EPSG:2399" value="2399"/>
+        <entry key="EPSG:3857" value="3857"/>
+    </util:map>
+
+    <util:map id="licenseMap" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="dl-de-by-1.0" value="Datenlizenz Deutschland Namensnennung"/>
+        <entry key="official-work" value="Amtliches Werk, lizenzfrei nach §5 UrhG"/>
+        <entry key="geonutzv-de-2013-03-19" value="Nutzungsbestimmungen für die Bereitstellung von Geodaten des Bundes"/>
+        <entry key="cc-by" value="Creative Commons Namensnennung (CC-BY)"/>
+        <entry key="cc-zero" value="Creative Commons Zero"/>
+        <entry key="cc-by-sa" value="Creative Commons Attribution Weitergabe unter gleichen Bedingungen (CC-BY-SA)"/>
+        <entry key="odc-odbl" value="Open Data Commons Open Database License (ODbL)"/>
+        <entry key="odc-by" value="Open Data Commons Namensnennung"/>
+        <entry key="odc-pddl" value="Open Data Commons Public Domain Dedication and Licence (PDDL)"/>
+        <entry key="other-open" value="Andere freie Lizenz"/>
+        <entry key="cc-nc" value="Creative Commons Nicht-Kommerziell (CC-NC)"/>
+        <entry key="cc-by-nd" value="Creative Commons Keine Bearbeitung (CC-BY-ND)"/>
+        <entry key="dl-de-by-nc-1.0" value="Datenlizenz Deutschland Namensnennung nicht-kommerziell"/>
+        <entry key="geolizenz-i-a" value="Geolizenz Ia Namensnennung"/>
+        <entry key="geolizenz-closed" value="eingeschränkte Geolizenz"/>
+        <entry key="apache" value="Apache Lizenz"/>
+        <entry key="app_commercial" value="Andere kommerzielle Lizenz"/>
+        <entry key="app_freeware" value="Andere kostenfreie Lizenz"/>
+        <entry key="app_opensource" value="Andere Open Source Lizenz"/>
+        <entry key="bsd-license" value="BSD Lizenz"/>
+        <entry key="gfdl" value="GNU Free Documentation License"/>
+        <entry key="gpl-3.0" value="GNU General Public License version 3.0 (GPLv3)"/>
+        <entry key="mozilla" value="Mozilla Public License 1.0 (MPL)"/>
+        <entry key="other-closed" value="Andere eingeschränkte Lizenz"/>
+    </util:map>
+    <!-- +++++++++++++++++++++++++++-->
+
 </beans>

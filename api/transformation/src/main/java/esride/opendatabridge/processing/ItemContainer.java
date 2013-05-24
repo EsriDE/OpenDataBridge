@@ -63,6 +63,7 @@ public class ItemContainer {
             updateItem.setAgolItem(agolItemList.get(0));
             updateItem.setTransformedItem(catalogItemList.get(0));
             updateItem.setTransactionStatus(2);
+            itemTransactionList.add(updateItem);
             return itemTransactionList;
         }
 
