@@ -128,19 +128,19 @@ public class AgolService implements IAgolService {
                     }
                     JsonNode idNode = group.get("id");
                     if (idNode != null) {
-                        _userGroupIds += idNode.toString().replace("\"", "");
+                        _userGroupIds += idNode.toString().replaceAll("\"", "");
                     }
                 }
             }
 
             JsonNode orgIdNode = rootNode.get("orgId");
             if (orgIdNode != null) {
-                _orgId = orgIdNode.toString().replace("\"", "");
+                _orgId = orgIdNode.toString().replaceAll("\"", "");
             }
 
             JsonNode roleNode = rootNode.get("role");
             if (roleNode != null) {
-                _role = roleNode.toString().replace("\"", "");
+                _role = roleNode.toString().replaceAll("\"", "");
             }
 
             if (_log.isInfoEnabled()) {
@@ -510,18 +510,19 @@ public class AgolService implements IAgolService {
         }
         InputStream entities = _httpRequest.executePostRequest(publishItemUrl, agolAttributes, null);
 
-        String errorItems =  handleResultListErrors(entities);
-        if (!errorItems.isEmpty()) {
-            throw new AgolTransactionFailedException("Sharing the following items failed: \n" + errorItems);
+        String successItems = "";
+        try {
+            successItems =  handleResultList(entities);
         }
-        else {
-            if (_log.isInfoEnabled()) {
-                String groupsLog = "";
-                if (!groupIds.isEmpty()) {
-                    groupsLog = " to groups " + groupIds;
-                }
-                _log.info("Items \"" + itemIds +"\" have been shared with access type " + accessType.toString() + groupsLog + ".");
+        catch (Exception e) {
+            throw new AgolTransactionFailedException("Sharing the following items failed: \n" + e.getMessage());
+        }
+        if (_log.isInfoEnabled()) {
+            String groupsLog = "";
+            if (!groupIds.isEmpty()) {
+                groupsLog = " to groups " + groupIds;
             }
+            _log.info("Items \"" + successItems +"\" have been shared with access type " + accessType.toString() + groupsLog + ".");
         }
     }
     /**
@@ -538,14 +539,15 @@ public class AgolService implements IAgolService {
 
         InputStream entities = _httpRequest.executePostRequest(unshareItemsUrl, agolAttributes, null);
 
-        String errorItems = handleResultListErrors(entities);
-        if (!errorItems.isEmpty()) {
-            throw new AgolTransactionFailedException("Unsharing the following items failed: \n" + errorItems);
+        String successItems = "";
+        try {
+            successItems =  handleResultList(entities);
         }
-        else {
-            if (_log.isInfoEnabled()) {
-                _log.info("Items \"" + itemIds +"\" have been unshared from groups " + groupIds + ".");
-            }
+        catch (Exception e) {
+            throw new AgolTransactionFailedException("Unsharing the following items failed: \n" + e.getMessage());
+        }
+        if (_log.isInfoEnabled()) {
+            _log.info("Items \"" + successItems +"\" have been unshared from your ArcGIS Online account.");
         }
     }
 
@@ -648,25 +650,28 @@ public class AgolService implements IAgolService {
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
         agolAttributes.put("items", itemIds);
         InputStream entities = _httpRequest.executePostRequest(deleteItemsUrl, agolAttributes, null);
-        String errorItems =  handleResultListErrors(entities);
-        if (!errorItems.isEmpty()) {
-            throw new AgolTransactionFailedException("Deleting the following items failed: \n" + errorItems);
+        String successItems = "";
+        try {
+            successItems =  handleResultList(entities);
         }
-        else {
-            if (_log.isInfoEnabled()) {
-                _log.info("Items \"" + itemIds +"\" have been deleted from your ArcGIS Online account.");
-            }
+        catch (Exception e) {
+            throw new AgolTransactionFailedException("Deleting the following items failed: \n" + e.getMessage());
+        }
+        if (_log.isInfoEnabled()) {
+            _log.info("Items \"" + successItems +"\" have been deleted from your ArcGIS Online account.");
         }
     }
 
     /**
      * Handle a result list that might contain errors
      * @param entities
-     * @return String with a list of items that returned error messages
+     * @return String with a list of items that succeeded
      * @throws IOException
+     * @throws AgolTransactionFailedException if items returned error messages
      */
-    private String handleResultListErrors(InputStream entities) throws IOException {
+    private String handleResultList(InputStream entities) throws IOException, AgolTransactionFailedException {
         String errorItems = "";
+        String successItems = "";
         if (entities != null)
         {
             JsonNode rootNode = _objectMapper.readTree(entities);
@@ -681,12 +686,21 @@ public class AgolService implements IAgolService {
                         if (!errorItems.isEmpty()) {
                             errorItems += "\n";
                         }
-                        errorItems += resultNode.get("itemId") + ": " + errorNode.get("message") + " (Error code " + errorNode.get("code") + ")";
+                        errorItems += resultNode.get("itemId").toString().replaceAll("\"", "") + ": " + errorNode.get("message") + " (Error code " + errorNode.get("code") + ")";
+                    }
+                    else {
+                        if (!successItems.isEmpty()) {
+                            successItems += ", ";
+                        }
+                        successItems += resultNode.get("itemId").toString().replaceAll("\"", "");
                     }
                 }
             }
         }
-        return errorItems;
+        if (!errorItems.isEmpty()) {
+            throw new AgolTransactionFailedException(errorItems);
+        }
+        return successItems;
     }
 
     /**
