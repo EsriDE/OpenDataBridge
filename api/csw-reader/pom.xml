@@ -3,7 +3,7 @@
     <parent>
         <groupId>esride.opendatabridge</groupId>
         <artifactId>api</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0-RC</version>
     </parent>
     <artifactId>csw-reader</artifactId>
     <packaging>jar</packaging>
