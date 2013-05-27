@@ -3,7 +3,7 @@
     <parent>
         <groupId>esride.opendatabridge</groupId>
 		<artifactId>opendatabridge</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0</version>
     </parent>    
     <artifactId>agol-writer</artifactId>
     <packaging>jar</packaging>
