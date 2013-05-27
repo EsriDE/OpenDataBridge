@@ -43,9 +43,9 @@ public class Transformer {
         try {
             itemMap =  agolService.searchItems(searchString, OwnerType.valueOf(ownerType));
         } catch (IOException e) {
-            //ToDo: Exception Handling  
+            sLogger.error("Exception during ArcGIS Online Search", e);
+            throw new TransformerException("Exception during ArcGIS Online Search", e);
         } catch (AgolItemInvalidException e) {
-            e.printStackTrace();  //ToDo: Exception Handling
             sLogger.error("Exception during ArcGIS Online Search", e);
             throw new TransformerException("Exception during ArcGIS Online Search", e);
         }
@@ -111,20 +111,20 @@ public class Transformer {
                         AgolItem agolItem = null;
                         try {
                             agolItem = agolService.createAgolItem(itemTrans.getTransformedItem().getItemElements());
+                            insertList.add(agolItem);
                         } catch (AgolItemInvalidException e) {
-                            e.printStackTrace();  //ToDo: Exception Handling
+                            sLogger.warn("Some transactions failed. See Logfile for more details");
                         }
-                        insertList.add(agolItem);
                         break;
                     case 2:
                         AgolItem newAgolItem = null;
                         try {
                             newAgolItem = agolService.createAgolItem(itemTrans.getTransformedItem().getItemElements());
+                            AgolItem updateAgolItem = agolService.mergeAgolItems(itemTrans.getAgolItem(), newAgolItem);
+                            updateList.add(updateAgolItem);
                         } catch (AgolItemInvalidException e) {
-                            e.printStackTrace();  //ToDo: Exception Handling
+                            sLogger.warn("Some transactions failed. See Logfile for more details");
                         }
-                        AgolItem updateAgolItem = agolService.mergeAgolItems(itemTrans.getAgolItem(), newAgolItem);
-                        updateList.add(updateAgolItem);
                         break;
                     case 3:
                         deleteList.add(itemTrans.getAgolItem());
