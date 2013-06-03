@@ -59,6 +59,7 @@
         <value>WMS</value>
         <value>KML</value>
         <value>CSV</value>
+        <value>csv</value>
     </util:list>
 
     <bean class="esride.opendatabridge.reader.kml.KmlResource" id="kmlRequest"

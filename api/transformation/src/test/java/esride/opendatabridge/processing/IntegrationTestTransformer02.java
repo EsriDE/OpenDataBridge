@@ -32,11 +32,40 @@ public class IntegrationTestTransformer02 extends AbstractJUnit4SpringContextTes
     @Autowired
     private IAgolService agolService;
 
-    @Test
-    public void testInsert(){
+    //@Test
+    public void testInsertKml(){
         StartParameter param = null;
         String[] paramArray = new String[5];
         paramArray[0] = "-pid=Test01";
+        paramArray[1] = "-readerid=ckan";
+        paramArray[2] = "-searchstring=";
+        paramArray[3] = "-accesstype=PRIVATE";
+        paramArray[4] = "-ownertype=USER";
+        try {
+            param = new StartParameter(paramArray);
+        } catch (StartParameterException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        IReader reader = null;
+        try {
+            reader = readerFactory.newReaderInstance(param.getReaderValue(), processInfo.getProperties(param.getPidValue()), param.getPidValue());
+        } catch (ReaderException e) {
+            Assert.fail(e.getMessage());
+        }
+        Transformer transform = new Transformer();
+        try {
+            transform.executeProcessTransformation(reader, agolService, param.isDeleteValue(), param.isOverwriteAccessTypeValue(),param.getSearchStringValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());
+        } catch (TransformerException e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testInsertBremen(){
+        StartParameter param = null;
+        String[] paramArray = new String[5];
+        paramArray[0] = "-pid=Test02";
         paramArray[1] = "-readerid=ckan";
         paramArray[2] = "-searchstring=";
         paramArray[3] = "-accesstype=PRIVATE";
