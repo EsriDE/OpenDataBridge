@@ -10,4 +10,4 @@ The tool could be used for a single process (running as a batch script directly 
 * make a copy namend buildLocal.properties from the file build.properties
 * change the properties test.service.username and test.service.pwd with your AcrGIS Online Account
 * The Maven property local.configfile must point to the buildLocal.properties file
-* Activate the env-dev profile
+* Activate the env-dev profile and execute the maven process
