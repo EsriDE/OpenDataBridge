@@ -13,3 +13,10 @@ The tool could be used for a single process (running as a batch script directly 
 * The Maven property local.configfile must point to the buildLocal.properties file in your IDE
 * activate the env-dev profile in your IDE
 * execute the maven process
+
+## Requirements ##
+* JAVA 1.6 or higher
+* Maven 2.2.10 or higher
+ 
+## Licensing ##
+<open>
