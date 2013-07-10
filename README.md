@@ -12,7 +12,7 @@ The tool could be used for a single process (running as a batch script directly 
 * change the properties test.service.username and test.service.pwd with your AcrGIS Online Account
 * The Maven property local.configfile must point to the buildLocal.properties file in your IDE
 * activate the env-dev profile in your IDE
-* execute the maven process
+* execute the maven process (phase package)
 
 ## Requirements ##
 * JAVA 1.6 or higher
