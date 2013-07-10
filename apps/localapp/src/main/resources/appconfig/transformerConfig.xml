@@ -87,6 +87,7 @@
         <value>WMS</value>
         <value>KML</value>
         <value>CSV</value>
+        <value>csv</value>
     </util:list>
     <!-- +++++++++++++++++++++++++++-->
 
