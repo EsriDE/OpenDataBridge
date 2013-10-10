@@ -3,7 +3,7 @@
     <groupId>esride.opendatabridge</groupId>
     <artifactId>opendatabridge</artifactId>
     <packaging>pom</packaging>
-    <name>Open Data Bridge</name>
+    <name>Open Data Bridge</name>    
     <version>1.1</version>
     <description>This is the aggregator POM this project</description>
     <!-- core developers ======================================================= -->
@@ -23,7 +23,47 @@
             <id>nik</id>
             <email>n.koehn@esri.de</email>
         </developer>
-    </developers>        
+    </developers>    
+    <scm>
+        <!-- Specification of the Source-Content-Managmentsystem -->
+        <connection>scm:git:https://github.com/EsriDE/OpenDataBridge.git</connection>
+        <developerConnection>scm:git:https://github.com/EsriDE/OpenDataBridge.git</developerConnection>
+        <url>https://github.com/EsriDE/OpenDataBridge.git</url>
+    </scm>
+    <!--<ciManagement>
+        <url>http://mopelia.con.terra:9000/continuum/</url>
+        <system>continuum</system>
+        <notifiers>
+            <notifier>
+                <type>mail</type>
+                <configuration>
+                    <address>m.stecker@conterra.de</address>
+                </configuration>
+            </notifier>
+        </notifiers>
+    </ciManagement>-->
+    <distributionManagement>
+        <repository>
+            <id>ct-dist-releases-file</id>
+            <name>repository for releases</name>
+            <url>file://///vsdev0860.dev.esri-de.com/repo-internal/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>ct-dist-snapshots-file</id>
+            <name>repository for snapshots</name>
+            <url>file://///vsdev0860.dev.esri-de.com/repo-internal/snapshots</url>
+        </snapshotRepository>
+        <!--<repository>
+            <id>ct-dist-releases-file</id>
+            <name>repository for sdi.suite releases</name>
+            <url>file://///repository01.esri-de.com/maven/maven-repo/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>ct-dist-snapshots-file</id>
+            <name>repository for sdi.suite snapshots</name>
+            <url>file://///repository01.esri-de.com/maven/maven-repo/snapshots</url>
+        </snapshotRepository>-->
+    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

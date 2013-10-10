@@ -416,14 +416,19 @@ public class AgolService implements IAgolService {
      * @throws IOException
      */
     public void addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException {
-        String itemIds = "";
+        //String itemIds = "";
         String errorMessages = "";
         for (AgolItem agolItem : agolItems) {
             try {
-                if (!itemIds.isEmpty() && !itemIds.endsWith(",")) {
+                /*if (!itemIds.isEmpty() && !itemIds.endsWith(",")) {
                     itemIds += ",";
+                } */
+                //First add the item
+                //itemIds += addItem(agolItem);
+                String newItemId = addItem(agolItem);
+                if (newItemId !=null && !accessType.equals(AccessType.PRIVATE)) {
+                    shareItems(newItemId, accessType, groupIds);
                 }
-                itemIds += addItem(agolItem);
             } catch (AgolTransactionFailedException e) {
                 if (!errorMessages.isEmpty() && !errorMessages.endsWith("\n")) {
                     errorMessages += "\n";
@@ -431,7 +436,7 @@ public class AgolService implements IAgolService {
                 errorMessages += e.getMessage();
             }
         }
-        if (itemIds!=null && !accessType.equals(AccessType.PRIVATE)) {
+        /*if (itemIds!=null && !accessType.equals(AccessType.PRIVATE)) {
             try {
                 shareItems(itemIds, accessType, groupIds);
             } catch (AgolTransactionFailedException e) {
@@ -440,7 +445,7 @@ public class AgolService implements IAgolService {
                 }
                 errorMessages += e.getMessage();
             }
-        }
+        }   */
         if (!errorMessages.isEmpty()) {
             throw new AgolTransactionFailedException(errorMessages);
         }
@@ -567,9 +572,9 @@ public class AgolService implements IAgolService {
      * @throws IOException
      * @throws AgolTransactionFailedException
      */
-    public void updateItems(List<AgolItem> agolItems, AccessType accessType) throws IOException, AgolTransactionFailedException {
+    /*public void updateItems(List<AgolItem> agolItems, AccessType accessType) throws IOException, AgolTransactionFailedException {
         updateItems(agolItems, accessType, "");
-    }
+    } */
     /**
      * Update a list of items and adjust the Share settings for a selectable access type and groups
      * @param agolItems
@@ -579,9 +584,17 @@ public class AgolService implements IAgolService {
      * @throws AgolTransactionFailedException
      */
     public void updateItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException {
-        updateItems(agolItems);
+        //updateItems(agolItems);
+        for (AgolItem agolItem : agolItems) {
+            updateItem(agolItem);
+            String agolItemId = agolItem.getId();
 
-        String itemIds = "";
+            //ToDo: maybe unshare and share en-block and not for every id
+            unshareItems(agolItemId, getUserGroupIds());
+            shareItems(agolItemId, accessType, groupIds);
+        }
+
+        /*String itemIds = "";
         for (AgolItem agolItem : agolItems) {
             if (!itemIds.isEmpty()) {
                 itemIds += ",";
@@ -589,7 +602,7 @@ public class AgolService implements IAgolService {
             itemIds += agolItem.getId();
         }
         unshareItems(itemIds, getUserGroupIds());
-        shareItems(itemIds, accessType, groupIds);
+        shareItems(itemIds, accessType, groupIds);*/
     }
     /**
      * Update a specific item
