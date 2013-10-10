@@ -3,6 +3,7 @@ package esride.opendatabridge.reader.capabilities;
 import esride.opendatabridge.httptransport.IHTTPRequest;
 import esride.opendatabridge.reader.IResource;
 import esride.opendatabridge.reader.ResourceException;
+import org.apache.log4j.Logger;
 import org.apache.xml.resolver.tools.CatalogResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -25,6 +26,7 @@ import java.util.StringTokenizer;
  * To change this template use File | Settings | File Templates.
  */
 public class OGCCapabilitiesResource implements IResource{
+    private static Logger sLogger = Logger.getLogger(OGCCapabilitiesResource.class);
 
     private IHTTPRequest request;
 
@@ -52,6 +54,10 @@ public class OGCCapabilitiesResource implements IResource{
         String lCheckedUrl = this.checkAndAppendParameter(url, serviceType);
         InputStream inputStream = null;
         try {
+            if(!lCheckedUrl.startsWith("http")){
+                sLogger.error("URL not valid: " + lCheckedUrl);
+                throw new ResourceException("URL not valid: " + lCheckedUrl);
+            }
             inputStream = getRequest().executeGetRequest(lCheckedUrl, null);
             Document document = builder.parse(inputStream);
             inputStream.close();
