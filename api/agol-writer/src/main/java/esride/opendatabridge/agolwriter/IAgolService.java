@@ -107,7 +107,7 @@ public interface IAgolService {
      * @throws java.io.IOException
      * @throws esride.opendatabridge.agolwriter.AgolTransactionFailedException
      */
-    void updateItems(List<AgolItem> agolItems, AccessType accessType) throws IOException, AgolTransactionFailedException;
+    //void updateItems(List<AgolItem> agolItems, AccessType accessType) throws IOException, AgolTransactionFailedException;
 
     /**
      * Update a list of items and adjust the Share settings for a selectable access type and groups

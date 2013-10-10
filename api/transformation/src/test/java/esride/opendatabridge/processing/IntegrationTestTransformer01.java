@@ -55,15 +55,17 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
     }
 
 
-    //@Test
+    @Test
     public void testInsert(){
         StartParameter param = null;
-        String[] paramArray = new String[5];
+        String[] paramArray = new String[6];
         paramArray[0] = "-pid=Test01";
         paramArray[1] = "-readerid=csw";
         paramArray[2] = "-searchstring=";
-        paramArray[3] = "-accesstype=PRIVATE";
+        paramArray[3] = "-accesstype=ORG";
         paramArray[4] = "-ownertype=USER";
+        paramArray[5] = "-overwriteaccesstype=true";
+
         try {
             param = new StartParameter(paramArray);
         } catch (StartParameterException e) {
@@ -84,7 +86,7 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         }
     }
 
-    @Test
+    //@Test
     public void testInsertUpdateWithDeleteOption(){
 
         //first Time

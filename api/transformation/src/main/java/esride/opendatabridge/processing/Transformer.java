@@ -146,7 +146,7 @@ public class Transformer {
             }
             if(overwriteAccessType){
                 if(updateList.size() > 0){
-                    agolService.updateItems(updateList, AccessType.valueOf(accessType));
+                    agolService.updateItems(updateList, AccessType.valueOf(accessType), "");
                 }
             }else{
                 if(updateList.size() > 0){
