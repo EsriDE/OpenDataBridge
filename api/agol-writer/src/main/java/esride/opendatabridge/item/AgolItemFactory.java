@@ -291,12 +291,14 @@ public class AgolItemFactory {
         Iterator attributesIterator = sourceItem.getAttributes().entrySet().iterator();
         while (attributesIterator.hasNext()) {
             Map.Entry attribute = (Map.Entry) attributesIterator.next();
-            if (targetItem.getAttributes().containsKey(attribute.getKey())) {
-                targetItem.updateAttribute(attribute.getKey().toString(), attribute.getValue().toString());
-            }
-            else {
+
+            if (!targetItem.getAttributes().containsKey(attribute.getKey())) {
                 targetItem.getAttributes().put(attribute.getKey().toString(), attribute.getValue().toString());
+                //targetItem.updateAttribute(attribute.getKey().toString(), attribute.getValue().toString());
             }
+            /*else {
+                targetItem.getAttributes().put(attribute.getKey().toString(), attribute.getValue().toString());
+            } */
         }
         return targetItem;
     }
