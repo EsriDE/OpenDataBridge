@@ -68,20 +68,20 @@ public interface IAgolService {
      * Add a list of items and share publically
      * @param agolItems
      * @return Comma-separated list of added itemIDs
-     * @throws esride.opendatabridge.agolwriter.AgolTransactionFailedException
+     * @throws esride.opendatabridge.agolwriter.AgolPublishBatchPartlyFailedException
      * @throws java.io.IOException
      */
-    void addItems(List<AgolItem> agolItems) throws AgolTransactionFailedException, IOException;
+    void addItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException;
 
     /**
      * Add a list of items and share with selectable access type
      * @param agolItems
      * @param accessType
      * @return Comma-separated list of added itemIDs
-     * @throws esride.opendatabridge.agolwriter.AgolTransactionFailedException
+     * @throws esride.opendatabridge.agolwriter.AgolPublishBatchPartlyFailedException
      * @throws java.io.IOException
      */
-    void addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolTransactionFailedException, IOException;
+    void addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolPublishBatchPartlyFailedException;
 
     /**
      * Add a list of items and share with selectable access type and groups
@@ -89,16 +89,15 @@ public interface IAgolService {
      * @param accessType
      * @param groupIds: Comma-separated list of groupIDs the items shall be shared with
      * @return Comma-separated list of added itemIDs
-     * @throws esride.opendatabridge.agolwriter.AgolTransactionFailedException
-     * @throws java.io.IOException
+     * @throws esride.opendatabridge.agolwriter.AgolPublishBatchPartlyFailedException
      */
-    void addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolTransactionFailedException, IOException;
+    void addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolPublishBatchPartlyFailedException;
 
     /**
      * Update a list of items, don't touch the Share settings
      * @param agolItems
      */
-    void updateItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException;
+    void updateItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException;
 
     /**
      * Update a list of items and adjust the Share settings for a selectable access type
@@ -115,25 +114,25 @@ public interface IAgolService {
      * @param accessType
      * @param groupIds
      * @throws java.io.IOException
-     * @throws esride.opendatabridge.agolwriter.AgolTransactionFailedException
+     * @throws esride.opendatabridge.agolwriter.AgolPublishBatchPartlyFailedException
      */
-    void updateItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException;
+    void updateItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolPublishBatchPartlyFailedException;
 
     /**
      * Delete ArcgGIS Online items
      * @param agolItems
      * @throws java.io.IOException
-     * @throws esride.opendatabridge.agolwriter.AgolTransactionFailedException
+     * @throws esride.opendatabridge.agolwriter.AgolPublishBatchPartlyFailedException
      */
-    void deleteItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException;
+    void deleteItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException;
 
     /**
      * Delete ArcgGIS Online items
      * @param itemIds as comma-separated list
      * @throws java.io.IOException
-     * @throws esride.opendatabridge.agolwriter.AgolTransactionFailedException
+     * @throws esride.opendatabridge.agolwriter.AgolPublishBatchPartlyFailedException
      */
-    void deleteItems(String itemIds) throws IOException, AgolTransactionFailedException;
+    void deleteItems(String itemIds) throws AgolPublishBatchPartlyFailedException;
 
     /**
      * Wrapper: Create ArcGIS Online Item from HashMap

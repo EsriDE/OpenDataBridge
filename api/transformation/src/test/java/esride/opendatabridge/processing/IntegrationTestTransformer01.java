@@ -1,10 +1,7 @@
 package esride.opendatabridge.processing;
 
-import esride.opendatabridge.agolwriter.AgolItemInvalidException;
-import esride.opendatabridge.agolwriter.AgolTransactionFailedException;
-import esride.opendatabridge.agolwriter.IAgolService;
+import esride.opendatabridge.agolwriter.*;
 
-import esride.opendatabridge.agolwriter.OwnerType;
 import esride.opendatabridge.application.StartParameter;
 import esride.opendatabridge.application.StartParameterException;
 import esride.opendatabridge.item.AgolItem;
@@ -185,7 +182,7 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
             Assert.assertTrue(agolItemMap.size() == 0);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
-        } catch (AgolTransactionFailedException e) {
+        } catch (AgolPublishBatchPartlyFailedException e) {
             Assert.fail(e.getMessage());
         }
     }

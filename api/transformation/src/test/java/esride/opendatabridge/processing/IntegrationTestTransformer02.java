@@ -32,7 +32,7 @@ public class IntegrationTestTransformer02 extends AbstractJUnit4SpringContextTes
     @Autowired
     private IAgolService agolService;
 
-    //@Test
+    @Test
     public void testInsertKml(){
         StartParameter param = null;
         String[] paramArray = new String[5];
@@ -61,7 +61,7 @@ public class IntegrationTestTransformer02 extends AbstractJUnit4SpringContextTes
         }
     }
 
-    @Test
+    //@Test
     public void testInsertBremen(){
         StartParameter param = null;
         String[] paramArray = new String[5];
