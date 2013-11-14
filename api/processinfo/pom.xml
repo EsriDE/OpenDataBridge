@@ -3,7 +3,7 @@
     <parent>
         <groupId>esride.opendatabridge</groupId>
         <artifactId>api</artifactId>
-        <version>1.2</version>
+        <version>1.2.2</version>
     </parent>
     <artifactId>processinfo</artifactId>
     <packaging>jar</packaging>
