@@ -124,29 +124,29 @@
     </util:map>
 
     <util:map id="licenseMap" key-type="java.lang.String" value-type="java.lang.String">
-        <entry key="dl-de-by-1.0" value="Datenlizenz Deutschland Namensnennung"/>
-        <entry key="official-work" value="Amtliches Werk, lizenzfrei nach §5 UrhG"/>
-        <entry key="geonutzv-de-2013-03-19" value="Nutzungsbestimmungen für die Bereitstellung von Geodaten des Bundes"/>
-        <entry key="cc-by" value="Creative Commons Namensnennung (CC-BY)"/>
-        <entry key="cc-zero" value="Creative Commons Zero"/>
-        <entry key="cc-by-sa" value="Creative Commons Attribution Weitergabe unter gleichen Bedingungen (CC-BY-SA)"/>
-        <entry key="odc-odbl" value="Open Data Commons Open Database License (ODbL)"/>
-        <entry key="odc-by" value="Open Data Commons Namensnennung"/>
-        <entry key="odc-pddl" value="Open Data Commons Public Domain Dedication and Licence (PDDL)"/>
+        <entry key="dl-de-by-1.0" value="&lt;a href=&quot;http://www.daten-deutschland.de/bibliothek/Datenlizenz_Deutschland/dl-de-by-1.0&quot; target=&quot;licensewin&quot;&gt;Datenlizenz Deutschland Namensnennung&lt;&#47;a&gt;"/>
+        <entry key="official-work" value="&lt;a href=&quot;http://www.gesetze-im-internet.de/urhg/__5.html&quot; target=&quot;licensewin&quot;&gt;Amtliches Werk, lizenzfrei nach §5 UrhG&lt;&#47;a&gt;"/>
+        <entry key="geonutzv-de-2013-03-19" value="&lt;a href=&quot;http://www.geodatenzentrum.de/docpdf/geonutzv.pdf&quot; target=&quot;licensewin&quot;&gt;Nutzungsbestimmungen für die Bereitstellung von Geodaten des Bundes;&#47;a&gt;"/>
+        <entry key="cc-by" value="&lt;a href=&quot;http://www.opendefinition.org/licenses/cc-by&quot; target=&quot;licensewin&quot;&gt;Creative Commons Namensnennung (CC-BY);&#47;a&gt;"/>
+        <entry key="cc-zero" value="&lt;a href=&quot;http://www.opendefinition.org/licenses/cc-zero&quot; target=&quot;licensewin&quot;&gt;Creative Commons Zero;&#47;a&gt;"/>
+        <entry key="cc-by-sa" value="&lt;a href=&quot;http://www.opendefinition.org/licenses/cc-by-sa&quot; target=&quot;licensewin&quot;&gt;Creative Commons Attribution Weitergabe unter gleichen Bedingungen (CC-BY-SA);&#47;a&gt;"/>
+        <entry key="odc-odbl" value="&lt;a href=&quot;http://www.opendefinition.org/licenses/odc-odbl&quot; target=&quot;licensewin&quot;&gt;Open Data Commons Open Database License (ODbL);&#47;a&gt;"/>
+        <entry key="odc-by" value="&lt;a href=&quot;http://www.opendefinition.org/licenses/odc-by&quot; target=&quot;licensewin&quot;&gt;Open Data Commons Namensnennung;&#47;a&gt;"/>
+        <entry key="odc-pddl" value="&lt;a href=&quot;http://www.opendefinition.org/licenses/odc-pddl&quot; target=&quot;licensewin&quot;&gt;Open Data Commons Public Domain Dedication and Licence (PDDL);&#47;a&gt;"/>
         <entry key="other-open" value="Andere freie Lizenz"/>
-        <entry key="cc-nc" value="Creative Commons Nicht-Kommerziell (CC-NC)"/>
-        <entry key="cc-by-nd" value="Creative Commons Keine Bearbeitung (CC-BY-ND)"/>
-        <entry key="dl-de-by-nc-1.0" value="Datenlizenz Deutschland Namensnennung nicht-kommerziell"/>
-        <entry key="geolizenz-i-a" value="Geolizenz Ia Namensnennung"/>
-        <entry key="geolizenz-closed" value="eingeschränkte Geolizenz"/>
-        <entry key="apache" value="Apache Lizenz"/>
+        <entry key="cc-nc" value="&lt;a href=&quot;http://creativecommons.org/licenses/by-nc/2.0/&quot; target=&quot;licensewin&quot;&gt;Creative Commons Nicht-Kommerziell (CC-NC);&#47;a&gt;"/>
+        <entry key="cc-by-nd" value="&lt;a href=&quot;http://creativecommons.org/licenses/by-nd/3.0/&quot; target=&quot;licensewin&quot;&gt;Creative Commons Keine Bearbeitung (CC-BY-ND);&#47;a&gt;"/>
+        <entry key="dl-de-by-nc-1.0" value="&lt;a href=&quot;http://www.daten-deutschland.de/bibliothek/Datenlizenz_Deutschland/dl-de-by-nc-1.0&quot; target=&quot;licensewin&quot;&gt;Datenlizenz Deutschland Namensnennung nicht-kommerziell;&#47;a&gt;"/>
+        <entry key="geolizenz-i-a" value="&lt;a href=&quot;http://www.geolizenz.org/modules/geolizenz/docs/1.2/GeoLizenz_V1-2_Ia_kommerziell_Weiterverarbeitung_oeffentliche_Netzwerke_120705_DE.pdf&quot; target=&quot;licensewin&quot;&gt;Geolizenz Ia Namensnennung;&#47;a&gt;"/>
+        <entry key="geolizenz-closed" value="&lt;a href=&quot;http://www.geolizenz.org/index/lizenzen.php&quot; target=&quot;licensewin&quot;&gt;eingeschränkte Geolizenz;&#47;a&gt;"/>
+        <entry key="apache" value="&lt;a href=&quot;http://www.apache.org/licenses&quot; target=&quot;licensewin&quot;&gt;Apache Lizenz;&#47;a&gt;"/>
         <entry key="app_commercial" value="Andere kommerzielle Lizenz"/>
         <entry key="app_freeware" value="Andere kostenfreie Lizenz"/>
         <entry key="app_opensource" value="Andere Open Source Lizenz"/>
-        <entry key="bsd-license" value="BSD Lizenz"/>
-        <entry key="gfdl" value="GNU Free Documentation License"/>
-        <entry key="gpl-3.0" value="GNU General Public License version 3.0 (GPLv3)"/>
-        <entry key="mozilla" value="Mozilla Public License 1.0 (MPL)"/>
+        <entry key="bsd-license" value="&lt;a href=&quot;http://www.opensource.org/licenses/bsd-license.php&quot; target=&quot;licensewin&quot;&gt;BSD Lizenz;&#47;a&gt;"/>
+        <entry key="gfdl" value="&lt;a href=&quot;http://www.opendefinition.org/licenses/gfdl&quot; target=&quot;licensewin&quot;&gt;GNU Free Documentation License;&#47;a&gt;"/>
+        <entry key="gpl-3.0" value="&lt;a href=&quot;http://www.opensource.org/licenses/gpl-3.0.html&quot; target=&quot;licensewin&quot;&gt;GNU General Public License version 3.0 (GPLv3);&#47;a&gt;"/>
+        <entry key="mozilla" value="&lt;a href=&quot;http://www.mozilla.org/MPL&quot; target=&quot;licensewin&quot;&gt;Mozilla Public License 1.0 (MPL);&#47;a&gt;"/>
         <entry key="other-closed" value="Andere eingeschränkte Lizenz"/>
     </util:map>
 
