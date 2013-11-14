@@ -156,12 +156,14 @@ public class Transformer {
             if(deleteStrategy && deleteList.size() > 0){
                 agolService.deleteItems(deleteList);
             }
-        } catch (AgolTransactionFailedException e) {
-            sLogger.warn("Some transactions failed. See Logfile for more details");
-
-        } catch (IOException e) {
-            sLogger.error("Exception during ArcGIS Online Transaction", e);
-            throw new TransformerException("Exception during ArcGIS Online Transaction", e);
+        } catch (AgolPublishBatchPartlyFailedException e) {
+            List<String> failureList = e.getFailureList();
+            if(failureList != null && failureList.size() > 0){
+                sLogger.warn("Some transactions failed.");
+                for(int i=0; i<failureList.size(); i++){
+                    sLogger.warn(failureList.get(i));
+                }
+            }
         }
 
 

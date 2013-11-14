@@ -389,10 +389,9 @@ public class AgolService implements IAgolService {
      * Add a list of items and share publically
      * @param agolItems
      * @return Comma-separated list of added itemIDs
-     * @throws AgolTransactionFailedException
-     * @throws IOException
+     * @throws AgolPublishBatchPartlyFailedException
      */
-    public void addItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException {
+    public void addItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException {
         addItems(agolItems, AccessType.PUBLIC);
     }
     /**
@@ -400,10 +399,9 @@ public class AgolService implements IAgolService {
      * @param agolItems
      * @param accessType
      * @return Comma-separated list of added itemIDs
-     * @throws AgolTransactionFailedException
-     * @throws IOException
+     * @throws AgolPublishBatchPartlyFailedException
      */
-    public void addItems(List<AgolItem> agolItems, AccessType accessType) throws IOException, AgolTransactionFailedException {
+    public void addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolPublishBatchPartlyFailedException {
         addItems(agolItems, accessType, "");
     }
     /**
@@ -412,42 +410,28 @@ public class AgolService implements IAgolService {
      * @param accessType
      * @param groupIds: Comma-separated list of groupIDs the items shall be shared with
      * @return Comma-separated list of added itemIDs
-     * @throws AgolTransactionFailedException
-     * @throws IOException
+     * @throws AgolPublishBatchPartlyFailedException
      */
-    public void addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException {
-        //String itemIds = "";
-        String errorMessages = "";
+    public void addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolPublishBatchPartlyFailedException {
+
+        AgolPublishBatchPartlyFailedException exception = null;
         for (AgolItem agolItem : agolItems) {
             try {
-                /*if (!itemIds.isEmpty() && !itemIds.endsWith(",")) {
-                    itemIds += ",";
-                } */
-                //First add the item
-                //itemIds += addItem(agolItem);
+
                 String newItemId = addItem(agolItem);
                 if (newItemId !=null && !accessType.equals(AccessType.PRIVATE)) {
                     shareItems(newItemId, accessType, groupIds);
                 }
-            } catch (AgolTransactionFailedException e) {
-                if (!errorMessages.isEmpty() && !errorMessages.endsWith("\n")) {
-                    errorMessages += "\n";
+            } catch (Exception e) {
+                if(exception == null){
+                    exception = new AgolPublishBatchPartlyFailedException("Add Items partly failed");
                 }
-                errorMessages += e.getMessage();
+                exception.addFailureItem(e.getMessage());
             }
         }
-        /*if (itemIds!=null && !accessType.equals(AccessType.PRIVATE)) {
-            try {
-                shareItems(itemIds, accessType, groupIds);
-            } catch (AgolTransactionFailedException e) {
-                if (!errorMessages.isEmpty() && !errorMessages.endsWith("\n")) {
-                    errorMessages += "\n";
-                }
-                errorMessages += e.getMessage();
-            }
-        }   */
-        if (!errorMessages.isEmpty()) {
-            throw new AgolTransactionFailedException(errorMessages);
+
+        if (exception != null) {
+            throw exception;
         }
     }
     /**
@@ -560,10 +544,22 @@ public class AgolService implements IAgolService {
      * Update a list of items, don't touch the Share settings
      * @param agolItems
      */
-    public void updateItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException {
-        for (AgolItem agolItem : agolItems) {
-            updateItem(agolItem);
-        }
+    public void updateItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException {
+         AgolPublishBatchPartlyFailedException exception = null;
+         for (AgolItem agolItem : agolItems) {
+            try {
+                 updateItem(agolItem);
+            } catch (Exception e) {
+                if(exception == null){
+                    exception = new AgolPublishBatchPartlyFailedException("Add Items partly failed");
+                }
+                exception.addFailureItem(e.getMessage());
+            }
+         }
+
+         if (exception != null) {
+            throw exception;
+         }
     }
     /**
      * Update a list of items and adjust the Share settings for a selectable access type
@@ -581,28 +577,31 @@ public class AgolService implements IAgolService {
      * @param accessType
      * @param groupIds
      * @throws IOException
-     * @throws AgolTransactionFailedException
+     * @throws AgolPublishBatchPartlyFailedException
      */
-    public void updateItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException {
-        //updateItems(agolItems);
+    public void updateItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolPublishBatchPartlyFailedException {
+        AgolPublishBatchPartlyFailedException exception = null;
         for (AgolItem agolItem : agolItems) {
-            updateItem(agolItem);
-            String agolItemId = agolItem.getId();
+            try {
+                updateItem(agolItem);
+                String agolItemId = agolItem.getId();
 
-            //ToDo: maybe unshare and share en-block and not for every id
-            unshareItems(agolItemId, getUserGroupIds());
-            shareItems(agolItemId, accessType, groupIds);
-        }
-
-        /*String itemIds = "";
-        for (AgolItem agolItem : agolItems) {
-            if (!itemIds.isEmpty()) {
-                itemIds += ",";
+                //ToDo: maybe unshare and share en-block and not for every id
+                unshareItems(agolItemId, getUserGroupIds());
+                shareItems(agolItemId, accessType, groupIds);
+            } catch (Exception e) {
+                if(exception == null){
+                    exception = new AgolPublishBatchPartlyFailedException("Add Items partly failed");
+                }
+                exception.addFailureItem(e.getMessage());
             }
-            itemIds += agolItem.getId();
         }
-        unshareItems(itemIds, getUserGroupIds());
-        shareItems(itemIds, accessType, groupIds);*/
+
+        if (exception != null) {
+            throw exception;
+        }
+
+
     }
     /**
      * Update a specific item
@@ -641,7 +640,7 @@ public class AgolService implements IAgolService {
      * @throws IOException
      * @throws AgolTransactionFailedException
      */
-    public void deleteItems(List<AgolItem> agolItems) throws IOException, AgolTransactionFailedException {
+    public void deleteItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException {
         String itemIds = "";
 
         for (AgolItem agolItem : agolItems) {
@@ -658,17 +657,21 @@ public class AgolService implements IAgolService {
      * @throws IOException
      * @throws AgolTransactionFailedException
      */
-    public void deleteItems(String itemIds) throws IOException, AgolTransactionFailedException {
+    public void deleteItems(String itemIds) throws AgolPublishBatchPartlyFailedException {
         String deleteItemsUrl = _userContentUrl + "/deleteItems";
-        HashMap<String, String> agolAttributes = getStandardAgolAttributes();
-        agolAttributes.put("items", itemIds);
-        InputStream entities = _httpRequest.executePostRequest(deleteItemsUrl, agolAttributes, null);
         String successItems = "";
         try {
+            HashMap<String, String> agolAttributes = getStandardAgolAttributes();
+            agolAttributes.put("items", itemIds);
+            InputStream entities = _httpRequest.executePostRequest(deleteItemsUrl, agolAttributes, null);
+
             successItems =  handleResultList(entities);
         }
         catch (Exception e) {
-            throw new AgolTransactionFailedException("Deleting the following items failed: \n" + e.getMessage());
+            AgolPublishBatchPartlyFailedException excption = new AgolPublishBatchPartlyFailedException("There was an error during the delete Items request");
+            excption.addFailureItem(e.getMessage());
+            throw excption;
+
         }
         if (_log.isInfoEnabled()) {
             _log.info("Items \"" + successItems +"\" have been deleted from your ArcGIS Online account.");

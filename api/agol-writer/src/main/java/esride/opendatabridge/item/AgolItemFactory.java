@@ -60,9 +60,12 @@ public class AgolItemFactory {
         _exclusiveTextAgolItemPropertyKeys.add("layerids");
         _exclusiveTextAgolItemPropertyKeys.add("layertitles");
 
+        _exclusiveTextAgolItemPropertyKeys.add("copyright");
+        _exclusiveTextAgolItemPropertyKeys.add("legendURL");
+
         // properties that come in from the catalogues, that go into the JSON "text" field, but also match Agol fields
         _textAgolItemPropertyKeys = new ArrayList<String>();
-        _textAgolItemPropertyKeys.add("copyright");
+        //_textAgolItemPropertyKeys.add("copyright");
         _textAgolItemPropertyKeys.add("format");
 //        _textAgolItemPropertyKeys.add("mapUrl");
         _textAgolItemPropertyKeys.add("spatialReferences");
