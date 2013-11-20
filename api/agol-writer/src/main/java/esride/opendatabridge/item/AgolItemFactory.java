@@ -217,23 +217,26 @@ public class AgolItemFactory {
         Iterator textAgolItemPropertiesIterator = textAgolItemProperties.entrySet().iterator();
         while (textAgolItemPropertiesIterator.hasNext()) {
             Map.Entry textProperty = (Map.Entry) textAgolItemPropertiesIterator.next();
+
+            String escapedPropertyValue = textProperty.getValue().toString().replace("\"", "\\\"");
+
             if (textProperty.getKey().equals("serviceversion")) {
-                jsonText += "\"version\":\"" + textProperty.getValue() + "\",";
+                jsonText += "\"version\":\"" + escapedPropertyValue + "\",";
             }
             else if (textProperty.getKey().equals("maxheight")) {
-                jsonText += "\"maxHeight\":\"" + textProperty.getValue() + "\",";
+                jsonText += "\"maxHeight\":\"" + escapedPropertyValue + "\",";
             }
             else if (textProperty.getKey().equals("maxwidth")) {
-                jsonText += "\"maxWidth\":\"" + textProperty.getValue() + "\",";
+                jsonText += "\"maxWidth\":\"" + escapedPropertyValue + "\",";
             }
             else if (textProperty.getKey().equals("maxwidth")) {
-                jsonText += "\"maxWidth\":\"" + textProperty.getValue() + "\",";
+                jsonText += "\"maxWidth\":\"" + escapedPropertyValue + "\",";
             }
             else if (textProperty.getKey().equals("title")) {
-                jsonText += "\"title\":\"" + textProperty.getValue() + "\",";
+                jsonText += "\"title\":\"" + escapedPropertyValue + "\",";
             }
             else if (textProperty.getKey().equals("url")) {
-                String url = textProperty.getValue().toString();
+                String url = escapedPropertyValue;
                 jsonText += "\"url\":\"" + url + "\",";
                 if (!url.endsWith("?")) {
                     url = url + "?";
@@ -241,19 +244,19 @@ public class AgolItemFactory {
                 jsonText += "\"mapUrl\":\"" + url + "\",";
             }
             else if (textProperty.getKey().equals("copyright")) {
-                jsonText += "\"copyright\":\"" + textProperty.getValue() + "\",";
+                jsonText += "\"copyright\":\"" + escapedPropertyValue + "\",";
             }
             else if (textProperty.getKey().equals("format")) {
-                jsonText += "\"format\":\"" + textProperty.getValue() + "\",";
+                jsonText += "\"format\":\"" + escapedPropertyValue+ "\",";
             }
             else if (textProperty.getKey().equals("spatialReferences")) {
-                jsonText += "\"spatialReferences\":[" + textProperty.getValue() + "],";
+                jsonText += "\"spatialReferences\":[" + escapedPropertyValue + "],";
             }
             else if (textProperty.getKey().equals("layerids")) {
-                layerids = textProperty.getValue().toString();
+                layerids = escapedPropertyValue;
             }
             else if (textProperty.getKey().equals("layertitles")) {
-                layertitles = textProperty.getValue().toString();
+                layertitles = escapedPropertyValue;
             }
         }
 
