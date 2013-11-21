@@ -199,6 +199,12 @@ public class AgolItemFactory {
         }
 
         if (agolItemPropertiesUpdated.get("type").equals("WMS")) {
+            if(agolItemPropertiesUpdated.get("url") != null){
+                String url = agolItemPropertiesUpdated.get("url").toString();
+                if(url.charAt(url.length() -1) == '?'){
+                    agolItemPropertiesUpdated.put("url", url.substring(0, url.length() -1));
+                }
+            }
             agolItemPropertiesUpdated.put("text", createTextAgolItemProperty(textAgolItemProperties));
         }
         return agolItemPropertiesUpdated;
@@ -238,10 +244,16 @@ public class AgolItemFactory {
             else if (textProperty.getKey().equals("url")) {
                 String url = escapedPropertyValue;
                 jsonText += "\"url\":\"" + url + "\",";
-                if (!url.endsWith("?")) {
+                /*if (!url.endsWith("?")) {
                     url = url + "?";
+                } */
+                String mapUrl;
+                if(!url.contains("?")){
+                    mapUrl = url + "?";
+                }else{
+                    mapUrl = url;
                 }
-                jsonText += "\"mapUrl\":\"" + url + "\",";
+                jsonText += "\"mapUrl\":\"" + mapUrl + "\",";
             }
             else if (textProperty.getKey().equals("copyright")) {
                 jsonText += "\"copyright\":\"" + escapedPropertyValue + "\",";
