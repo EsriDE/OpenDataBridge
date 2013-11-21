@@ -32,14 +32,14 @@ public class IntegrationTestTransformer02 extends AbstractJUnit4SpringContextTes
     @Autowired
     private IAgolService agolService;
 
-    //@Test
+    @Test
     public void testRequestFiles(){
         StartParameter param = null;
         String[] paramArray = new String[5];
         paramArray[0] = "-pid=Test01";
         paramArray[1] = "-readerid=ckan";
         paramArray[2] = "-searchstring=";
-        paramArray[3] = "-accesstype=PRIVATE";
+        paramArray[3] = "-accesstype=PUBLIC";
         paramArray[4] = "-ownertype=USER";
         try {
             param = new StartParameter(paramArray);
@@ -61,7 +61,7 @@ public class IntegrationTestTransformer02 extends AbstractJUnit4SpringContextTes
         }
     }
 
-    @Test
+    //@Test
     public void testInsertKml(){
         StartParameter param = null;
         String[] paramArray = new String[5];

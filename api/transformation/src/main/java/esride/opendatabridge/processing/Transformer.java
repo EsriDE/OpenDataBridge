@@ -174,24 +174,27 @@ public class Transformer {
 
                 //try is ? or without ?
                 String url1 = item.getResourceUrl();
-                String url2;
-                if(url1.charAt(url1.length() -1) == '?'){
-                    url2 =  url1.substring(0, url1.length() -1);
-                }else{
-                    url2 = url1;
-                }
+                if(url1 != null && url1.trim().length() > 0){
+                    String url2;
+                    sLogger.info("Examine URL:" + url1);
+                    if(url1.length() > 1 && url1.charAt(url1.length() -1) == '?'){
+                        url2 =  url1.substring(0, url1.length() -1);
+                    }else{
+                        url2 = url1;
+                    }
 
 
-                if(itemContainer.containsKey(url1)){
-                    elem = itemContainer.get(url1);
-                } else if(itemContainer.containsKey(url2)){
-                    elem = itemContainer.get(url2);
+                    if(itemContainer.containsKey(url1)){
+                        elem = itemContainer.get(url1);
+                    } else if(itemContainer.containsKey(url2)){
+                        elem = itemContainer.get(url2);
+                    }
+                    else{
+                        elem = new ItemContainer();
+                        itemContainer.put(url2, elem);
+                    }
+                    elem.addCatalogItem(item);
                 }
-                else{
-                    elem = new ItemContainer();
-                    itemContainer.put(url2, elem);
-                }
-                elem.addCatalogItem(item);                                                
                 
             }
         }

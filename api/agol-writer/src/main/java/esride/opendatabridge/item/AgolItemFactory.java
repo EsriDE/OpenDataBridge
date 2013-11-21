@@ -201,7 +201,7 @@ public class AgolItemFactory {
         if (agolItemPropertiesUpdated.get("type").equals("WMS")) {
             if(agolItemPropertiesUpdated.get("url") != null){
                 String url = agolItemPropertiesUpdated.get("url").toString();
-                if(url.charAt(url.length() -1) == '?'){
+                if(url.length() > 1 && url.charAt(url.length() -1) == '?'){
                     agolItemPropertiesUpdated.put("url", url.substring(0, url.length() -1));
                 }
             }

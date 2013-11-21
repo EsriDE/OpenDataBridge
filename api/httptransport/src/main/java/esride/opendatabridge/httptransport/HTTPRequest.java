@@ -36,7 +36,7 @@ public class HTTPRequest implements IHTTPRequest{
 
     public HTTPRequest() {
         client = new SystemDefaultHttpClient();
-        client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 20000);
+        client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 5000);
         client.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 5000);
     }
 
