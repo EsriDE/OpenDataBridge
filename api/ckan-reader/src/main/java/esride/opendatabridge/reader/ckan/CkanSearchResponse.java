@@ -78,7 +78,10 @@ public class CkanSearchResponse {
                     for(int j=0; j<resourceTypeNodes.getLength(); j++){
                         String resourceType = resourceTypeNodes.item(j).getTextContent();
                         if(supportedResourceTypes.contains(resourceType)){
-                            resourceTypeList.add(resourceType);
+                            if(!resourceTypeList.contains(resourceType)){
+                                resourceTypeList.add(resourceType);
+                            }
+
                         }
                     }
 

@@ -73,7 +73,9 @@ public class ItemContainer {
             List<AgolItem> agolRemoveList = new ArrayList<AgolItem>();
             for (TransformedItem transItem : catalogItemList) {
                 String catalogTitle = transItem.getItemElements().get("agol.title");
-
+                if(catalogTitle.contains("\n")){
+                    catalogTitle = catalogTitle.replace("\n", " ");
+                }
                 for(AgolItem agolItem : agolItemList){
                     String agolTitle = agolItem.getAttributes().get("title");
                     if(agolTitle.equalsIgnoreCase(catalogTitle)){
