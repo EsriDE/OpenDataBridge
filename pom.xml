@@ -4,7 +4,7 @@
     <artifactId>opendatabridge</artifactId>
     <packaging>pom</packaging>
     <name>Open Data Bridge</name>    
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <description>This is the aggregator POM this project</description>
     <!-- core developers ======================================================= -->
     <developers>
