@@ -16,7 +16,7 @@
     <!-- Just for HTTP Logging
     <logger name="org.apache.http">
         <level value="DEBUG"/>
-    </logger>-->
+    </logger>    -->
 
     <root>
         <level value="WARN"/>
