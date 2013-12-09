@@ -40,12 +40,14 @@
     <util:map id="capabilitiesMap" key-type="java.lang.String" value-type="java.lang.String">
         <entry key="view" value="ogc"/>
         <entry key="wms" value="ogc"/>
+        <entry key="wms (ogc)" value="ogc"/>
         <entry key="kml" value="kml"/>
     </util:map>
 
     <util:map id="resourceMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IResource">
         <entry key="view" value-ref="capabilitiesRequest"/>
         <entry key="wms" value-ref="capabilitiesRequest"/>
+        <entry key="wms (ogc)" value-ref="capabilitiesRequest"/>
         <entry key="kml" value-ref="kmlRequest"/>
     </util:map>
     <!-- +++++++++++++++++++++++++++-->
@@ -85,6 +87,7 @@
 
     <util:list value-type="java.lang.String" id="supportedTypeList">
         <value>WMS</value>
+        <value>WMS (OGC)</value>
         <value>KML</value>
         <value>CSV</value>
         <value>csv</value>
