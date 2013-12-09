@@ -35,4 +35,19 @@
         <entry key="odHashMap" value="${test.service.odHashMap}" />
     </util:map>
 
+
+    <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String" id="successParamMap">
+        <entry key="username" value="${generateTokenTest.username.correct}" />
+        <entry key="password" value="${generateTokenTest.password.correct}" />
+        <entry key="referer" value="${generateTokenTest.referer.correct}" />
+        <entry key="url" value="${generateTokenTest.url.correct}" />
+    </util:map>
+
+    <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String" id="wrongParamMap">
+        <entry key="username" value="${generateTokenTest.username.wrong}" />
+        <entry key="password" value="${generateTokenTest.password.wrong}" />
+        <entry key="referer" value="${generateTokenTest.referer.wrong}" />
+        <entry key="url" value="${generateTokenTest.url.wrong}" />
+    </util:map>
+
 </beans>
