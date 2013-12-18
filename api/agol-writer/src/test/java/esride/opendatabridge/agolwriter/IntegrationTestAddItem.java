@@ -1,33 +1,33 @@
 package esride.opendatabridge.agolwriter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import esride.opendatabridge.agolclient.AgolAddItemRequest;
+import esride.opendatabridge.agolclient.AgolAddItemResponse;
 import esride.opendatabridge.agolclient.AgolGenerateTokenRequest;
 import esride.opendatabridge.agolclient.AgolGenerateTokenResponse;
 import esride.opendatabridge.httptransport.HTTPRequest;
-
+import esride.opendatabridge.item.AgolItem;
+import esride.opendatabridge.item.AgolItemFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-
-
-
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
  * User: sma
- * Date: 04.12.13
- * Time: 19:23
+ * Date: 13.12.13
+ * Time: 17:59
  * To change this template use File | Settings | File Templates.
  */
-
 @ContextConfiguration(locations = {"classpath:spring-config.xml"})
-public class IntegrationTestGenerateToken extends AbstractJUnit4SpringContextTests {
+public class IntegrationTestAddItem extends AbstractJUnit4SpringContextTests {
 
     @Autowired
     private HTTPRequest httpRequest;
@@ -39,44 +39,41 @@ public class IntegrationTestGenerateToken extends AbstractJUnit4SpringContextTes
     private Map<String,String> successParamMap;
 
     @Resource
-    private Map<String,String> wrongParamMap;
+    private HashMap<String,String> jsonMap;
 
-    @Test
-    public void testMissingUsernameReq(){
-        try{
-            AgolGenerateTokenRequest req = new AgolGenerateTokenRequest(null, "pwd", "https://www.esri.de", "https://www.esri.com");
-            req.excReqWithJsonResp(httpRequest, objectMapper);
-            Assert.fail("Should throw Illegal Argument Exception");
-        }catch(IllegalArgumentException ex){
-            Assert.assertNotNull(ex);
-        } catch (IOException e) {
-            Assert.fail("Should throw Illegal Argument Exception");
-        }
-    }
+    @Resource
+    private HashMap<String, String> urlMap;
+
+    @Autowired
+    private AgolItemFactory agolItemFactory;
 
     @Test
     public void testSuccessReq(){
         try{
             AgolGenerateTokenRequest req = new AgolGenerateTokenRequest(successParamMap.get("username"), successParamMap.get("password"), successParamMap.get("referer"), successParamMap.get("url"));
             AgolGenerateTokenResponse resp =  req.excReqWithJsonResp(httpRequest, objectMapper);
-            Assert.assertNotNull(resp.getToken());
-        }catch(IllegalArgumentException ex){
-            Assert.fail(ex.getMessage());
-        } catch (IOException ex) {
-            Assert.fail(ex.getMessage());
-        }
-    }
+            String token = resp.getToken();
+            Assert.assertNotNull(token);
 
-    @Test
-    public void testWrongCredentialsReq(){
-        try{
-            AgolGenerateTokenRequest req = new AgolGenerateTokenRequest(wrongParamMap.get("username"), wrongParamMap.get("password"), wrongParamMap.get("referer"), wrongParamMap.get("url"));
-            req.excReqWithJsonResp(httpRequest, objectMapper);
-            Assert.fail("Should throw IOException");
+            try {
+                AgolItem testItem1 = agolItemFactory.createAgolItem(jsonMap.get("test01"));
+                AgolAddItemRequest request = new AgolAddItemRequest(urlMap.get("addItemUrl"), token, testItem1);
+                AgolAddItemResponse response = request.excReqWithJsonResp(httpRequest, objectMapper);
+                Assert.assertTrue(response.isSuccess());
+                response.getFolderId();
+                String id = response.getId();
+
+                //delete the item
+            } catch (AgolItemInvalidException e) {
+                Assert.fail(e.getMessage());
+            }
+
+
+
         }catch(IllegalArgumentException ex){
             Assert.fail(ex.getMessage());
         } catch (IOException ex) {
-            Assert.assertNotNull(ex);
+            Assert.fail(ex.getMessage());
         }
     }
 }

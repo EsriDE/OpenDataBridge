@@ -50,4 +50,8 @@
         <entry key="url" value="${generateTokenTest.url.wrong}" />
     </util:map>
 
+    <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String" id="urlMap">
+        <entry key="addItemUrl" value="${addItemTest.url}" />
+    </util:map>
+
 </beans>

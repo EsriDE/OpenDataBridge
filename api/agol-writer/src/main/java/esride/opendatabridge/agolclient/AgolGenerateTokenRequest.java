@@ -22,27 +22,32 @@ public class AgolGenerateTokenRequest {
 
     private static Logger sLogger = Logger.getLogger(AgolGenerateTokenRequest.class);
 
-    private static final String usernameParam = "username";
-    private static final String passwdParam = "password";
-    private static final String refererParam = "referer";
-    private static final String respFormatParam = "f";
 
+
+
+
+
+    private static final String usernameParam = "username";
     private String usernameValue;
+
+    private static final String passwdParam = "password";
     private String passwordValue;
+
+    private static final String refererParam = "referer";
     private String refererValue;
     private static final String refererValueDefault = "http://www.esri.com";
-    private String respFormatValue;
-    private static final String respFormatValueDefault = "json";
+
+    private static final String formatParam = "f";
+    private static final String jsonFormatValueDefault = "json";
 
     private String url;
 
-    public AgolGenerateTokenRequest(String pUsernameValue, String pPasswordValue, String pRefererValue, String pRespFormatValue, String pUrl) {
+    public AgolGenerateTokenRequest(String pUsernameValue, String pPasswordValue, String pRefererValue, String pUrl) {
         if (sLogger.isDebugEnabled()) {
             sLogger.debug("Generate Token Request");
             sLogger.debug(usernameParam + ": " + pUsernameValue);
             sLogger.debug("password-Length: " + pPasswordValue.length());
             sLogger.debug(refererParam + ": " + pRefererValue);
-            sLogger.debug(respFormatParam + ": " + pRefererValue);
             sLogger.debug("URL: " + pUrl);
         }
 
@@ -59,22 +64,17 @@ public class AgolGenerateTokenRequest {
             throw new IllegalArgumentException("missing url for token generation");
         }
         url = pUrl;
-        if(pRespFormatValue == null){
+        if(pRefererValue == null){
             refererValue = refererValueDefault;
         }else{
             refererValue = pRefererValue;
         }
         refererValue = pRefererValue;
-        if(pRespFormatValue == null){
-            respFormatValue = respFormatValueDefault;
-        }else{
-            respFormatValue = pRespFormatValue;
-        }
     }
 
-    public AgolGenerateTokenResponse exceuteRequest(HTTPRequest pHttpRequest, ObjectMapper pObjectMapper) throws IOException {
+    public AgolGenerateTokenResponse excReqWithJsonResp(HTTPRequest pHttpRequest, ObjectMapper pObjectMapper) throws IOException {
         HashMap<String, String> agolAttributes = new HashMap<String, String>();
-        agolAttributes.put(respFormatParam, respFormatValue);
+        agolAttributes.put(formatParam, jsonFormatValueDefault);
         agolAttributes.put(usernameParam, usernameValue);
         agolAttributes.put(passwdParam, passwordValue);
         agolAttributes.put(refererParam, refererValue);
@@ -87,8 +87,7 @@ public class AgolGenerateTokenRequest {
             JsonNode tokenNode = rootNode.get("token");
             if(tokenNode != null){
                 String token = tokenNode.asText();
-                String tokenExpires = rootNode.get("expires").toString();
-                Long tokenExpiresLong = Long.valueOf(tokenExpires);
+                Long tokenExpiresLong = rootNode.get("expires").asLong();
                 Date resultdate = new Date(tokenExpiresLong);
                 if (sLogger.isDebugEnabled()) {
                     sLogger.debug("Generate Token Response");
