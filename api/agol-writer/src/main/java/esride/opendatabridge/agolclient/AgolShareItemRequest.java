@@ -2,7 +2,6 @@ package esride.opendatabridge.agolclient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esride.opendatabridge.agolwriter.AgolTransactionFailedException;
 import esride.opendatabridge.httptransport.HTTPRequest;
 import org.apache.log4j.Logger;
 
@@ -14,6 +13,18 @@ import java.util.Iterator;
 /**
  * Class which implements the /share Request (as item owner and as group admin).
  * See API details for a better parameter understanding here: http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#//02r30000007s000000
+ *
+ * TestCase 1 (act as a publisher, owner of the item)
+ *
+ * test01: move Item A to private, check status, move Item A to public
+ * test02: move Item A to org, check status, move Item A to public
+ * test03: move Item A to group1 (allowed), check status, move Item A to public again
+ * test04: move Item A to groupX (notAllowed), check status, move Item A to public again
+ * test05: move Item A to group1, group2 (allowed), check status, move Item A to public again
+ * test06: move Item A to groupX, groupY (notAllowed), check status, move Item A to public again
+ *
+ *
+ *
  * User: Markus Stecker, con terra GmbH
  * Date: 16.12.13
  * Time: 08:21
@@ -46,7 +57,7 @@ public class AgolShareItemRequest {
             sLogger.debug(tokenParam + ": " + pTokenValue.substring(0,5) + "...");
             sLogger.debug(everyoneParam + ": " + pEveryoneValue);
             sLogger.debug(orgParam + ": " + pOrgValue);
-            sLogger.debug(groupsParam + ": " + pGroupsValue.toString());
+            sLogger.debug(groupsParam + ": " + pGroupsValue);
             sLogger.debug("URL: " + pUrl);
         }
 
@@ -87,15 +98,15 @@ public class AgolShareItemRequest {
 
         InputStream entities = pHttpRequest.executePostRequest(url, agolAttributes, null);
 
-        /*if (entities != null)
+        if (entities != null)
         {
             JsonNode rootNode = pObjectMapper.readTree(entities);
             JsonNode notSharedWithNode = rootNode.withArray("notSharedWith");//.get("notSharedWith");
             if (notSharedWithNode != null) {
-                notSharedWithNode.
+                Iterator<JsonNode> array =  notSharedWithNode.iterator();
             }
 
-
+            /*
 
                 Iterator resultsIterator = resultsNode.iterator();
                 while (resultsIterator.hasNext()) {
@@ -117,8 +128,11 @@ public class AgolShareItemRequest {
             }
         }
         if (!errorItems.isEmpty()) {
-            throw new AgolTransactionFailedException(errorItems);
-        } */
+            //throw new AgolTransactionFailedException(errorItems);
+        }  */
+
+    }
+
         return null;
     }
 }
