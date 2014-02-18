@@ -12,9 +12,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.List;
+
 
 
 /**
@@ -50,13 +50,15 @@ public class UnitTestAgolJsonTransformer extends AbstractJUnit4SpringContextTest
                 Assert.fail(e.getMessage());
             }
 
+            HashMap<String, Document> docMap = new HashMap<String, Document>();
 
-            MetadataSet container1 = new MetadataSet();
+            //MetadataSet container1 = new MetadataSet();
             //container1.setEncodingType("xml");
-            container1.setMetadataType("ogc");
+            //container1.setMetadataType("ogc");
             try {
                 Document doc = builder.parse(capabilitiesStream);
-                container1.setXmlDoc(doc);
+                //container1.setXmlDoc(doc);
+                docMap.put("ogc", doc);
             } catch (SAXException e) {
                 Assert.fail(e.getMessage());
             } catch (IOException e) {
@@ -65,13 +67,14 @@ public class UnitTestAgolJsonTransformer extends AbstractJUnit4SpringContextTest
 
 
             InputStream metadataStream = this.getClass().getResourceAsStream("/test/test01/metadata.xml");
-            MetadataSet container2 = new MetadataSet();
-            container2.setMetadataType("csw");
+            //MetadataSet container2 = new MetadataSet();
+            //container2.setMetadataType("csw");
 
 
             try {
                 Document doc = builder.parse(metadataStream);
-                container2.setXmlDoc(doc);
+                //container2.setXmlDoc(doc);
+                docMap.put("csw", doc);
             } catch (SAXException e) {
                 Assert.fail(e.getMessage());
             } catch (IOException e) {
@@ -80,13 +83,14 @@ public class UnitTestAgolJsonTransformer extends AbstractJUnit4SpringContextTest
 
 
 
-            List<MetadataSet> containerList = new ArrayList<MetadataSet>();
-            containerList.add(container1);
-            containerList.add(container2);
+            //List<MetadataSet> containerList = new ArrayList<MetadataSet>();
+            //containerList.add(container1);
+            //containerList.add(container2);
 
             MetadataResource resource = new MetadataResource();
             resource.setResourceType("WMS");
-            resource.setContainer(containerList);
+            resource.setDocMap(docMap);
+            //resource.setContainer(containerList);
             
             HashMap<String, String> itemMap = transformer.transform2AgolItem(resource,"test01");
 

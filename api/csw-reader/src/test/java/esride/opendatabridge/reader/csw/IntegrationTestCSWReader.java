@@ -1,5 +1,6 @@
 package esride.opendatabridge.reader.csw;
 
+import esride.opendatabridge.reader.MetadataObjectResult;
 import esride.opendatabridge.reader.ReaderException;
 import esride.opendatabridge.reader.TransformedItem;
 import org.junit.Assert;
@@ -39,7 +40,7 @@ public class IntegrationTestCSWReader extends AbstractJUnit4SpringContextTests {
         }
 
         try {
-            List<TransformedItem> items = reader.getItemsFromCatalog();
+            MetadataObjectResult items = reader.getItemsFromCatalog(100);
             //int size = items.size();
             //Assert.assertEquals(size, 26);
         } catch (ReaderException e) {

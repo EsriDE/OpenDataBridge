@@ -1,6 +1,8 @@
 package esride.opendatabridge.application;
 
+import esride.opendatabridge.agolreader.IAgolItemReader;
 import esride.opendatabridge.agolwriter.IAgolService;
+import esride.opendatabridge.pipeline.controller.PipelineController;
 import esride.opendatabridge.processinfo.IProcessInfo;
 import esride.opendatabridge.reader.IReader;
 import esride.opendatabridge.reader.ReaderException;
@@ -23,6 +25,11 @@ public class AppInitializer {
 
     private IAgolService agolService;
 
+    private IAgolItemReader agolItemReader;
+
+    private PipelineController pipelineController;
+
+
     public AppInitializer(StartParameter startParam) throws ReaderException {
 
         //Spring initialisieren
@@ -38,6 +45,11 @@ public class AppInitializer {
 
         //AgolService auslesen
         agolService = context.getBean("agolservice", IAgolService.class);
+
+        //PipelineController auslesen
+        pipelineController = context.getBean("pipelinecontroller", PipelineController.class);
+
+        agolItemReader = context.getBean("agolReader", IAgolItemReader.class);
     }
 
     public IReader getReader() {
@@ -46,5 +58,13 @@ public class AppInitializer {
 
     public IAgolService getAgolService(){
         return agolService;
+    }
+
+    public PipelineController getPipelineController() {
+        return pipelineController;
+    }
+
+    public IAgolItemReader getAgolItemReader() {
+        return agolItemReader;
     }
 }

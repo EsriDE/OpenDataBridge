@@ -3,21 +3,25 @@ package esride.opendatabridge.itemtransform;
 
 
 
+import esride.opendatabridge.itemtransform.elemhandler.IElemHandler;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-
+import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.List;
+
+import java.util.Properties;
 
 /**
- * ToDo: JSON Bearbeitung herausnehmen und nur mit documents arbeiten (Modul umbennen von jsontransform nach agoltransform)
+ *
  * User: sma
  * Date: 02.04.13
  * Time: 14:14
@@ -25,121 +29,65 @@ import java.util.List;
  */
 public class AgolItemTransformer implements IItemTransformer {
     private static Logger sLogger = Logger.getLogger(AgolItemTransformer.class);
-    
-    //private JsonFactory jsonFactory = new JsonFactory();
-    
-    private DocumentBuilderFactory builderFactory;
-    private DocumentBuilder builder;
-    
-    private ItemGenerator mItemElemExtractor;
 
-    public void setItemElemExtractor(ItemGenerator pItemElemExtractor) {
-        mItemElemExtractor = pItemElemExtractor;
+    private Transformer trans;
+
+    private IItemGeneratorConfiguration generatorConfiguration;
+
+    private HashMap<String, IElemHandler> elemHandlerMap;
+
+    public void setGeneratorConfiguration(IItemGeneratorConfiguration generatorConfiguration) {
+        this.generatorConfiguration = generatorConfiguration;
     }
 
-    public AgolItemTransformer() {
+    public void setElemHandlerMap(HashMap<String, IElemHandler> elemHandlerMap) {
+        this.elemHandlerMap = elemHandlerMap;
+    }
 
-        builderFactory = DocumentBuilderFactory.newInstance();
-        builderFactory.setNamespaceAware(false);
-        builderFactory.setIgnoringElementContentWhitespace(false);
-        try {
-            builder = builderFactory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            String message = "AgolItemTransformer could not be initialized. DocumentBuilder failed.";
-            sLogger.error(message, e);
-            throw new ItemTransformationException(message, e);
-        }
+    public AgolItemTransformer() throws TransformerConfigurationException {
+
+        TransformerFactory fac = TransformerFactory.newInstance();
+        trans = fac.newTransformer();
 
     }
 
     public HashMap<String, String> transform2AgolItem(MetadataResource resource, String processId) throws ItemTransformationException, ItemGenerationException {
-        
-        HashMap<String, Document> docMap = new HashMap<String, Document>();
-        List<MetadataSet> container = resource.getContainer();
-        for(int i=0; i<container.size(); i++){
-            //String metadataEncoding = container.get(i).getEncodingType();
-            //Document doc;
-            /*if(metadataEncoding.equals("json")){
-                doc = transformJsonStream2Doc( container.get(i).getInputStream());                
-            }else if(metadataEncoding.equals("xml")){
-                doc = transformXmlStream2Doc(container.get(i).getInputStream());
-            }else{
-                String message = "Wrong metadata encoding type: " + metadataEncoding;
-                sLogger.error(message);
-                throw new ItemTransformationException(message);
-            } */
-            docMap.put(container.get(i).getMetadataType(), container.get(i).getXmlDoc());
-        }
 
-        return mItemElemExtractor.getItemElementsFromDoc(docMap, processId, resource.getResourceType());
+        HashMap<String, String> itemMap = new HashMap<String, String>();
+        Properties properties = generatorConfiguration.getItemGeneratorConfiguration(processId, resource.getResourceType());
+
+        String countString = (String)properties.get("item.count");
+        int count = Integer.parseInt(countString);
+        for(int i=0; i<count; i++){
+            String itemMetadataType = properties.getProperty("item[" + i + "].md.type");
+
+            if(sLogger.isTraceEnabled()){
+                Document doc = resource.getDocMap().get(itemMetadataType);
+                try {
+                    StringWriter write = new StringWriter();
+                    trans.transform(new DOMSource(doc), new StreamResult(write));
+                    sLogger.trace("GetItem from Document: " + write.toString());
+                } catch (TransformerException e) {
+                    sLogger.warn("Could not transform document for logging.");
+                }
+            }
+
+
+            String itemKey = properties.getProperty("item[" + i + "].md.id");
+            String itemHandler = properties.getProperty("item[" + i + "].value.handler");
+
+            if(elemHandlerMap.containsKey(itemHandler)){
+                IElemHandler handler = elemHandlerMap.get(itemHandler);
+                itemMap.put(itemKey, handler.handleElement(properties.getProperty("item[" + i + "].md.value"), resource.getDocMap().get(itemMetadataType)));
+            } else{
+                String lMessage = "Wrong item Type: " + properties.getProperty("item[" + i + "].value.handler");
+                sLogger.error(lMessage);
+                throw new ItemGenerationException(lMessage);
+            }
+
+        }
+        return itemMap;
     }
 
-    /*private Document transformJsonStream2Doc(InputStream jsonInput) throws ItemTransformationException, ItemGenerationException {
 
-        //1. JSON nach XML transformieren
-        ByteArrayOutputStream jsonOutputStream = new ByteArrayOutputStream();
-        //createXmlFromJson(jsonInput, jsonOutputStream);
-        try {
-            JsonParser jsonParser = jsonFactory.createJsonParser(jsonInput);
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = null;
-            node = mapper.readTree(jsonParser);
-
-
-            XmlMapper xmlmapper = new XmlMapper();
-            xmlmapper.writeValue(jsonOutputStream ,node);
-        } catch (IOException e) {
-            String message = "Could not parse JSON Object";
-            sLogger.error(message, e);
-            throw new ItemTransformationException(message, e);
-        }
-
-        //2. XML Input Stream erzeugen und an unten stehende Methode übergeben 
-        ByteArrayInputStream xmlStream = new ByteArrayInputStream(jsonOutputStream.toByteArray());
-        return transformXmlStream2Doc(xmlStream);
-        
-
-    }
-
-    private Document transformXmlStream2Doc(InputStream xmlInput) throws ItemTransformationException, ItemGenerationException {
-        
-        Document document = null;
-        try {            
-            document = builder.parse(xmlInput);
-        } catch (SAXException e) {
-            String message = "Could not build Document";
-            sLogger.error(message, e);
-            throw new ItemTransformationException(message, e);
-        } catch (IOException e) {
-            String message = "Could not build Document";
-            sLogger.error(message, e);
-            throw new ItemTransformationException(message, e);
-        }
-        
-        return document;
-
-       
-        
-    }
-    */
-
-    /**
-    protected void createXmlFromJson(InputStream jsonInput, OutputStream xmlOutput) {
-        //transform JSON to XML
-        try {
-            JsonParser jsonParser = jsonFactory.createJsonParser(jsonInput);
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = null;
-            node = mapper.readTree(jsonParser);
-
-
-            XmlMapper xmlmapper = new XmlMapper();
-            xmlmapper.writeValue(xmlOutput ,node);
-        } catch (IOException e) {
-            String message = "Could not parse JSON Object";
-            sLogger.error(message, e);
-            throw new ItemTransformationException(message, e);
-        }
-    }
-    */
 }

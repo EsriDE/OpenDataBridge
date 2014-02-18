@@ -33,12 +33,9 @@
     <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"
             p:pathInfo="/ckanadapter/"/>
 
-    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
-          p:generatorConfiguration-ref="itemConfig"
-            p:elemHandlerMap-ref="elemMap"/>
-
     <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
-          p:itemElemExtractor-ref="itemGenerator"/>
+          p:generatorConfiguration-ref="itemConfig"
+          p:elemHandlerMap-ref="elemMap"/>
 
     <bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesResource" id="capabilitiesRequest"
           p:request-ref="httpRequest"/>

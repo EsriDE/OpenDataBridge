@@ -11,11 +11,31 @@
 
     <context:property-placeholder location="classpath:IntegrationTest.properties"/>
 
-    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest" p:_objectMapper-ref="objectMapper">
+    <bean class="esride.opendatabridge.agolreader.PrefetchedAgolItemReader"
+          p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest"
+          p:_objectMapper-ref="objectMapper" p:maxPrefetchedAgolItems="10000"
+          p:foreignKeyPrefix="CATALOG" init-method="prefetchItems">
         <constructor-arg type="java.lang.String" value="${test.service.url}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.username}"/>
+    </bean>
+
+    <bean class="esride.opendatabridge.token.AgolTokenService" id="tokenService"
+          p:httpRequest-ref="httpRequest" p:objectMapper-ref="objectMapper">
+        <constructor-arg type="java.lang.String" value="${generateTokenTest.url.correct}"/>
         <constructor-arg type="java.lang.String" value="${test.service.username}"/>
         <constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
         <constructor-arg type="java.lang.String" value="${test.service.referer}"/>
+    </bean>
+
+    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice"
+          p:_AgolItemFactory-ref="agolitemfactory"
+          p:_httpRequest-ref="httpRequest"
+          p:_objectMapper-ref="objectMapper"
+          p:tokenService-ref="tokenService">
+        <constructor-arg type="java.lang.String" value="${test.service.url}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.username}"/>
+        <!--<constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.referer}"/>-->
     </bean>
 
     <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory" p:_objectMapper-ref="objectMapper">
@@ -33,6 +53,28 @@
         <entry key="test02" value="${test.service.jsonItem2}" />
         <entry key="test03" value="${test.service.jsonItem3}" />
         <entry key="odHashMap" value="${test.service.odHashMap}" />
+    </util:map>
+
+
+    <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String" id="successParamMap">
+        <entry key="username" value="${generateTokenTest.username.correct}" />
+        <entry key="password" value="${generateTokenTest.password.correct}" />
+        <entry key="referer" value="${generateTokenTest.referer.correct}" />
+        <entry key="url" value="${generateTokenTest.url.correct}" />
+    </util:map>
+
+    <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String" id="wrongParamMap">
+        <entry key="username" value="${generateTokenTest.username.wrong}" />
+        <entry key="password" value="${generateTokenTest.password.wrong}" />
+        <entry key="referer" value="${generateTokenTest.referer.wrong}" />
+        <entry key="url" value="${generateTokenTest.url.wrong}" />
+    </util:map>
+
+    <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String" id="urlMap">
+        <entry key="addItemUrl" value="${addItemTest.url}" />
+        <entry key="searchItemUrl" value="${searchItemTest.url}" />
+        <entry key="shareItemUrl" value="${shareItemTest.url}" />
+        <entry key="deleteItemUrl" value="${deleteItemTest.url}" />
     </util:map>
 
 </beans>

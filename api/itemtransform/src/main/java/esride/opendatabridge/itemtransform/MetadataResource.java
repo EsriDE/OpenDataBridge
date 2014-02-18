@@ -1,11 +1,14 @@
 package esride.opendatabridge.itemtransform;
 
-import java.util.List;
+import org.w3c.dom.Document;
+
+import java.util.HashMap;
+
 
 /**
- * The class MetadataResource represents a bunch of MetadataSet which are necessary to create an ArcGIS Online
+ * The class MetadataResource represents a bunch of documents which are necessary to create an ArcGIS Online
  * Item. Each MetadataResource has a special resourceType (like 'WMS', 'view', ..). For the AGOL Item generation
- * one or more metadata sets are necessary to extract all information (like the keywords from the iso MetadataSet and from the capabilities
+ * one or more documents are necessary to extract all information (like the keywords from the iso MetadataSet and from the capabilities
  * document the Width and Height information)
  * User: sma
  * Date: 05.04.13
@@ -19,7 +22,11 @@ public class MetadataResource {
      */
     private String resourceType;
 
-    private List<MetadataSet> container;
+    /**
+     * key=csw, ckan or capabilities, the value contains the corresponding document
+     */
+    private HashMap<String, Document> docMap;
+
 
     public String getResourceType() {
         return resourceType;
@@ -29,11 +36,18 @@ public class MetadataResource {
         this.resourceType = resourceType;
     }
 
-    public List<MetadataSet> getContainer() {
-        return container;
+    public HashMap<String, Document> getDocMap() {
+        return docMap;
     }
 
-    public void setContainer(List<MetadataSet> container) {
-        this.container = container;
+    public void setDocMap(HashMap<String, Document> docMap) {
+        this.docMap = docMap;
+    }
+
+    public void addDoc(String key, Document doc){
+        if(docMap == null){
+            docMap = new HashMap<String, Document>();
+        }
+        docMap.put(key, doc);
     }
 }

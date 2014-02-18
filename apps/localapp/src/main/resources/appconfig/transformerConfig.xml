@@ -13,19 +13,52 @@
 
     <!-- +++++++++++++++++++++++++++-->
     <!-- AgolWriter bean components-->
-    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest" p:_objectMapper-ref="objectMapper">
-        <constructor-arg type="java.lang.String" value="${test.service.url}"/>
-        <constructor-arg type="java.lang.String" value="${test.service.username}"/>
-        <constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
-        <constructor-arg type="java.lang.String" value="${test.service.referer}"/>
+    <bean class="esride.opendatabridge.agolreader.PrefetchedAgolItemReader" id="agolReader"
+          p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest"
+          p:agolTokenService-ref="tokenService"
+          p:_objectMapper-ref="objectMapper" p:maxPrefetchedAgolItems="10000"
+          p:foreignKeyPrefix="${agol.foreignkey.prefix}" init-method="prefetchItems">
+        <constructor-arg type="java.lang.String" value="${agol.service.url}"/>
+        <constructor-arg type="java.lang.String" value="${agol.service.username}"/>
+    </bean>
+
+    <bean class="esride.opendatabridge.token.AgolTokenService" id="tokenService"
+          p:httpRequest-ref="httpRequest" p:objectMapper-ref="objectMapper">
+        <constructor-arg type="java.lang.String" value="${agol.service.generateTokenUrl}"/>
+        <constructor-arg type="java.lang.String" value="${agol.service.username}"/>
+        <constructor-arg type="java.lang.String" value="${agol.service.pwd}"/>
+        <constructor-arg type="java.lang.String" value="${agol.service.referer}"/>
+    </bean>
+
+    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice"
+          p:_AgolItemFactory-ref="agolitemfactory"
+          p:_httpRequest-ref="httpRequest"
+          p:_objectMapper-ref="objectMapper"
+          p:tokenService-ref="tokenService">
+        <constructor-arg type="java.lang.String" value="${agol.service.url}"/>
+        <constructor-arg type="java.lang.String" value="${agol.service.username}"/>
     </bean>
 
     <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory" p:_objectMapper-ref="objectMapper">
-        <constructor-arg type="java.lang.Boolean" value="${test.service.propertiesToStrings}"/>
+        <constructor-arg type="java.lang.Boolean" value="${agol.service.propertiesToStrings}"/>
     </bean>
 
     <bean class="com.fasterxml.jackson.databind.ObjectMapper" id="objectMapper" />
     <!-- +++++++++++++++++++++++++++-->
+
+    <bean class="esride.opendatabridge.pipeline.controller.PipelineController" id="pipelinecontroller"
+          p:pipelineList-ref="pipelineList"/>
+
+    <util:list id="pipelineList" value-type="esride.opendatabridge.pipeline.IPipeline">
+        <ref bean="urlChanger"/>
+        <ref bean="foreignKeyChanger"/>
+    </util:list>
+
+    <bean class="esride.opendatabridge.pipeline.changer.ForeignKeyChanger" id="foreignKeyChanger"
+          p:foreignKeyElementName="agol.foreignkey" p:prefix="${agol.foreignkey.prefix}"
+          p:resourceTypeName="agol.type" p:tagsElementName="agol.tags"/>
+    <bean class="esride.opendatabridge.pipeline.changer.UrlChanger" id="urlChanger"
+          p:urlElementName="agol.url"/>
 
     <!-- +++++++++++++++++++++++++++-->
     <!-- Resource (Capabilities, KML) bean components-->
@@ -59,12 +92,11 @@
 
     <!-- +++++++++++++++++++++++++++-->
     <!-- Ckan-Adapter bean components-->
-    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemCkanTransform"
-          p:itemElemExtractor-ref="itemCkanGenerator"/>
 
-    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemCkanGenerator"
+    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemCkanTransform"
           p:generatorConfiguration-ref="itemCkanConfig"
           p:elemHandlerMap-ref="elemMap"/>
+
 
     <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemCkanConfig"
           p:pathInfo="/ckanadapter/"/>
@@ -90,7 +122,6 @@
         <value>WMS (OGC)</value>
         <value>KML</value>
         <value>CSV</value>
-        <value>csv</value>
     </util:list>
     <!-- +++++++++++++++++++++++++++-->
 
@@ -123,13 +154,10 @@
 
     <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemCswConfig"
           p:pathInfo="/cswadapter/"/>
-    
-    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemCswGenerator"
-          p:generatorConfiguration-ref="itemCswConfig"
-          p:elemHandlerMap-ref="elemMap"/>
    
     <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemCswTransform"
-          p:itemElemExtractor-ref="itemCswGenerator"/>    
+          p:generatorConfiguration-ref="itemCswConfig"
+          p:elemHandlerMap-ref="elemMap"/>
    
     <bean class="esride.opendatabridge.reader.csw.CSWGetRecordsResponse" id="getRecordsResponse"/>
 

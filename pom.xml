@@ -139,6 +139,11 @@
                 <artifactId>httptransport</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>objectpipeline</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- 3rd party Module dependencies ================================ -->
             <dependency>

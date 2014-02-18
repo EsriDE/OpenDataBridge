@@ -32,19 +32,10 @@ public class MetadataObject {
     private String capabilitiesUrl;
 
     /**
-     * the type of the capabilities (wms, kml, etc...)
-     */
-    private String capabilitiesType;
-
-    /**
      * the metadata document
      */
     private Document metadataDoc;
 
-    /**
-     * the capabilities document (like for WMS)
-     */
-    private Document capabilitiesDoc;
 
     public String getMetadataFileIdentifier() {
         return metadataFileIdentifier;
@@ -53,14 +44,6 @@ public class MetadataObject {
     public void setMetadataFileIdentifier(String metadataFileIdentifier) {
         this.metadataFileIdentifier = metadataFileIdentifier;
     }
-
-    /*public String getResourceUrl() {
-        return resourceUrl;
-    }
-
-    public void setResourceUrl(String wmsUrl) {
-        this.resourceUrl = wmsUrl;
-    } */
 
     public String getCapabilitiesUrl() {
         return capabilitiesUrl;
@@ -76,22 +59,6 @@ public class MetadataObject {
 
     public void setMetadataDoc(Document cswMetadataDoc) {
         this.metadataDoc = cswMetadataDoc;
-    }
-
-    public Document getCapabilitiesDoc() {
-        return capabilitiesDoc;
-    }
-
-    public void setCapabilitiesDoc(Document capabilitiesDoc) {
-        this.capabilitiesDoc = capabilitiesDoc;
-    }
-
-    public String getCapabilitiesType() {
-        return capabilitiesType;
-    }
-
-    public void setCapabilitiesType(String capabilitiesType) {
-        this.capabilitiesType = capabilitiesType;
     }
 
     public String getResourceType() {
