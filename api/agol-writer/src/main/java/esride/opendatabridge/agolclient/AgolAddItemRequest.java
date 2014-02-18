@@ -17,7 +17,6 @@ import java.util.HashMap;
  * User: Markus Stecker, con terra GmbH
  * Date: 06.12.13
  * Time: 18:10
- * To change this template use File | Settings | File Templates.
  */
 public class AgolAddItemRequest {
 
@@ -46,7 +45,7 @@ public class AgolAddItemRequest {
         }
         agolItem = pAgolItem;
 
-
+        //${baseurl}/sharing/rest/content/users/${username}/addItem
         if(pUrl == null){
             throw new IllegalArgumentException("missing url for addItem operation");
         }
@@ -72,15 +71,24 @@ public class AgolAddItemRequest {
         {
             JsonNode rootNode = pObjectMapper.readTree(entities);
 
+            //First check for error Node
             JsonNode errorNode = rootNode.get("error");
             if (errorNode != null) {
-                throw new IOException("Adding item \"" + agolItem.getTitle() + "\" with ID " + agolItem.getId() + "failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
+                throw new IOException("Adding item \"" + agolItem.getTitle() + " failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
 
-            String itemId = rootNode.get("id").asText();
+            JsonNode idNode = rootNode.get("id");
+            String itemId;
+            if(idNode == null){
+                throw new IOException("Adding item \"" + agolItem.getTitle() + " failed. No Id was published");
+            }
+            itemId = idNode.asText();
+
+
+            JsonNode folderIdNode = rootNode.get("folder");
             String folderId = null;
-            if(!rootNode.get("folder").isNull()){
-                folderId = rootNode.get("folder").asText();
+            if(folderIdNode != null){
+                folderId = folderIdNode.asText();
             }
 
             boolean success = rootNode.get("success").asBoolean();

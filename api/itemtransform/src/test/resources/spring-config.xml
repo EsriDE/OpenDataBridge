@@ -10,12 +10,9 @@
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 
-    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="transform"
-            p:itemElemExtractor-ref="itemGenerator"/>
-    
-    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
-            p:generatorConfiguration-ref="generatorConfig"
-            p:elemHandlerMap-ref="elemMap"/>
+    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
+          p:generatorConfiguration-ref="generatorConfig"
+          p:elemHandlerMap-ref="elemMap"/>
     
     <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="generatorConfig"
           p:pathInfo="/test/"/>

@@ -5,6 +5,7 @@ import esride.opendatabridge.reader.request.CatalogRequestObj;
 import esride.opendatabridge.reader.request.CatalogResponseObj;
 import esride.opendatabridge.reader.request.ICatalogRequest;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.util.*;
@@ -63,140 +64,177 @@ public abstract class CatalogReader implements IReader {
         this.processId = processId;
     }
 
-    public List<TransformedItem> getItemsFromCatalog() throws ReaderException{
+    public MetadataObjectResult getItemsFromCatalog(int startPos) throws ReaderException {
         sLogger.info("------------------------------------------------ ");
-        sLogger.info("CatalogReader: Start Harvesting and transformation process");
+        sLogger.info("CatalogReader: Harvesting and transformation process StartPosition is: " + startPos);
 
-        sLogger.info("Catalog-Reader: Start Harvesting Metadata from catalog");
-        boolean pagination = true;
         int maxRecords = Integer.valueOf(templateItems.get(maxRecordsId));
-        int startPosition = 1;
         List<MetadataObject> metadataObjectList = new ArrayList<MetadataObject>();
 
-        while(pagination){
-            templateItems.put(startPositionId, String.valueOf(startPosition));
-            CatalogRequestObj reqObj = new CatalogRequestObj(catalogUrl,templateItems, headerItems);
-            try {
-                
-                CatalogResponseObj responseObj = searchRequest.executeRequest(reqObj);
+        templateItems.put(startPositionId, String.valueOf(startPos));
+        CatalogRequestObj reqObj = new CatalogRequestObj(catalogUrl,templateItems, headerItems);
+        MetadataObjectResult result = new MetadataObjectResult();
+        try {
 
-                if(responseObj.getMetadataDocuments() != null){
-                    metadataObjectList.addAll(responseObj.getMetadataDocuments());
-                }
-                int matchedRecords = responseObj.getNumbersOfRecordMatched();
-                int returnedRecords = responseObj.getNumbersOfRecordReturned();
-                sLogger.info("Number of matched records: " + matchedRecords);
-                if(matchedRecords >= returnedRecords + startPosition){
-                    startPosition = startPosition + maxRecords;
-                    sLogger.info("Next start position: " + startPosition);
-                }else{
-                    pagination = false;
-                    sLogger.info("No further request");
-                }
-            } catch (IOException e) {
-                String message = "CatalogRequest failed at startPosition: " + startPosition;
-                sLogger.error(message, e);
-                throw new ReaderException(message, e);
+            CatalogResponseObj responseObj = searchRequest.executeRequest(reqObj);
+
+            if(responseObj.getMetadataDocuments() != null){
+                metadataObjectList.addAll(responseObj.getMetadataDocuments());
             }
-
+            result.setMetadataObjectList(metadataObjectList);
+            int matchedRecords = responseObj.getNumbersOfRecordMatched();
+            int returnedRecords = responseObj.getNumbersOfRecordReturned();
+            sLogger.info("Number of matched records: " + matchedRecords);
+            if(matchedRecords >= returnedRecords + startPos){
+                int startPosition = startPos + maxRecords;
+                sLogger.info("Next start position: " + startPosition);
+                result.setHasNextStartPosition(true);
+                result.setNextStartPosition(startPosition);
+            }else{
+                result.setHasNextStartPosition(false);
+                result.setNextStartPosition(-1);
+                //pagination = false;
+                sLogger.info("No further request");
+            }
+        } catch (IOException e) {
+            String message = "CatalogRequest failed at startPosition: " + startPos;
+            sLogger.error(message, e);
+            throw new ReaderException(message, e);
         }
+        return result;
+    }
+
+    public TransformedItemResult getTramsformedItemsFromCatalog(int startPos) throws ReaderException{
+        sLogger.info("------------------------------------------------ ");
+        sLogger.info("Catalog-Reader: Start Harvesting and transformation process");
+
+        //boolean pagination = true;
+        int maxRecords = Integer.valueOf(templateItems.get(maxRecordsId));
+        //int startPosition = 1;
+        List<MetadataObject> metadataObjectList = new ArrayList<MetadataObject>();
+        TransformedItemResult result = new TransformedItemResult();
+
+        //while(pagination){
+        templateItems.put(startPositionId, String.valueOf(startPos));
+        CatalogRequestObj reqObj = new CatalogRequestObj(catalogUrl,templateItems, headerItems);
+        try {
+
+            CatalogResponseObj responseObj = searchRequest.executeRequest(reqObj);
+
+            if(responseObj.getMetadataDocuments() != null){
+                metadataObjectList.addAll(responseObj.getMetadataDocuments());
+            }
+            int matchedRecords = responseObj.getNumbersOfRecordMatched();
+            int returnedRecords = responseObj.getNumbersOfRecordReturned();
+            sLogger.info("Number of matched records: " + matchedRecords);
+            if(matchedRecords >= returnedRecords + startPos){
+                int startPosition = startPos + maxRecords;
+                sLogger.info("Next start position: " + startPosition);
+                result.setHasNextStartPosition(true);
+                result.setNextStartPosition(startPosition);
+            }else{
+                result.setHasNextStartPosition(false);
+                result.setNextStartPosition(-1);
+            }
+        } catch (IOException e) {
+            String message = "CatalogRequest failed at startPosition: " + startPos;
+            sLogger.error(message, e);
+            throw new ReaderException(message, e);
+        }
+
+        //}
 
         if(sLogger.isDebugEnabled()){
             sLogger.debug("Number of objects: "  + metadataObjectList.size());
         }
-        sLogger.info("Catalog-Reader: Harvesting Metadata from catalog finished");
+        sLogger.info("Catalog-Reader: Harvesting Metadata from catalog with startPosition " + startPos + " finished");
 
         sLogger.info("Catalog-Reader: Get further metadata information from capabilities");
         List<MetadataObject> failureList = new ArrayList<MetadataObject>();
+        List<TransformedItem> lTransformedItems = new ArrayList<TransformedItem>();
+
         for(int i=0; i<metadataObjectList.size(); i++){
             MetadataObject object = metadataObjectList.get(i);
+
+            MetadataResource mdResource = new MetadataResource();
+            mdResource.setResourceType(object.getResourceType());
+            mdResource.addDoc(catalogType, object.getMetadataDoc());
+
             IResource resource = resourceMap.get(object.getResourceType().toLowerCase());
+            boolean objectFailed = false;
             if(resource != null){
                 try {
-                    object.setCapabilitiesDoc(resource.getRecourceMetadata(object.getCapabilitiesUrl(), object.getResourceType()));
-                    object.setCapabilitiesType(capabilitiesMapper.get(object.getResourceType().toLowerCase()));
+                    Document capabilitiesDoc = resource.getRecourceMetadata(object.getCapabilitiesUrl(), object.getResourceType());
+                    String capabilitiesType = capabilitiesMapper.get(object.getResourceType().toLowerCase());
+
+                    mdResource.addDoc(capabilitiesType, capabilitiesDoc);
                 } catch (ResourceException e) {
                     sLogger.error("The Resource (" + object.getCapabilitiesUrl() + ") is not available. " +
                             "The metadataset with the file Identifier: " + object.getMetadataFileIdentifier() + " is removed from the list", e);
+                    objectFailed = true;
                     failureList.add(object);
                 }
             }
 
-
-        }
-        if(sLogger.isDebugEnabled()){
-            sLogger.debug("Number of failure objects: "  + failureList.size());
-        }
-        if(failureList.size() > 0){
-            metadataObjectList.removeAll(failureList);
-        }
-        if(sLogger.isDebugEnabled()){
-            sLogger.debug("Number of cleaned objects: "  + metadataObjectList.size());
-        }
-        sLogger.info("Catalog-Reader: Get further metadata information from capabilities finished");
-
-        sLogger.info("Catalog-Reader: Transform metadata information into Agol Item format");
-        List<TransformedItem> lTransformedItems = new ArrayList<TransformedItem>();
-        for(int i=0;i<metadataObjectList.size(); i++){
-            MetadataResource resource = new MetadataResource();
-            resource.setResourceType(metadataObjectList.get(i).getResourceType());
-            List<MetadataSet> setList = new ArrayList<MetadataSet>();
-            MetadataSet cswSet = new MetadataSet();
-            cswSet.setXmlDoc(metadataObjectList.get(i).getMetadataDoc());
-            cswSet.setMetadataType(catalogType);
-            setList.add(cswSet);
-            if(metadataObjectList.get(i).getCapabilitiesDoc() != null){
-                MetadataSet capabilitiesSet = new MetadataSet();
-                capabilitiesSet.setXmlDoc(metadataObjectList.get(i).getCapabilitiesDoc());
-                capabilitiesSet.setMetadataType(metadataObjectList.get(i).getCapabilitiesType());
-                setList.add(capabilitiesSet);
-            }
-            resource.setContainer(setList);
-            try {
-                HashMap<String, String> agolItems = agolItemTransformer.transform2AgolItem(resource, processId);
-                TransformedItem item = new TransformedItem();
-                item.setItemElements(agolItems);
-                //item.setResourceUrl(metadataObjectList.get(i).getResourceUrl());
-                lTransformedItems.add(item);
-                if(sLogger.isDebugEnabled()){
-                    sLogger.debug("Item elements:---------------------");
-                    sLogger.debug("Item URL: "  + item.getResourceUrl());
-                    Set<String> keySet =  agolItems.keySet();
-                    Iterator<String> keyIter = keySet.iterator();
-                    while(keyIter.hasNext()){
-                        String key = keyIter.next();
-                        String value = agolItems.get(key);
-                        if(value != null){
-                        int valueLength = value.length();
-                            if(valueLength > 150){
-                                sLogger.debug("Item: " + key + ": Value: " + value.substring(0,150) + "...");
-                            }else{
-                                sLogger.debug("Item: " + key + ": Value: " + agolItems.get(key));
-                            }
-                        }
-
-                    }
+            if(!objectFailed){
+                TransformedItem item = this.createTransformedItem(object.getMetadataFileIdentifier(), mdResource);
+                if(item != null){
+                    lTransformedItems.add(item);
                 }
-
-            } catch (ItemTransformationException e) {
-                sLogger.error("The metadataset with the file Identifier: " + metadataObjectList.get(i).getMetadataFileIdentifier() + " cannot be transformed", e);
-            } catch (ItemGenerationException e) {
-                sLogger.error("The metadataset with the file Identifier: " + metadataObjectList.get(i).getMetadataFileIdentifier() + " cannot be transformed", e);
             }
 
-
         }
-        sLogger.info("Catalog-Reader: Transform metadata information into Agol Item format finished");
+        result.setTransformedResultList(lTransformedItems);
 
         if(failureList.size() > 0){
+            sLogger.info("Number of failure objects: "  + failureList.size());
+            metadataObjectList.removeAll(failureList);
             sLogger.info("Please check the following urls. They are not accessible during the transformation");
             for (MetadataObject aFailureList : failureList) {
                 sLogger.info(aFailureList.getCapabilitiesUrl());
             }
         }
-        sLogger.info("CatalogReader: Harvesting and transformation process finished");
+
         sLogger.info("------------------------------------------------ ");
-        return lTransformedItems;
+        return result;
+    }
+
+    private TransformedItem createTransformedItem(String fileIdentifier, MetadataResource mdResource){
+        TransformedItem item = null;
+
+        try {
+            HashMap<String, String> agolItems = agolItemTransformer.transform2AgolItem(mdResource, processId);
+            item = new TransformedItem();
+            item.setItemElements(agolItems);
+            //item.setResourceUrl(metadataObjectList.get(i).getResourceUrl());
+
+            if(sLogger.isDebugEnabled()){
+                sLogger.debug("Item elements:---------------------");
+                sLogger.debug("Item URL: "  + item.getResourceUrl());
+                Set<String> keySet =  agolItems.keySet();
+                Iterator<String> keyIter = keySet.iterator();
+                while(keyIter.hasNext()){
+                    String key = keyIter.next();
+                    String value = agolItems.get(key);
+                    if(value != null){
+                        int valueLength = value.length();
+                        if(valueLength > 150){
+                            sLogger.debug("Item: " + key + ": Value: " + value.substring(0,150) + "...");
+                        }else{
+                            sLogger.debug("Item: " + key + ": Value: " + agolItems.get(key));
+                        }
+                    }
+
+                }
+            }
+
+        } catch (ItemTransformationException e) {
+            sLogger.error("The metadataset with the file Identifier: " + fileIdentifier + " cannot be transformed", e);
+        } catch (ItemGenerationException e) {
+            sLogger.error("The metadataset with the file Identifier: " + fileIdentifier + " cannot be transformed", e);
+        }
+
+        return item;
     }
 
     

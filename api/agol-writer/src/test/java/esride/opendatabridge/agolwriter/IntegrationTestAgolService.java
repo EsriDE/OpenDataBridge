@@ -41,6 +41,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
         this._objectMapper = objectMapper;
     } */
 
+    /*
     @Test
     public void testGetAllItems() {
         try {
@@ -213,7 +214,7 @@ public class IntegrationTestAgolService extends AbstractJUnit4SpringContextTests
             Assert.fail(e.getMessage());
         }
     }
-
+    */
     @Test
     public void testCreateItemFromODHashMap() throws IOException, AgolItemInvalidException {
         HashMap<String, String> odHashMap = new HashMap<String, String>();

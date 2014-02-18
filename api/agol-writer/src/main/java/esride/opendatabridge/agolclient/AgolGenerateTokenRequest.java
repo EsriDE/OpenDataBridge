@@ -22,11 +22,6 @@ public class AgolGenerateTokenRequest {
 
     private static Logger sLogger = Logger.getLogger(AgolGenerateTokenRequest.class);
 
-
-
-
-
-
     private static final String usernameParam = "username";
     private String usernameValue;
 

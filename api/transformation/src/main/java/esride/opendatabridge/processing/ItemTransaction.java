@@ -16,6 +16,10 @@ public class ItemTransaction {
      * 1=Insert, 2=Update, 3=Delete
      */
     private int transactionStatus;
+
+    private String agolItentifier;
+
+
     
     private AgolItem agolItem;
 
@@ -23,6 +27,14 @@ public class ItemTransaction {
 
     public int getTransactionStatus() {
         return transactionStatus;
+    }
+
+    public String getAgolItentifier() {
+        return agolItentifier;
+    }
+
+    public void setAgolItentifier(String pAgolItentifier) {
+        agolItentifier = pAgolItentifier;
     }
 
     public void setTransactionStatus(int transactionStatus) {

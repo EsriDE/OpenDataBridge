@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Class which implements the /share Request (as item owner and as group admin).
@@ -49,9 +50,9 @@ public class AgolShareItemRequest {
     private boolean orgValue;
 
     private static final String groupsParam = "groups";
-    private String[] groupsValue;
+    private List<String> groupsValue;
 
-    public AgolShareItemRequest(String pUrl, String pTokenValue, boolean pEveryoneValue, boolean pOrgValue, String[] pGroupsValue) {
+    public AgolShareItemRequest(String pUrl, String pTokenValue, boolean pEveryoneValue, boolean pOrgValue, List<String> pGroupsValue) {
         if (sLogger.isDebugEnabled()) {
             sLogger.debug("Sharetem Request");
             sLogger.debug(tokenParam + ": " + pTokenValue.substring(0,5) + "...");
@@ -76,7 +77,7 @@ public class AgolShareItemRequest {
         groupsValue = pGroupsValue;
     }
 
-    public AgolAddItemResponse excReqWithJsonResp(HTTPRequest pHttpRequest, ObjectMapper pObjectMapper) throws IOException {
+    public AgolShareItemResponse excReqWithJsonResp(HTTPRequest pHttpRequest, ObjectMapper pObjectMapper) throws IOException {
         HashMap<String, String> agolAttributes = new HashMap<String, String>();
         agolAttributes.put(formatParam, jsonFormatValueDefault);
         agolAttributes.put(tokenParam, tokenValue);
@@ -86,9 +87,9 @@ public class AgolShareItemRequest {
 
         if(groupsValue != null){
             StringBuilder buf = new StringBuilder();
-            for(int i=0; i<groupsValue.length; i++){
-                buf.append(groupsValue[i]);
-                if(groupsValue.length -1 != i){
+            for(int i=0; i<groupsValue.size(); i++){
+                buf.append(groupsValue.get(i));
+                if(groupsValue.size() -1 != i){
                     buf.append(",");
                 }
             }
@@ -101,38 +102,32 @@ public class AgolShareItemRequest {
         if (entities != null)
         {
             JsonNode rootNode = pObjectMapper.readTree(entities);
-            JsonNode notSharedWithNode = rootNode.withArray("notSharedWith");//.get("notSharedWith");
-            if (notSharedWithNode != null) {
-                Iterator<JsonNode> array =  notSharedWithNode.iterator();
+
+            JsonNode errorNode = rootNode.get("error");
+            if (errorNode != null) {
+                throw new IOException("Share item failed with error " + errorNode.get("code") + ". " + errorNode.get("message"));
             }
 
-            /*
+            JsonNode notSharedWithNode = rootNode.withArray("notSharedWith");
+            List<String> notSharedWithList = null;
+            if (notSharedWithNode != null) {
+                Iterator<JsonNode> notSharedWithGroupsArray =  notSharedWithNode.iterator();
+                while(notSharedWithGroupsArray.hasNext()){
 
-                Iterator resultsIterator = resultsNode.iterator();
-                while (resultsIterator.hasNext()) {
-                    JsonNode resultNode = (JsonNode) resultsIterator.next();
-                    JsonNode errorNode = resultNode.get("error");
-                    if (errorNode!=null) {
-                        if (!errorItems.isEmpty()) {
-                            errorItems += "\n";
-                        }
-                        errorItems += resultNode.get("itemId").toString().replaceAll("\"", "") + ": " + errorNode.get("message") + " (Error code " + errorNode.get("code") + ")";
-                    }
-                    else {
-                        if (!successItems.isEmpty()) {
-                            successItems += ", ";
-                        }
-                        successItems += resultNode.get("itemId").toString().replaceAll("\"", "");
-                    }
                 }
             }
-        }
-        if (!errorItems.isEmpty()) {
-            //throw new AgolTransactionFailedException(errorItems);
-        }  */
+            JsonNode itemIdNode = rootNode.get("itemId");
+            String itemId;
+            if(itemIdNode != null){
+                itemId = itemIdNode.asText();
+            }else{
+                throw new IOException("No item id was updated");
+            }
+
+            return new AgolShareItemResponse(notSharedWithList, itemId);
 
     }
 
-        return null;
+    return null;
     }
 }

@@ -1,10 +1,12 @@
 package esride.opendatabridge.processing;
 
+import esride.opendatabridge.agolreader.IAgolItemReader;
 import esride.opendatabridge.agolwriter.*;
 
 import esride.opendatabridge.application.StartParameter;
 import esride.opendatabridge.application.StartParameterException;
 import esride.opendatabridge.item.AgolItem;
+import esride.opendatabridge.pipeline.controller.PipelineController;
 import esride.opendatabridge.processinfo.IProcessInfo;
 import esride.opendatabridge.reader.IReader;
 import esride.opendatabridge.reader.ReaderException;
@@ -44,6 +46,12 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
     @Autowired
     private IAgolService agolService;
 
+    @Autowired
+    private PipelineController pipelineController;
+
+    @Autowired
+    private IAgolItemReader agolReader;
+
     
 
     @After
@@ -58,7 +66,7 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         String[] paramArray = new String[6];
         paramArray[0] = "-pid=Test01";
         paramArray[1] = "-readerid=csw";
-        paramArray[2] = "-searchstring=";
+        //paramArray[2] = "-searchstring=";
         paramArray[3] = "-accesstype=ORG";
         paramArray[4] = "-ownertype=USER";
         paramArray[5] = "-overwriteaccesstype=true";
@@ -77,14 +85,18 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         }
         Transformer transform = new Transformer();
         try {
-            transform.executeProcessTransformation(reader, agolService, param.isDeleteValue(), param.isOverwriteAccessTypeValue(),param.getSearchStringValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());
-        } catch (TransformerException e) {
+            /*
+            public void executeProcessTransformation(IReader reader, IAgolService agolService, PipelineController pipelineController, IAgolItemReader agolReader,
+                                             boolean deleteStrategy, boolean overwriteAccessType,
+                                             String accessType, String ownerType) throws TransformerException {
+             */
+            transform.executeProcessTransformation(reader, agolService, pipelineController, agolReader, param.isDeleteValue(), param.isOverwriteAccessTypeValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());       } catch (TransformerException e) {
             Assert.fail(e.getMessage());
         }
     }
 
     //@Test
-    public void testInsertUpdateWithDeleteOption(){
+    /*public void testInsertUpdateWithDeleteOption(){
 
         //first Time
         this.executeProcess("Test01", "type:WMS" , "true",  56);
@@ -106,18 +118,18 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         //clean up
         deleteAllItems(deleteList);
 
-    }
+    } */
 
-    private Map<String, ArrayList<AgolItem>> executeProcess(String processId, String searchString, String deleteStrategy, int numberOfExpectedCatalogRecords){
+    /*private Map<String, ArrayList<AgolItem>> executeProcess(String processId, String searchString, String deleteStrategy, int numberOfExpectedCatalogRecords){
         //Do Insert
         StartParameter insertParam = null;
         String[] insertParamArray = new String[6];
         insertParamArray[0] = "-pid=" + processId;
         insertParamArray[1] = "-readerid=csw";
-        insertParamArray[2] = "-searchstring=" + searchString;
-        insertParamArray[3] = "-accesstype=PRIVATE";
-        insertParamArray[4] = "-ownertype=ORG";
-        insertParamArray[5] = "-deleteobj=" + deleteStrategy;
+        //insertParamArray[2] = "-searchstring=" + searchString;
+        insertParamArray[2] = "-accesstype=PRIVATE";
+        insertParamArray[3] = "-ownertype=ORG";
+        insertParamArray[4] = "-deleteobj=" + deleteStrategy;
         try {
             insertParam = new StartParameter(insertParamArray);
         } catch (StartParameterException e) {
@@ -133,7 +145,7 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         }
         Transformer transform = new Transformer();
         try {
-            transform.executeProcessTransformation(reader, agolService, insertParam.isDeleteValue(), insertParam.isOverwriteAccessTypeValue(),insertParam.getSearchStringValue(), insertParam.getAccessTypeValue(), insertParam.getOwnerTypeValue());
+            transform.executeProcessTransformation(reader, agolService, pipelineController, agolReader,insertParam.isDeleteValue(), insertParam.isOverwriteAccessTypeValue(), insertParam.getAccessTypeValue(), insertParam.getOwnerTypeValue());
         } catch (TransformerException e) {
             Assert.fail(e.getMessage());
         }
@@ -150,7 +162,7 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         }
         Map<String, ArrayList<AgolItem>> agolItemMap = null;
         try {
-            agolItemMap =  agolService.searchItems(searchString, OwnerType.ORG);
+            agolItemMap =  agolReader..searchItems(searchString, OwnerType.ORG);
             int agolSize = agolItemMap.size();
             Assert.assertTrue(agolSize  > 0 && agolSize <= numberOfExpectedCatalogRecords);
         } catch (IOException e) {
@@ -158,10 +170,11 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         } catch (AgolItemInvalidException e) {
             e.printStackTrace();  //ToDo: Exception Handling
         }
-        return agolItemMap;
-    }
 
-    private void deleteAllItems(List<AgolItem> agolItem){
+        return agolItemMap;
+    }*/
+
+    /*private void deleteAllItems(List<AgolItem> agolItem){
         try {
             agolService.deleteItems(agolItem);
             synchronized(this){
@@ -185,5 +198,5 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
         } catch (AgolPublishBatchPartlyFailedException e) {
             Assert.fail(e.getMessage());
         }
-    }
+    }*/
 }

@@ -20,15 +20,15 @@ import java.util.Map;
  * Time: 14:09
  * To change this template use File | Settings | File Templates.
  */
-@ContextConfiguration(locations = {"classpath:spring-config.xml"})
-public class UnitTestsAgolItem extends AbstractJUnit4SpringContextTests {
+//@ContextConfiguration(locations = {"classpath:spring-config.xml"})
+public class UnitTestsAgolItem {//extends AbstractJUnit4SpringContextTests {
 
-    ObjectMapper objectMapper;
+    /*ObjectMapper objectMapper;
 
     @Autowired
     private AgolItemFactory agolItemFactory;
     @Resource
-    private Map<String,String> jsonMap;
+    private Map<String,String> jsonMap; */
 
 //    @Test
 //    public void testCreateAgolItemFromJson() {

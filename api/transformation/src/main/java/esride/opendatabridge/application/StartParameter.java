@@ -49,8 +49,8 @@ public class StartParameter {
     /**
      * parameter which definies the search string
      */
-    private static final String searchStringArgs = "-searchstring";
-    private String searchStringValue;
+    //private static final String searchStringArgs = "-searchstring";
+    //private String searchStringValue;
 
     /**
      * parameter which definies the accesstype of the items
@@ -106,9 +106,9 @@ public class StartParameter {
                 overwriteAccessTypeValue = Boolean.parseBoolean(value);
             }
             
-            if(key.equals(searchStringArgs)){
+            /*if(key.equals(searchStringArgs)){
                 searchStringValue = value;
-            }
+            } */
 
             if(key.equals(accessTypeArgs)){
                 accessTypeValue = value;
@@ -133,9 +133,9 @@ public class StartParameter {
         return readerValue;
     }
     
-    public String getSearchStringValue(){
+    /*public String getSearchStringValue(){
         return searchStringValue;
-    }
+    } */
     
     public String getAccessTypeValue(){
         return accessTypeValue;

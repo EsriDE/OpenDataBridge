@@ -1,5 +1,6 @@
 package esride.opendatabridge.reader.ckan;
 
+import esride.opendatabridge.reader.MetadataObjectResult;
 import esride.opendatabridge.reader.ReaderException;
 import esride.opendatabridge.reader.TransformedItem;
 import org.junit.Assert;
@@ -42,7 +43,7 @@ public class IntegrationTestCkanReader extends AbstractJUnit4SpringContextTests 
         }
 
         try {
-            List<TransformedItem> list = ckanReader.getItemsFromCatalog();
+            MetadataObjectResult items = ckanReader.getItemsFromCatalog(1);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
         }
@@ -66,7 +67,7 @@ public class IntegrationTestCkanReader extends AbstractJUnit4SpringContextTests 
         }
 
         try {
-            List<TransformedItem> list = ckanReader.getItemsFromCatalog();
+            MetadataObjectResult items = ckanReader.getItemsFromCatalog(1);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
         }
@@ -90,7 +91,7 @@ public class IntegrationTestCkanReader extends AbstractJUnit4SpringContextTests 
         }
 
         try {
-            List<TransformedItem> list = ckanReader.getItemsFromCatalog();
+            MetadataObjectResult items = ckanReader.getItemsFromCatalog(1);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
         }

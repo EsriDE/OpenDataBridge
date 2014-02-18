@@ -1,5 +1,6 @@
 package esride.opendatabridge.reader.csw;
 
+import esride.opendatabridge.reader.MetadataObjectResult;
 import esride.opendatabridge.reader.ReaderException;
 
 
@@ -42,9 +43,10 @@ public class UnitTestCSWReader extends AbstractJUnit4SpringContextTests {
         }
 
         try {
-            List<TransformedItem> items = reader.getItemsFromCatalog();
-            int size = items.size();
-            Assert.assertEquals(size, 26);
+            MetadataObjectResult items = reader.getItemsFromCatalog(1);
+            Assert.assertTrue(items.isHasNextStartPosition());
+            int size = items.getMetadataObjectList().size();
+            Assert.assertEquals(size, 10);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
         }
@@ -65,9 +67,10 @@ public class UnitTestCSWReader extends AbstractJUnit4SpringContextTests {
         }
 
         try {
-            List<TransformedItem> items = reader.getItemsFromCatalog();
-            int size = items.size();
-            Assert.assertEquals(size, 11);
+            MetadataObjectResult items = reader.getItemsFromCatalog(1);
+            Assert.assertTrue(items.isHasNextStartPosition());
+            int size = items.getMetadataObjectList().size();
+            Assert.assertEquals(size, 10);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
         }
@@ -88,8 +91,8 @@ public class UnitTestCSWReader extends AbstractJUnit4SpringContextTests {
         }
 
         try {
-            List<TransformedItem> items = reader.getItemsFromCatalog();
-            int size = items.size();
+            MetadataObjectResult items  = reader.getItemsFromCatalog(1);
+            int size = items.getMetadataObjectList().size();
             Assert.assertEquals(size, 10);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
@@ -111,8 +114,8 @@ public class UnitTestCSWReader extends AbstractJUnit4SpringContextTests {
         }
 
         try {
-            List<TransformedItem> items = reader.getItemsFromCatalog();
-            int size = items.size();
+            MetadataObjectResult items = reader.getItemsFromCatalog(1);
+            int size = items.getMetadataObjectList().size();
             Assert.assertEquals(size, 9);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
@@ -134,9 +137,9 @@ public class UnitTestCSWReader extends AbstractJUnit4SpringContextTests {
         }
 
         try {
-            List<TransformedItem> items = reader.getItemsFromCatalog();
-            int size = items.size();
-            Assert.assertEquals(size, 8);
+            MetadataObjectResult items = reader.getItemsFromCatalog(1);
+            int size = items.getMetadataObjectList().size();
+            Assert.assertEquals(size, 9);
         } catch (ReaderException e) {
             Assert.fail(e.getMessage());
         }

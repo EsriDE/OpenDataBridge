@@ -14,11 +14,38 @@
 
     <context:property-placeholder location="classpath:/agolservice/service.properties"/>
 
-    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest" p:_objectMapper-ref="objectMapper">
+    <!--<bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest" p:_objectMapper-ref="objectMapper">
         <constructor-arg type="java.lang.String" value="${test.service.url}"/>
         <constructor-arg type="java.lang.String" value="${test.service.username}"/>
         <constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
         <constructor-arg type="java.lang.String" value="${test.service.referer}"/>
+    </bean> -->
+
+    <!-- AgolWriter bean components-->
+    <bean class="esride.opendatabridge.agolreader.PrefetchedAgolItemReader" id="agolReader"
+          p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest"
+          p:agolTokenService-ref="tokenService"
+          p:_objectMapper-ref="objectMapper" p:maxPrefetchedAgolItems="10000"
+          p:foreignKeyPrefix="CATALOG" init-method="prefetchItems">
+        <constructor-arg type="java.lang.String" value="${test.service.url}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.username}"/>
+    </bean>
+
+    <bean class="esride.opendatabridge.token.AgolTokenService" id="tokenService"
+          p:httpRequest-ref="httpRequest" p:objectMapper-ref="objectMapper">
+        <constructor-arg type="java.lang.String" value="${test.service.generateTokenUrl}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.username}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.referer}"/>
+    </bean>
+
+    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice"
+          p:_AgolItemFactory-ref="agolitemfactory"
+          p:_httpRequest-ref="httpRequest"
+          p:_objectMapper-ref="objectMapper"
+          p:tokenService-ref="tokenService">
+        <constructor-arg type="java.lang.String" value="${test.service.url}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.username}"/>
     </bean>
 
     <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory" p:_objectMapper-ref="objectMapper">
@@ -30,6 +57,20 @@
 
     <!-- HTTP bean component-->
     <bean class="esride.opendatabridge.httptransport.HTTPRequest" id="httpRequest"/>
+
+    <bean class="esride.opendatabridge.pipeline.controller.PipelineController" id="pipelinecontroller"
+          p:pipelineList-ref="pipelineList"/>
+
+    <util:list id="pipelineList" value-type="esride.opendatabridge.pipeline.IPipeline">
+        <ref bean="urlChanger"/>
+        <ref bean="foreignKeyChanger"/>
+    </util:list>
+
+    <bean class="esride.opendatabridge.pipeline.changer.ForeignKeyChanger" id="foreignKeyChanger"
+          p:foreignKeyElementName="agol.foreignkey" p:prefix="CATALOG"
+          p:resourceTypeName="agol.type" p:tagsElementName="agol.tags"/>
+    <bean class="esride.opendatabridge.pipeline.changer.UrlChanger" id="urlChanger"
+          p:urlElementName="agol.url"/>
 
     <!-- Reader bean components-->
     <bean class="esride.opendatabridge.reader.factory.CatalogReaderFactory"
@@ -84,12 +125,9 @@
     <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"
           p:pathInfo="/ckanadapter/"/>
 
-    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
+    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
           p:generatorConfiguration-ref="itemConfig"
           p:elemHandlerMap-ref="elemMap"/>
-
-    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
-          p:itemElemExtractor-ref="itemGenerator"/>
 
     <bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesResource" id="capabilitiesRequest"
           p:request-ref="httpRequest"/>

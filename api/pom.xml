@@ -21,5 +21,6 @@
         <module>capabilities-reader</module>
         <module>ckan-reader</module>
         <module>kml-reader</module>
+        <module>objectpipeline</module>
 	</modules>
 </project>
