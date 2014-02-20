@@ -4,7 +4,7 @@ The OpenData Bridge is a small stand-alone Java application which harvests metad
 The tool could be used for a single process (running as a batch script directly by the user)
 
 ## Running the application ##
-If yout want to execute the latest release please go to the following page 
+If yout want to execute the latest release please go to the following page: https://github.com/EsriDE/OpenDataBridge/releases 
 
 ## Building the application (for Developers) ##
 
