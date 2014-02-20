@@ -18,6 +18,7 @@ import java.util.HashMap;
  * Date: 23.05.13
  * Time: 16:48
  * To change this template use File | Settings | File Templates.
+ * @deprecated
  */
 public class CrsHandler implements IElemHandler{
     private static Logger sLogger = Logger.getLogger(CodeListElemHandler.class);

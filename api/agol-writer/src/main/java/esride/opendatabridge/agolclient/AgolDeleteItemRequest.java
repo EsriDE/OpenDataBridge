@@ -8,15 +8,14 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+
 
 /**
- * Created with IntelliJ IDEA.
- * User: sma
+ * Class which implements the Delete Item Request.
+ * See API details for a better parameter understanding here: http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Delete_Item/02r300000092000000/
+ * User: Markus Stecker, con terra GmbH
  * Date: 02.02.14
  * Time: 17:39
- * To change this template use File | Settings | File Templates.
  */
 public class AgolDeleteItemRequest {
 

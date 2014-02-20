@@ -12,7 +12,7 @@
 
     <appender name="LOGFILE" class="org.apache.log4j.RollingFileAppender">
         <param name="File" value="C:/data/coding/prj/OpenDataBridge-spec/logs/opendatabridge.log"/>
-        <param name="Threshold" value="INFO"/>
+        <param name="Threshold" value="DEBUG"/>
         <param name="MaxFileSize" value="10000KB"/>
         <param name="MaxBackupIndex" value="10"/>
         <layout class="org.apache.log4j.PatternLayout">
@@ -24,10 +24,10 @@
         <level value="DEBUG"/>
     </logger>
 
-    <!-- Just for HTTP Logging
+    <!-- Just for HTTP Logging -->
     <logger name="org.apache.http">
         <level value="DEBUG"/>
-    </logger>    -->
+    </logger>
 
     <root>
         <level value="WARN"/>

@@ -62,7 +62,7 @@ public class AppStarter {
             transformer.executeProcessTransformation(reader, agolService,pipelineController,
                     agolReader,startParam.isDeleteValue(),
                     startParam.isOverwriteAccessTypeValue(),
-                    startParam.getAccessTypeValue(), startParam.getOwnerTypeValue());
+                    startParam.getAccessTypeValue());
         } catch (TransformerException e) {
             sLogger.error("Application Start: Terminate OpenDataBridge. Cause: " + e.getMessage());
             System.exit(2);

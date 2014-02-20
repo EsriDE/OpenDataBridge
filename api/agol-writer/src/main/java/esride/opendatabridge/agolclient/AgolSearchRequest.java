@@ -14,8 +14,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sma
+ * Class which implements the Search Request.
+ * See API details for a better parameter understanding here: http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Search/02r3000000mp000000/
+ * User: Markus Stecker, con terra GmbH
  * Date: 29.01.14
  * Time: 17:22
  */

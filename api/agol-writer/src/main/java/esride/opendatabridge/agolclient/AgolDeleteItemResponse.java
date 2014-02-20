@@ -1,11 +1,10 @@
 package esride.opendatabridge.agolclient;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sma
+ * The attributes for the Delete Item Response
+ * User: Markus Stecker, con terra GmbH
  * Date: 02.02.14
  * Time: 17:43
- * To change this template use File | Settings | File Templates.
  */
 public class AgolDeleteItemResponse {
 

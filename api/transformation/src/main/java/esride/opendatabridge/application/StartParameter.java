@@ -19,7 +19,7 @@ public class StartParameter {
      */
     private boolean pidAvailabel = false;
     private static final String pidArgs = "-pid";
-    private String pidValue;
+    private String pidValue = "default";
 
     /**
      * reader Id which identifier the adapter type (ckan, csw)
@@ -61,8 +61,8 @@ public class StartParameter {
     /**
      * parameter which definies the ownertype of the items
      */
-    private static final String ownerTypeArgs = "-ownertype";
-    private String ownerTypeValue;
+    //private static final String ownerTypeArgs = "-ownertype";
+    //private String ownerTypeValue;
 
     public StartParameter(String[] startArgs) throws StartParameterException {
         this.startArgs = startArgs;
@@ -84,7 +84,7 @@ public class StartParameter {
             
             
             if(key == null || key.trim().length() == 0){
-                throw new StartParameterException("Please check the program parameters. " + pidArgs + " and " + readeridArgs);
+                throw new StartParameterException("Please check the program parameters -readerid and -accesstype");
             }
             if(key.equals(pidArgs)){
                 pidValue = value;
@@ -114,9 +114,9 @@ public class StartParameter {
                 accessTypeValue = value;
             }
 
-            if(key.equals(ownerTypeArgs)){
+            /*if(key.equals(ownerTypeArgs)){
                 ownerTypeValue = value;
-            }
+            } */
 
         }
 
@@ -141,9 +141,9 @@ public class StartParameter {
         return accessTypeValue;
     }
     
-    public String getOwnerTypeValue(){
+    /*public String getOwnerTypeValue(){
         return ownerTypeValue;
-    }
+    } */
 
     public boolean isTestValue() {
         return testValue;

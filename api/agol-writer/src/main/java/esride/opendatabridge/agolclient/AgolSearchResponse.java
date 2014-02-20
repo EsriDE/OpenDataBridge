@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sma
+ * The attributes for the Search Response
+ * User: Markus Stecker, con terra GmbH
  * Date: 29.01.14
  * Time: 17:40
- * To change this template use File | Settings | File Templates.
  */
 public class AgolSearchResponse {
 

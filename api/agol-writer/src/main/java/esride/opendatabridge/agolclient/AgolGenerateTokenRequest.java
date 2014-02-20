@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
- * Class which implements the /generateToken Request.
+ * Class which implements the Generate Token Request.
  * See API details for a better parameter understanding here: http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Generate_Token/02r3000000m5000000/
  * User: Markus Stecker, con terra GmbH
  * Date: 04.12.13

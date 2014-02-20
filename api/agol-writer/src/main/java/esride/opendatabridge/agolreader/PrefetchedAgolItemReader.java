@@ -1,8 +1,6 @@
 package esride.opendatabridge.agolreader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esride.opendatabridge.agolclient.AgolGenerateTokenRequest;
-import esride.opendatabridge.agolclient.AgolGenerateTokenResponse;
 import esride.opendatabridge.agolclient.AgolSearchRequest;
 import esride.opendatabridge.agolclient.AgolSearchResponse;
 import esride.opendatabridge.httptransport.HTTPRequest;
@@ -18,11 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sma
+ * This class implements the IAgolItemReader interface. This implementation collects all ArcGIS Online Items
+ * which belongs to a special user and stores the information locally in the HashMap.
+ * User: Markus Stecker, con terra GmbH
  * Date: 29.01.14
  * Time: 08:44
- * To change this template use File | Settings | File Templates.
  */
 public class PrefetchedAgolItemReader implements IAgolItemReader {
 

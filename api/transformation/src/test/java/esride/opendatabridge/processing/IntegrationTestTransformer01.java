@@ -90,7 +90,7 @@ public class IntegrationTestTransformer01 extends AbstractJUnit4SpringContextTes
                                              boolean deleteStrategy, boolean overwriteAccessType,
                                              String accessType, String ownerType) throws TransformerException {
              */
-            transform.executeProcessTransformation(reader, agolService, pipelineController, agolReader, param.isDeleteValue(), param.isOverwriteAccessTypeValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());       } catch (TransformerException e) {
+            transform.executeProcessTransformation(reader, agolService, pipelineController, agolReader, param.isDeleteValue(), param.isOverwriteAccessTypeValue(), param.getAccessTypeValue());       } catch (TransformerException e) {
             Assert.fail(e.getMessage());
         }
     }

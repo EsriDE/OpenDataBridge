@@ -21,9 +21,9 @@ public class ItemTransaction {
 
 
     
-    private AgolItem agolItem;
+    //private AgolItem agolItem;
 
-    private TransformedItem transformedItem;
+    //private TransformedItem transformedItem;
 
     public int getTransactionStatus() {
         return transactionStatus;
@@ -41,7 +41,7 @@ public class ItemTransaction {
         this.transactionStatus = transactionStatus;
     }
 
-    public AgolItem getAgolItem() {
+    /*public AgolItem getAgolItem() {
         return agolItem;
     }
 
@@ -55,5 +55,5 @@ public class ItemTransaction {
 
     public void setTransformedItem(TransformedItem transformedItem) {
         this.transformedItem = transformedItem;
-    }
+    } */
 }

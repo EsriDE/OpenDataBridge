@@ -1,11 +1,10 @@
 package esride.opendatabridge.agolclient;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sma
+ * The attributes for the Update Item Response.
+ * User: Markus Stecker, con terra GmbH
  * Date: 31.01.14
  * Time: 17:11
- * To change this template use File | Settings | File Templates.
  */
 public class AgolUpdateItemResponse {
 

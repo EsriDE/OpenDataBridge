@@ -15,6 +15,7 @@ import java.util.StringTokenizer;
  * User: sma
  * Date: 21.05.13
  * Time: 15:21
+ * @deprecated
  */
 public class WmsUrlHandler implements IElemHandler{
     private static Logger sLogger = Logger.getLogger(WmsUrlHandler.class);

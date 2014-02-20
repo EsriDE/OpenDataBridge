@@ -11,11 +11,11 @@ import java.io.InputStream;
 import java.util.HashMap;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sma
+ * Class which implements the Update Item Request.
+ * See API details for a better parameter understanding here: http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Update_Item/02r30000009s000000/
+ * User: Markus Stecker, con terra GmbH
  * Date: 31.01.14
  * Time: 17:10
- * To change this template use File | Settings | File Templates.
  */
 public class AgolUpdateItemRequest {
     private static Logger sLogger = Logger.getLogger(AgolAddItemRequest.class);

@@ -3,11 +3,10 @@ package esride.opendatabridge.agolclient;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sma
+ * The attributes for the Share Item Response
+ * User: Markus Stecker, con terra GmbH
  * Date: 31.01.14
  * Time: 17:07
- * To change this template use File | Settings | File Templates.
  */
 public class AgolShareItemResponse {
 

@@ -12,20 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Class which implements the /share Request (as item owner and as group admin).
+ * Class which implements the Share Item Request (as item owner).
  * See API details for a better parameter understanding here: http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#//02r30000007s000000
- *
- * TestCase 1 (act as a publisher, owner of the item)
- *
- * test01: move Item A to private, check status, move Item A to public
- * test02: move Item A to org, check status, move Item A to public
- * test03: move Item A to group1 (allowed), check status, move Item A to public again
- * test04: move Item A to groupX (notAllowed), check status, move Item A to public again
- * test05: move Item A to group1, group2 (allowed), check status, move Item A to public again
- * test06: move Item A to groupX, groupY (notAllowed), check status, move Item A to public again
- *
- *
- *
  * User: Markus Stecker, con terra GmbH
  * Date: 16.12.13
  * Time: 08:21
@@ -54,7 +42,7 @@ public class AgolShareItemRequest {
 
     public AgolShareItemRequest(String pUrl, String pTokenValue, boolean pEveryoneValue, boolean pOrgValue, List<String> pGroupsValue) {
         if (sLogger.isDebugEnabled()) {
-            sLogger.debug("Sharetem Request");
+            sLogger.debug("ShareItem Request");
             sLogger.debug(tokenParam + ": " + pTokenValue.substring(0,5) + "...");
             sLogger.debug(everyoneParam + ": " + pEveryoneValue);
             sLogger.debug(orgParam + ": " + pOrgValue);
@@ -113,7 +101,7 @@ public class AgolShareItemRequest {
             if (notSharedWithNode != null) {
                 Iterator<JsonNode> notSharedWithGroupsArray =  notSharedWithNode.iterator();
                 while(notSharedWithGroupsArray.hasNext()){
-
+                    sLogger.debug("Not shared with goup: " + notSharedWithGroupsArray.next().asText());
                 }
             }
             JsonNode itemIdNode = rootNode.get("itemId");

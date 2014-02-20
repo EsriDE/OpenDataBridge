@@ -2,7 +2,6 @@ package esride.opendatabridge.agolclient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import esride.opendatabridge.agolwriter.AgolTransactionFailedException;
 import esride.opendatabridge.httptransport.HTTPRequest;
 import esride.opendatabridge.item.AgolItem;
 import org.apache.log4j.Logger;
@@ -12,7 +11,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 
 /**
- * Class which implements the /addItem Request.
+ * Class which implements the Add Item Request.
  * See API details for a better parameter understanding here: http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Add_Item/02r30000008q000000/
  * User: Markus Stecker, con terra GmbH
  * Date: 06.12.13

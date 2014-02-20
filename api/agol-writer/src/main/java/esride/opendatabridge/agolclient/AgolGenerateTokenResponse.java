@@ -3,11 +3,10 @@ package esride.opendatabridge.agolclient;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sma
- * Date: 04.12.13
+ * The attributes for the Generate Token Response
+ * User: Markus Stecker, con terra GmbH
+ * 04.12.13
  * Time: 19:12
- * To change this template use File | Settings | File Templates.
  */
 public class AgolGenerateTokenResponse {
 

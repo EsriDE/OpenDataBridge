@@ -30,7 +30,6 @@ public class UnitTestStartParameter extends TestCase{
             Assert.assertEquals(param.getReaderValue(), "csw");
             //Assert.assertEquals(param.getSearchStringValue(), "abc and def");
             Assert.assertEquals(param.getAccessTypeValue(), "PRIVATE");
-            Assert.assertEquals(param.getOwnerTypeValue(), "USER");
             Assert.assertTrue(param.isTestValue());
             Assert.assertTrue(param.isDeleteValue());
             Assert.assertTrue(param.isOverwriteAccessTypeValue());
@@ -54,7 +53,6 @@ public class UnitTestStartParameter extends TestCase{
             Assert.assertEquals(param.getReaderValue(), "csw");
             //Assert.assertEquals(param.getSearchStringValue(), "abc and def");
             Assert.assertEquals(param.getAccessTypeValue(), "PRIVATE");
-            Assert.assertEquals(param.getOwnerTypeValue(), "USER");
             Assert.assertFalse(param.isTestValue());
             Assert.assertFalse(param.isDeleteValue());
             Assert.assertFalse(param.isOverwriteAccessTypeValue());
@@ -79,7 +77,6 @@ public class UnitTestStartParameter extends TestCase{
             Assert.assertEquals(param.getReaderValue(), "csw");
             //Assert.assertEquals(param.getSearchStringValue(), "type=csw");
             Assert.assertEquals(param.getAccessTypeValue(), "PRIVATE");
-            Assert.assertEquals(param.getOwnerTypeValue(), "USER");
             Assert.assertFalse(param.isTestValue());
             Assert.assertFalse(param.isDeleteValue());
             Assert.assertFalse(param.isOverwriteAccessTypeValue());

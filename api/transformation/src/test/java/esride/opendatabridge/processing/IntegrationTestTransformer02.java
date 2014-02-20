@@ -93,7 +93,7 @@ public class IntegrationTestTransformer02 extends AbstractJUnit4SpringContextTes
         }
         Transformer transform = new Transformer();
         try {
-            transform.executeProcessTransformation(reader, agolService,  pipelineController, agolReader,param.isDeleteValue(), param.isOverwriteAccessTypeValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());
+            transform.executeProcessTransformation(reader, agolService,  pipelineController, agolReader,param.isDeleteValue(), param.isOverwriteAccessTypeValue(), param.getAccessTypeValue());
         } catch (TransformerException e) {
             Assert.fail(e.getMessage());
         }
@@ -106,8 +106,9 @@ public class IntegrationTestTransformer02 extends AbstractJUnit4SpringContextTes
         paramArray[0] = "-pid=Test02";
         paramArray[1] = "-readerid=ckan";
         //paramArray[2] = "-searchstring=";
-        paramArray[2] = "-accesstype=PRIVATE";
+        paramArray[2] = "-accesstype=PUBLIC";
         paramArray[3] = "-ownertype=USER";
+        //paramArray[4] = "-overwriteaccesstype=true";
         try {
             param = new StartParameter(paramArray);
         } catch (StartParameterException e) {
@@ -122,7 +123,7 @@ public class IntegrationTestTransformer02 extends AbstractJUnit4SpringContextTes
         }
         Transformer transform = new Transformer();
         try {
-            transform.executeProcessTransformation(reader, agolService, pipelineController, agolReader, param.isDeleteValue(), param.isOverwriteAccessTypeValue(), param.getAccessTypeValue(), param.getOwnerTypeValue());
+            transform.executeProcessTransformation(reader, agolService, pipelineController, agolReader, param.isDeleteValue(), param.isOverwriteAccessTypeValue(), param.getAccessTypeValue());
         } catch (TransformerException e) {
             Assert.fail(e.getMessage());
         }

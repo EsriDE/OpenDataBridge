@@ -1,6 +1,6 @@
 package esride.opendatabridge.agolwriter;
 
-import com.fasterxml.jackson.databind.JsonNode;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esride.opendatabridge.agolclient.*;
 import esride.opendatabridge.httptransport.HTTPRequest;
@@ -10,8 +10,7 @@ import esride.opendatabridge.token.AgolTokenService;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
+
 import java.util.*;
 
 /**
@@ -468,6 +467,9 @@ public class AgolService implements IAgolService {
         }
 
         if(updateItemResponse.isSuccess() && overwriteAccessType){
+
+            //ToDo: true und Gruppen mitnehmen!
+
             boolean everyone = false;
             boolean organisation = false;
 
