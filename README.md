@@ -11,7 +11,7 @@ If yout want to execute the latest release please go to the following page: http
 * Maven 2.2.10 or higher
  
 ## Issues ##
-Find a bug or want to request a new feature? Please let us know by submitting an issue.
+Find a bug or want to request a new feature? Please let us know by submitting an issue. See contact details in the documentation.
 
 ## Contributing ##
 Anyone and everyone is welcome to contribute.
