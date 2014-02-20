@@ -6,6 +6,16 @@ The tool could be used for a single process (running as a batch script directly 
 ## Running the application ##
 If yout want to execute the latest release please go to the following page: https://github.com/EsriDE/OpenDataBridge/releases 
 
+## Requirements ##
+* JAVA 1.6 or higher
+* Maven 2.2.10 or higher
+ 
+## Issues ##
+Find a bug or want to request a new feature? Please let us know by submitting an issue.
+
+## Contributing ##
+Anyone and everyone is welcome to contribute.
+
 ## Building the application (for Developers) ##
 
 * check out the source code from the repository
@@ -16,17 +26,6 @@ If yout want to execute the latest release please go to the following page: http
 * The Maven property local.configfile must point to the buildLocal.properties file in your IDE
 * activate the env-dev profile in your IDE
 * execute the maven process (phase package)
-
-## Requirements ##
-* JAVA 1.6 or higher
-* Maven 2.2.10 or higher
- 
-
-## Issues ##
-Find a bug or want to request a new feature? Please let us know by submitting an issue.
-
-## Contributing ##
-Anyone and everyone is welcome to contribute.
 
 ## Licensing ##
 Copyright 2012 Esri
