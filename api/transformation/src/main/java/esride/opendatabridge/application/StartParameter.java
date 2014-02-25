@@ -120,8 +120,8 @@ public class StartParameter {
 
         }
 
-        if(!pidAvailabel || !readeridAvailable){
-            throw new StartParameterException("Please check the program parameters. " + pidArgs + " and " + readeridArgs);
+        if(!readeridAvailable){
+            throw new StartParameterException("Please check the program parameters. " + readeridArgs);
         }
     }
 
