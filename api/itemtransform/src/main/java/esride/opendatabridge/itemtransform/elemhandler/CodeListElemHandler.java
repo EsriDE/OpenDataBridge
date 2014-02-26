@@ -17,6 +17,7 @@ import java.util.HashMap;
  * Date: 08.05.13
  * Time: 13:26
  * To change this template use File | Settings | File Templates.
+ * @deprecated
  */
 public class CodeListElemHandler implements IElemHandler {
     private static Logger sLogger = Logger.getLogger(CodeListElemHandler.class);

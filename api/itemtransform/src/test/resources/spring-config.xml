@@ -10,33 +10,23 @@
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 
-    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="transform"
-            p:itemElemExtractor-ref="itemGenerator"/>
-    
-    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
-            p:generatorConfiguration-ref="generatorConfig"
-            p:elemHandlerMap-ref="elemMap"/>
+    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
+          p:generatorConfiguration-ref="generatorConfig"
+          p:elemHandlerMap-ref="elemMap"/>
     
     <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="generatorConfig"
           p:pathInfo="/test/"/>
     
     <util:map id="elemMap" key-type="java.lang.String" value-type="esride.opendatabridge.itemtransform.elemhandler.IElemHandler">
-        <entry key="wmsUrl" value-ref="wmsUrlElemHandler"/>
         <entry key="default" value-ref="defaultElemHandler"/>
         <entry key="string" value-ref="stringElemHandler"/>
         <entry key="nodeset" value-ref="nodesetElemHandler"/>
-        <entry key="licenseCodeList" value-ref="licenseCodeListElemHandler"/>
-        <entry key="epsgCodeList" value-ref="epsgCodeListElemHandler"/>
     </util:map>
 
-    <bean id="wmsUrlElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.WmsUrlHandler"/>
     <bean id="defaultElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.DefaultElemHandler"/>
     <bean id="stringElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.StringElemHandler"/>
     <bean id="nodesetElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.NodesetElemHandler"/>
-    <bean id="licenseCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CodeListElemHandler"
-          p:codeListMap-ref="licenseMap"/>
-    <bean id="epsgCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CrsHandler"
-          p:codeListMap-ref="epsgMap"/>
+
 
     <util:map id="epsgMap" key-type="java.lang.String" value-type="java.lang.String">
         <entry key="CRS:84" value="4326"/>

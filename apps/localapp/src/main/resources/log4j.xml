@@ -8,7 +8,7 @@
         <param name="MaxFileSize" value="5000KB"/>
         <param name="MaxBackupIndex" value="3"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[%-5p] %d{ISO8601} [%t] %c - %m%n"/>
+            <param name="ConversionPattern" value="[%-5p] %d: %m%n"/>
         </layout>
     </appender>
 

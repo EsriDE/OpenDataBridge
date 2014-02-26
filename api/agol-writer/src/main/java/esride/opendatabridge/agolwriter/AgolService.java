@@ -1,15 +1,16 @@
 package esride.opendatabridge.agolwriter;
 
-import com.fasterxml.jackson.databind.JsonNode;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import esride.opendatabridge.agolclient.*;
 import esride.opendatabridge.httptransport.HTTPRequest;
 import esride.opendatabridge.item.AgolItem;
 import esride.opendatabridge.item.AgolItemFactory;
+import esride.opendatabridge.token.AgolTokenService;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
+
 import java.util.*;
 
 /**
@@ -20,14 +21,22 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class AgolService implements IAgolService {
-    private String _userName, _password,_referer, _token;
-    private String _baseUrl, _rootUrl, _userContentUrl, _selfUrl, _contentUrl;
-    private String _userGroupIds, _orgId, _role;
-    private Long _tokenExpires;
-    private static final Logger _log = Logger.getLogger(AgolService.class);
+
+    private static Logger sLogger = Logger.getLogger(AgolService.class);
+    private String _userName;  //, _password,_referer, _token;
+    private String _baseUrl, _rootUrl, _userContentUrl; //_selfUrl, _contentUrl;
+    //private String _userGroupIds, _orgId, _role;
+    //private Long _tokenExpires;
+    //private static final Logger _log = Logger.getLogger(AgolService.class);
     private AgolItemFactory _agolItemFactory;
     private HTTPRequest _httpRequest;
     private ObjectMapper _objectMapper;
+
+    private AgolTokenService tokenService;
+
+    public void setTokenService(AgolTokenService pTokenService) {
+        tokenService = pTokenService;
+    }
 
     /**
      * Setter for _agolItemFactory
@@ -55,26 +64,24 @@ public class AgolService implements IAgolService {
      * Constructor
      * @param baseUrl
      * @param userName
-     * @param password
-     * @param referer
      */
-    public AgolService(String baseUrl, String userName, String password, String referer) {
+    public AgolService(String baseUrl, String userName) {
         _baseUrl = baseUrl;
         _userName = userName;
-        _password = password;
-        _referer = referer;
+        //_password = password;
+        //_referer = referer;
 
         _rootUrl = _baseUrl + "/sharing/rest";
         _userContentUrl = _rootUrl + "/content/users/" + _userName;
-        _selfUrl = _rootUrl + "/community/self";
-        _contentUrl = _rootUrl + "/content";
+        //_selfUrl = _rootUrl + "/community/self";
+        //_contentUrl = _rootUrl + "/content";
     }
 
     /**
      * Create ArcGIS Online token for user credentials
      * @throws IOException
      */
-    private void createToken() throws IOException {
+    /*private void createToken() throws IOException {
         String generateTokenBaseUrl = "https://www.arcgis.com/sharing/generateToken";
 
         HashMap<String, String> agolAttributes = new HashMap<String, String>();
@@ -99,13 +106,13 @@ public class AgolService implements IAgolService {
                 _log.info("New token " + tokenNode + " created. Expires at " + resultdate + ".");
             }
         }
-    }
+    } */
 
     /**
      * Fill user details
      * @throws IOException
      */
-    private void fillUserDetails() throws IOException {
+    /*private void fillUserDetails() throws IOException {
         _userGroupIds = "";
         _orgId = "";
         _role = "";
@@ -147,46 +154,46 @@ public class AgolService implements IAgolService {
                 _log.info("User details acquired.");
             }
         }
-    }
+    } */
     /**
      * Get IDs of the groups the logged-in user is a member of
      * @return Comma-separated userGroupIds
      */
-    public String getUserGroupIds() throws IOException {
+    /*public String getUserGroupIds() throws IOException {
         if (_userGroupIds == null) {    // first call
             fillUserDetails();
         }
         return _userGroupIds;
-    }
+    } */
     /**
      * Get organization ID of the logged-in user
      * @return orgId
      * @throws IOException
      */
-    private String getOrgId() throws IOException {
+    /*private String getOrgId() throws IOException {
         if (_orgId == null) {    // first call
             fillUserDetails();
         }
         return _orgId;
-    }
+    } */
     /**
      * Get role of the logged-in user
      * @return _role
      * @throws IOException
      */
-    private String getRole() throws IOException {
+    /*private String getRole() throws IOException {
         if (_role == null) {    // first call
             fillUserDetails();
         }
         return _role;
-    }
+    } */
 
     /**
      * Get a specific item including Sharing information
      * @param itemId
      * @return
      */
-    public AgolItem getItem(String itemId) throws IOException, AgolTransactionFailedException, AgolItemInvalidException {
+    /*public AgolItem getItem(String itemId) throws IOException, AgolTransactionFailedException, AgolItemInvalidException {
         String itemUrl = _contentUrl + "/items/" + itemId;
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
         InputStream entities = _httpRequest.executePostRequest(itemUrl, agolAttributes, null);
@@ -207,7 +214,7 @@ public class AgolService implements IAgolService {
             return agolItem;
         }
         throw new AgolTransactionFailedException("Getting item with ID " + itemId + " failed with no result.");
-    }
+    } */
 
     /**
      * Get all items of a specific type, that are owned by logged-in user. If logged-in user is not an admin, he has only write permission to his own items. This is probably the standard use case.
@@ -215,9 +222,9 @@ public class AgolService implements IAgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes) throws IOException, AgolItemInvalidException {
+    /*public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes) throws IOException, AgolItemInvalidException {
         return searchItems(itemTypes, OwnerType.USER);
-    }
+    } */
     /**
      * Get all items with selectable access type
      * @param itemTypes
@@ -225,12 +232,12 @@ public class AgolService implements IAgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType) throws IOException, AgolItemInvalidException {
+    /*public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType) throws IOException, AgolItemInvalidException {
         String searchString = getSearchString(itemTypes, ownerType, "");
         Map<String, ArrayList<AgolItem>> _agolItems = new HashMap<String, ArrayList<AgolItem>>();
         fillAgolItems(_agolItems, searchString, 0, 0);
         return _agolItems;
-    }
+    } */
     /**
      * Get all items with selectable access type
      * @param itemTypes
@@ -239,19 +246,19 @@ public class AgolService implements IAgolService {
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException, AgolItemInvalidException {
+    /*public Map<String, ArrayList<AgolItem>> searchItems(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException, AgolItemInvalidException {
         String searchString = getSearchString(itemTypes, ownerType, addendum);
         Map<String, ArrayList<AgolItem>> _agolItems = new HashMap<String, ArrayList<AgolItem>>();
         fillAgolItems(_agolItems, searchString, 0, 0);
         return _agolItems;
-    }
+    } */
     /**
      * Get all items that match the search string
      * @param searchString
      * @return
      * @throws IOException
      */
-    public Map<String, ArrayList<AgolItem>> searchItems(String searchString, OwnerType ownerType) throws IOException, AgolItemInvalidException {
+    /*public Map<String, ArrayList<AgolItem>> searchItems(String searchString, OwnerType ownerType) throws IOException, AgolItemInvalidException {
         Map<String, ArrayList<AgolItem>> _agolItems = new HashMap<String, ArrayList<AgolItem>>();
         String searchStringTotal = "(";
         if (!searchString.equals("")) {
@@ -263,7 +270,7 @@ public class AgolService implements IAgolService {
         searchStringTotal += getOwnerTypeSearchString(ownerType) + ")";
         fillAgolItems(_agolItems, searchStringTotal, 0, 0);
         return _agolItems;
-    }
+    } */
     /**
      * Concatenate search string for items request
      * @param itemTypes
@@ -272,7 +279,7 @@ public class AgolService implements IAgolService {
      * @return Search String
      * @throws IOException
      */
-    private String getSearchString(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException {
+    /*private String getSearchString(List<String> itemTypes, OwnerType ownerType, String addendum) throws IOException {
         String searchString =  "(";
 
         searchString += getOwnerTypeSearchString(ownerType);
@@ -294,7 +301,7 @@ public class AgolService implements IAgolService {
 
         searchString += ")";
         return searchString;
-    }
+    }  */
 
     /**
      * Create search string for OwnerType
@@ -302,7 +309,7 @@ public class AgolService implements IAgolService {
      * @return
      * @throws IOException
      */
-    private String getOwnerTypeSearchString(OwnerType ownerType) throws IOException {
+    /*private String getOwnerTypeSearchString(OwnerType ownerType) throws IOException {
         String searchString = "";
         // If logged-in user is not an admin, he has only write permission to his own items. So he won't get more than those.
         if (ownerType.equals(OwnerType.USER) || !getRole().equals("org_admin")) {
@@ -312,14 +319,14 @@ public class AgolService implements IAgolService {
             searchString += "orgid:" + getOrgId();
         }
         return searchString;
-    }
+    } */
     /**
      * Get items request
      * @param searchString
      * @param startWithItemNumber: Integer value for recursive calls - 100 items are the maximum return number for one HTTP request
      * @throws IOException
      */
-    private void fillAgolItems(Map<String, ArrayList<AgolItem>> _agolItems, String searchString, int startWithItemNumber, int alreadyRetrieved) throws IOException, AgolItemInvalidException {
+    /*private void fillAgolItems(Map<String, ArrayList<AgolItem>> _agolItems, String searchString, int startWithItemNumber, int alreadyRetrieved) throws IOException, AgolItemInvalidException {
         int agolItemsPaginationNextStart;
         int totalItemsCount;
         int retrievedItemsCount;
@@ -383,7 +390,7 @@ public class AgolService implements IAgolService {
                 fillAgolItems(_agolItems, searchString, agolItemsPaginationNextStart, retrievedItemsCount);
             }
         }
-    }
+    } */
 
     /**
      * Add a list of items and share publically
@@ -391,19 +398,120 @@ public class AgolService implements IAgolService {
      * @return Comma-separated list of added itemIDs
      * @throws AgolPublishBatchPartlyFailedException
      */
-    public void addItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException {
+    /*public void addItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException {
         addItems(agolItems, AccessType.PUBLIC);
-    }
+    } */
     /**
      * Add a list of items and share with selectable access type
-     * @param agolItems
+     //* @param agolItems
      * @param accessType
      * @return Comma-separated list of added itemIDs
      * @throws AgolPublishBatchPartlyFailedException
      */
-    public void addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolPublishBatchPartlyFailedException {
+    /*public void addItems(List<AgolItem> agolItems, AccessType accessType) throws AgolPublishBatchPartlyFailedException {
         addItems(agolItems, accessType, "");
+    } */
+
+
+    public void insertItem(AgolItem agolItem, AccessType accessType) throws IOException {
+        //insert Item
+        //${test.service.url}/sharing/rest/content/users/${test.service.username}/addItem
+        if(sLogger.isDebugEnabled()){
+            sLogger.debug("Insert AgolItem with Url: " + agolItem.getUrl());
+        }
+        String addItemUrl = _userContentUrl + "/addItem";
+        AgolAddItemRequest addItemRequest = new AgolAddItemRequest(addItemUrl, tokenService.getToken(), agolItem);
+        AgolAddItemResponse addItemResponse = addItemRequest.excReqWithJsonResp(_httpRequest, _objectMapper);
+
+        if(addItemResponse.isSuccess()){
+            if(sLogger.isDebugEnabled()){
+                sLogger.debug("Insert AgolItem with Id was successfull: " + agolItem.getId());
+            }
+            boolean everyone = false;
+            boolean organisation = false;
+
+            if(accessType.equals(AccessType.PUBLIC)){
+                everyone = true;
+                organisation = true;
+            }
+
+            if(accessType.equals(AccessType.ORG)){
+                organisation = true;
+            }
+            //shareItem
+            //${test.service.url}/sharing/rest/content/users/${test.service.username}/items/<itemId>/share
+            String shareItemUrl = _userContentUrl + "/items/" + addItemResponse.getId() + "/share";
+            AgolShareItemRequest shareItemRequest = new AgolShareItemRequest(shareItemUrl, tokenService.getToken() ,everyone ,organisation , null);
+            shareItemRequest.excReqWithJsonResp(_httpRequest, _objectMapper);
+            if(sLogger.isDebugEnabled()){
+               sLogger.debug("Share AgolItem (everyone: " + everyone + ", organisation: " + organisation + ") with Id was successfull: " + agolItem.getId() + "");
+            }
+        }
     }
+
+
+    public void updateItem(AgolItem agolItem, AccessType accessType, boolean overwriteAccessType) throws IOException{
+        //{baseurl}/sharing/rest/content/users/{username}/items/{itemid}/update
+        if(agolItem.getId() == null){
+            throw new IllegalStateException("AgolItem ID is missing");
+        }
+        String updateItemUrl = _userContentUrl + "/items/" + agolItem.getId() + "/update";
+        if(sLogger.isDebugEnabled()){
+            sLogger.debug("Updating AgolItem with Id: " + agolItem.getId());
+        }
+        AgolUpdateItemRequest updateItemRequest = new AgolUpdateItemRequest(updateItemUrl, tokenService.getToken(), agolItem);
+        AgolUpdateItemResponse updateItemResponse = updateItemRequest.excReqWithJsonResp(_httpRequest, _objectMapper);
+
+        if(sLogger.isDebugEnabled() && updateItemResponse.isSuccess()){
+            sLogger.debug("Update AgolItem with Id was successfull: " + agolItem.getId());
+        }
+
+        if(updateItemResponse.isSuccess() && overwriteAccessType){
+
+            //ToDo: true und Gruppen mitnehmen!
+
+            boolean everyone = false;
+            boolean organisation = false;
+
+            if(accessType.equals(AccessType.PUBLIC)){
+                everyone = true;
+                organisation = true;
+            }
+
+            if(accessType.equals(AccessType.ORG)){
+                organisation = true;
+            }
+            //shareItem
+            //${test.service.url}/sharing/rest/content/users/${test.service.username}/items/<itemId>/share
+            String shareItemUrl = _userContentUrl + "/items/" + updateItemResponse.getId() + "/share";
+            AgolShareItemRequest shareItemRequest = new AgolShareItemRequest(shareItemUrl, tokenService.getToken() ,everyone ,organisation , null);
+            shareItemRequest.excReqWithJsonResp(_httpRequest, _objectMapper);
+            if(sLogger.isDebugEnabled()){
+                sLogger.debug("Share AgolItem (everyone: " + everyone + ", organisation: " + organisation + ") with Id was successfull: " + agolItem.getId() + "");
+            }
+
+        }
+    }
+
+    public void deleteItem(String agolId) throws IOException{
+        //${test.service.url}/sharing/rest/content/users/${test.service.username}/items/<itemId>/delete
+        if(agolId == null){
+            throw new IllegalStateException("AgolItem ID is missing");
+        }
+        if(sLogger.isDebugEnabled()){
+            sLogger.debug("Delete AgolItem with Id: " + agolId);
+        }
+        String deleteItemUrl = _userContentUrl + "/items/" + agolId + "/delete";
+        AgolDeleteItemRequest agolDeleteItemRequest = new AgolDeleteItemRequest(deleteItemUrl, tokenService.getToken());
+        AgolDeleteItemResponse deleteResponse = agolDeleteItemRequest.excReqWithJsonResp(_httpRequest, _objectMapper);
+
+
+        if(deleteResponse.isSuccess() && sLogger.isDebugEnabled()){
+            sLogger.debug("Delete AgolItem with Id: " + agolId + " was successfull");
+        }
+    }
+
+
     /**
      * Add a list of items and share with selectable access type and groups
      * @param agolItems
@@ -412,7 +520,7 @@ public class AgolService implements IAgolService {
      * @return Comma-separated list of added itemIDs
      * @throws AgolPublishBatchPartlyFailedException
      */
-    public void addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolPublishBatchPartlyFailedException {
+    /*public void addItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolPublishBatchPartlyFailedException {
 
         AgolPublishBatchPartlyFailedException exception = null;
         for (AgolItem agolItem : agolItems) {
@@ -433,7 +541,7 @@ public class AgolService implements IAgolService {
         if (exception != null) {
             throw exception;
         }
-    }
+    } */
     /**
      * Add item
      * @param agolItem
@@ -441,7 +549,7 @@ public class AgolService implements IAgolService {
      * @throws AgolTransactionFailedException
      * @throws IOException
      */
-    private String addItem(AgolItem agolItem) throws AgolTransactionFailedException, IOException {
+    /*private String addItem(AgolItem agolItem) throws AgolTransactionFailedException, IOException {
         String addItemUrl = _userContentUrl + "/addItem";
 
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
@@ -468,7 +576,7 @@ public class AgolService implements IAgolService {
             return itemId;
         }
         return null;
-    }
+    } */
 
     /**
      * Share or unshare items to everyone or to your organization. Share items to specific groups.
@@ -477,7 +585,7 @@ public class AgolService implements IAgolService {
      * @param groupIds
      * @throws IOException
      */
-    private void shareItems(String itemIds, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException {
+    /*private void shareItems(String itemIds, AccessType accessType, String groupIds) throws IOException, AgolTransactionFailedException {
         String publishItemUrl = _userContentUrl + "/shareItems";
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
 
@@ -513,13 +621,13 @@ public class AgolService implements IAgolService {
             }
             _log.info("Items \"" + successItems +"\" have been shared with access type " + accessType.toString() + groupsLog + ".");
         }
-    }
+    } */
     /**
      * Unshare items with the groups listed in groupIds
      * @param itemIds: Comma-separated list of items to be unshared
      * @param groupIds: Comma-separated list of group IDs that the items will be unshared with.
      */
-    private void unshareItems(String itemIds, String groupIds) throws IOException, AgolTransactionFailedException {
+    /*private void unshareItems(String itemIds, String groupIds) throws IOException, AgolTransactionFailedException {
         String unshareItemsUrl = _userContentUrl + "/unshareItems";
 
         HashMap<String, String> agolAttributes = getStandardAgolAttributes();
@@ -538,13 +646,13 @@ public class AgolService implements IAgolService {
         if (_log.isInfoEnabled()) {
             _log.info("Items \"" + successItems +"\" have been unshared from your ArcGIS Online account.");
         }
-    }
+    } */
 
     /**
      * Update a list of items, don't touch the Share settings
      * @param agolItems
      */
-    public void updateItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException {
+    /*public void updateItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException {
          AgolPublishBatchPartlyFailedException exception = null;
          for (AgolItem agolItem : agolItems) {
             try {
@@ -560,7 +668,7 @@ public class AgolService implements IAgolService {
          if (exception != null) {
             throw exception;
          }
-    }
+    } */
     /**
      * Update a list of items and adjust the Share settings for a selectable access type
      * @param agolItems
@@ -579,7 +687,7 @@ public class AgolService implements IAgolService {
      * @throws IOException
      * @throws AgolPublishBatchPartlyFailedException
      */
-    public void updateItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolPublishBatchPartlyFailedException {
+    /*public void updateItems(List<AgolItem> agolItems, AccessType accessType, String groupIds) throws AgolPublishBatchPartlyFailedException {
         AgolPublishBatchPartlyFailedException exception = null;
         for (AgolItem agolItem : agolItems) {
             try {
@@ -602,14 +710,14 @@ public class AgolService implements IAgolService {
         }
 
 
-    }
+    } */
     /**
      * Update a specific item
      * @param agolItem
      * @throws IOException
      * @throws AgolTransactionFailedException
      */
-    private void updateItem(AgolItem agolItem) throws IOException, AgolTransactionFailedException {
+    /*private void updateItem(AgolItem agolItem) throws IOException, AgolTransactionFailedException {
         String userItemUrl = _userContentUrl + "/items/" + agolItem.getId();
         String updateItemUrl = userItemUrl + "/update";
 
@@ -632,7 +740,7 @@ public class AgolService implements IAgolService {
                 }
             }
         }
-    }
+    } */
 
     /**
      * Delete ArcgGIS Online items
@@ -640,7 +748,7 @@ public class AgolService implements IAgolService {
      * @throws IOException
      * @throws AgolTransactionFailedException
      */
-    public void deleteItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException {
+    /*public void deleteItems(List<AgolItem> agolItems) throws AgolPublishBatchPartlyFailedException {
         String itemIds = "";
 
         for (AgolItem agolItem : agolItems) {
@@ -650,14 +758,14 @@ public class AgolService implements IAgolService {
             itemIds += agolItem.getId();
         }
         deleteItems(itemIds);
-    }
+    } */
     /**
      * Delete ArcgGIS Online items
      * @param itemIds as comma-separated list
      * @throws IOException
      * @throws AgolTransactionFailedException
      */
-    public void deleteItems(String itemIds) throws AgolPublishBatchPartlyFailedException {
+    /*public void deleteItems(String itemIds) throws AgolPublishBatchPartlyFailedException {
         String deleteItemsUrl = _userContentUrl + "/deleteItems";
         String successItems = "";
         try {
@@ -676,7 +784,7 @@ public class AgolService implements IAgolService {
         if (_log.isInfoEnabled()) {
             _log.info("Items \"" + successItems +"\" have been deleted from your ArcGIS Online account.");
         }
-    }
+    } */
 
     /**
      * Handle a result list that might contain errors
@@ -685,7 +793,7 @@ public class AgolService implements IAgolService {
      * @throws IOException
      * @throws AgolTransactionFailedException if items returned error messages
      */
-    private String handleResultList(InputStream entities) throws IOException, AgolTransactionFailedException {
+    /*private String handleResultList(InputStream entities) throws IOException, AgolTransactionFailedException {
         String errorItems = "";
         String successItems = "";
         if (entities != null)
@@ -717,14 +825,14 @@ public class AgolService implements IAgolService {
             throw new AgolTransactionFailedException(errorItems);
         }
         return successItems;
-    }
+    } */
 
     /**
      * Sets the format and token attributes needed in every HTTP interaction with ArcGIS Online
      * @return the standard ArcGIS Online attributes
      * @throws IOException
      */
-    private HashMap<String, String> getStandardAgolAttributes() throws IOException {
+    /*private HashMap<String, String> getStandardAgolAttributes() throws IOException {
         HashMap<String, String> agolAttributes = new HashMap<String, String>();
         agolAttributes.put("f", "json");
 
@@ -734,7 +842,7 @@ public class AgolService implements IAgolService {
 
         agolAttributes.put("token", _token);
         return agolAttributes;
-    }
+    } */
 
     /**
      * Wrapper: Create ArcGIS Online Item from HashMap

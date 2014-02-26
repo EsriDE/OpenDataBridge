@@ -8,11 +8,9 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
  * User: nik
  * Date: 23.04.13
  * Time: 15:11
- * To change this template use File | Settings | File Templates.
  */
 public class AgolItemFactory {
 

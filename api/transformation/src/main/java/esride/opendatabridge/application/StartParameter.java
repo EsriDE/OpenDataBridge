@@ -19,7 +19,7 @@ public class StartParameter {
      */
     private boolean pidAvailabel = false;
     private static final String pidArgs = "-pid";
-    private String pidValue;
+    private String pidValue = "default";
 
     /**
      * reader Id which identifier the adapter type (ckan, csw)
@@ -49,8 +49,8 @@ public class StartParameter {
     /**
      * parameter which definies the search string
      */
-    private static final String searchStringArgs = "-searchstring";
-    private String searchStringValue;
+    //private static final String searchStringArgs = "-searchstring";
+    //private String searchStringValue;
 
     /**
      * parameter which definies the accesstype of the items
@@ -61,8 +61,8 @@ public class StartParameter {
     /**
      * parameter which definies the ownertype of the items
      */
-    private static final String ownerTypeArgs = "-ownertype";
-    private String ownerTypeValue;
+    //private static final String ownerTypeArgs = "-ownertype";
+    //private String ownerTypeValue;
 
     public StartParameter(String[] startArgs) throws StartParameterException {
         this.startArgs = startArgs;
@@ -84,7 +84,7 @@ public class StartParameter {
             
             
             if(key == null || key.trim().length() == 0){
-                throw new StartParameterException("Please check the program parameters. " + pidArgs + " and " + readeridArgs);
+                throw new StartParameterException("Please check the program parameters -readerid and -accesstype");
             }
             if(key.equals(pidArgs)){
                 pidValue = value;
@@ -106,22 +106,22 @@ public class StartParameter {
                 overwriteAccessTypeValue = Boolean.parseBoolean(value);
             }
             
-            if(key.equals(searchStringArgs)){
+            /*if(key.equals(searchStringArgs)){
                 searchStringValue = value;
-            }
+            } */
 
             if(key.equals(accessTypeArgs)){
                 accessTypeValue = value;
             }
 
-            if(key.equals(ownerTypeArgs)){
+            /*if(key.equals(ownerTypeArgs)){
                 ownerTypeValue = value;
-            }
+            } */
 
         }
 
-        if(!pidAvailabel || !readeridAvailable){
-            throw new StartParameterException("Please check the program parameters. " + pidArgs + " and " + readeridArgs);
+        if(!readeridAvailable){
+            throw new StartParameterException("Please check the program parameters. " + readeridArgs);
         }
     }
 
@@ -133,17 +133,17 @@ public class StartParameter {
         return readerValue;
     }
     
-    public String getSearchStringValue(){
+    /*public String getSearchStringValue(){
         return searchStringValue;
-    }
+    } */
     
     public String getAccessTypeValue(){
         return accessTypeValue;
     }
     
-    public String getOwnerTypeValue(){
+    /*public String getOwnerTypeValue(){
         return ownerTypeValue;
-    }
+    } */
 
     public boolean isTestValue() {
         return testValue;

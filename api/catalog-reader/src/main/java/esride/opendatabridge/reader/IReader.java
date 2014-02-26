@@ -11,6 +11,8 @@ import java.util.List;
  */
 public interface IReader {
 
-    public List<TransformedItem> getItemsFromCatalog() throws ReaderException;
+    public TransformedItemResult getTramsformedItemsFromCatalog(int startPos) throws ReaderException;
+
+    public MetadataObjectResult getItemsFromCatalog(int startPos) throws ReaderException;
 
 }

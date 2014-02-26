@@ -14,11 +14,31 @@
 
     <context:property-placeholder location="classpath:/agolservice/service.properties"/>
 
-    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice" p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest" p:_objectMapper-ref="objectMapper">
+    <!-- AgolWriter bean components-->
+    <bean class="esride.opendatabridge.agolreader.PrefetchedAgolItemReader" id="agolReader"
+          p:_AgolItemFactory-ref="agolitemfactory" p:_httpRequest-ref="httpRequest"
+          p:agolTokenService-ref="tokenService"
+          p:_objectMapper-ref="objectMapper" p:maxPrefetchedAgolItems="10000"
+          p:foreignKeyPrefix="CATALOG" init-method="prefetchItems">
         <constructor-arg type="java.lang.String" value="${test.service.url}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.username}"/>
+    </bean>
+
+    <bean class="esride.opendatabridge.token.AgolTokenService" id="tokenService"
+          p:httpRequest-ref="httpRequest" p:objectMapper-ref="objectMapper">
+        <constructor-arg type="java.lang.String" value="${test.service.generateTokenUrl}"/>
         <constructor-arg type="java.lang.String" value="${test.service.username}"/>
         <constructor-arg type="java.lang.String" value="${test.service.pwd}"/>
         <constructor-arg type="java.lang.String" value="${test.service.referer}"/>
+    </bean>
+
+    <bean class="esride.opendatabridge.agolwriter.AgolService" id="agolservice"
+          p:_AgolItemFactory-ref="agolitemfactory"
+          p:_httpRequest-ref="httpRequest"
+          p:_objectMapper-ref="objectMapper"
+          p:tokenService-ref="tokenService">
+        <constructor-arg type="java.lang.String" value="${test.service.url}"/>
+        <constructor-arg type="java.lang.String" value="${test.service.username}"/>
     </bean>
 
     <bean class="esride.opendatabridge.item.AgolItemFactory" id="agolitemfactory" p:_objectMapper-ref="objectMapper">
@@ -30,6 +50,37 @@
 
     <!-- HTTP bean component-->
     <bean class="esride.opendatabridge.httptransport.HTTPRequest" id="httpRequest"/>
+
+    <bean class="esride.opendatabridge.pipeline.controller.PipelineController" id="pipelinecontroller"
+          p:pipelineList-ref="pipelineList"/>
+
+    <util:list id="pipelineList" value-type="esride.opendatabridge.pipeline.IPipeline">
+        <ref bean="urlNotEmpty"/>
+        <ref bean="itemTypeValidator"/>
+        <ref bean="licenseInfoChanger"/>
+        <ref bean="srsChanger"/>
+        <ref bean="urlChanger"/>
+        <ref bean="foreignKeyChanger"/>
+    </util:list>
+
+    <bean class="esride.opendatabridge.pipeline.changer.ForeignKeyChanger" id="foreignKeyChanger"
+          p:foreignKeyElementName="agol.foreignkey" p:prefix="CATALOG"
+          p:resourceTypeName="agol.type" p:tagsElementName="agol.tags"/>
+
+    <bean class="esride.opendatabridge.pipeline.changer.LicenseInfoChanger" id="licenseInfoChanger"
+          p:licenseMap-ref="licenseMap" p:licenseName="agol.licenseInfo"/>
+
+    <bean class="esride.opendatabridge.pipeline.changer.UrlChanger" id="urlChanger"
+          p:urlElementName="agol.url"/>
+
+    <bean class="esride.opendatabridge.pipeline.changer.SrsChanger" id="srsChanger"
+          p:srsElementName="agol.spatialReferences" p:srsMap-ref="epsgMap"/>
+
+    <bean class="esride.opendatabridge.pipeline.validator.ItemTypeValidator" id="itemTypeValidator"
+          p:typeName="agol.type" p:allowedTypeNames="${itemtype.validator.value}"/>
+
+    <bean class="esride.opendatabridge.pipeline.validator.UrlNotEmptyValidator" id="urlNotEmpty"
+          p:typeName="agol.type" p:typeList="WMS,KML,CSV" p:urlName="agol.url"/>
 
     <!-- Reader bean components-->
     <bean class="esride.opendatabridge.reader.factory.CatalogReaderFactory"
@@ -57,8 +108,9 @@
 
     <util:list value-type="java.lang.String" id="supportedTypeList">
         <value>WMS</value>
-        <!--<value>KML</value>
-        <value>CSV</value>
+        <value>WMS (OGC)</value>
+        <value>KML</value>
+        <!--<value>CSV</value>
         <value>csv</value>-->
     </util:list>
 
@@ -71,12 +123,14 @@
     <util:map id="capabilitiesMap" key-type="java.lang.String" value-type="java.lang.String">
         <entry key="view" value="ogc"/>
         <entry key="wms" value="ogc"/>
+        <entry key="wms (ogc)" value="ogc"/>
         <entry key="kml" value="kml"/>
     </util:map>
 
     <util:map id="resourceMap" key-type="java.lang.String" value-type="esride.opendatabridge.reader.IResource">
         <entry key="view" value-ref="capabilitiesRequest"/>
         <entry key="wms" value-ref="capabilitiesRequest"/>
+        <entry key="wms (ogc)" value-ref="capabilitiesRequest"/>
         <entry key="kml" value-ref="kmlRequest"/>
     </util:map>
 
@@ -84,34 +138,23 @@
     <bean class="esride.opendatabridge.itemtransform.file.FileSysItemGeneratorConfiguration" id="itemConfig"
           p:pathInfo="/ckanadapter/"/>
 
-    <bean class="esride.opendatabridge.itemtransform.ItemGenerator" id="itemGenerator"
+    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
           p:generatorConfiguration-ref="itemConfig"
           p:elemHandlerMap-ref="elemMap"/>
-
-    <bean class="esride.opendatabridge.itemtransform.AgolItemTransformer" id="itemTransform"
-          p:itemElemExtractor-ref="itemGenerator"/>
 
     <bean class="esride.opendatabridge.reader.capabilities.OGCCapabilitiesResource" id="capabilitiesRequest"
           p:request-ref="httpRequest"/>
 
 
     <util:map id="elemMap" key-type="java.lang.String" value-type="esride.opendatabridge.itemtransform.elemhandler.IElemHandler">
-        <entry key="wmsUrl" value-ref="wmsUrlElemHandler"/>
         <entry key="default" value-ref="defaultElemHandler"/>
         <entry key="string" value-ref="stringElemHandler"/>
         <entry key="nodeset" value-ref="nodesetElemHandler"/>
-        <entry key="licenseCodeList" value-ref="licenseCodeListElemHandler"/>
-        <entry key="epsgCodeList" value-ref="epsgCodeListElemHandler"/>
     </util:map>
 
-    <bean id="wmsUrlElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.WmsUrlHandler"/>
     <bean id="defaultElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.DefaultElemHandler"/>
     <bean id="stringElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.StringElemHandler"/>
     <bean id="nodesetElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.NodesetElemHandler"/>
-    <bean id="licenseCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CodeListElemHandler"
-          p:codeListMap-ref="licenseMap"/>
-    <bean id="epsgCodeListElemHandler" class="esride.opendatabridge.itemtransform.elemhandler.CrsHandler"
-          p:codeListMap-ref="epsgMap"/>
 
     <util:map id="epsgMap" key-type="java.lang.String" value-type="java.lang.String">
         <entry key="CRS:84" value="4326"/>

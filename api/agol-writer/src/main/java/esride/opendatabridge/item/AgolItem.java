@@ -1,13 +1,13 @@
 package esride.opendatabridge.item;
 
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 /**
- * Created with IntelliJ IDEA.
  * User: nik
  * Date: 14.05.13
  * Time: 13:26
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class AgolItem {
     private HashMap<String,String> _itemAttributes;
@@ -38,11 +38,33 @@ public class AgolItem {
     }
 
     public String getTitle() {
-        return _itemAttributes.get("title").toString();
+        return _itemAttributes.get("title");
     }
 
     public String getType() {
-        return _itemAttributes.get("type").toString();
+        return _itemAttributes.get("type");
+    }
+
+    public String getForeignKey(String keyPrefix){
+        //todo: aus den tags muss noch der richtige Wert herausgeholt werden
+        String tags = _itemAttributes.get("tags");
+        if(tags != null && tags.trim().length() > 0){
+            if(!tags.contains(keyPrefix)){
+                return null;
+            }
+            StringTokenizer tokenizer = new StringTokenizer(tags, ",");
+            String foreinKey = null;
+            while (tokenizer.hasMoreTokens()){
+                String actualToken = tokenizer.nextToken().trim();
+                if(actualToken.startsWith(keyPrefix)){
+                    foreinKey = actualToken;
+                    break;
+                }
+            }
+            return foreinKey;
+        }
+        return null;
+
     }
 
     public void setId(String id) {

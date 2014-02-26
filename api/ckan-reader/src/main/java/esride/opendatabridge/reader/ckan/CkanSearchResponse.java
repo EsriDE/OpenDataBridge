@@ -2,6 +2,7 @@ package esride.opendatabridge.reader.ckan;
 
 import esride.opendatabridge.reader.MetadataObject;
 import esride.opendatabridge.reader.request.CatalogResponseObj;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -24,6 +25,8 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class CkanSearchResponse {
+
+    private static Logger sLogger = Logger.getLogger(CkanSearchResponse.class);
 
     private XPath xPath;
     private DocumentBuilder builder;
@@ -71,17 +74,22 @@ public class CkanSearchResponse {
                     Node importedNode = metaDocument.importNode(documentList.item(i), true);
                     metaDocument.appendChild(importedNode);
 
-                    //get ResourceType and put the resourceType to the list
+                    String ckanIdentifier =  xPath.evaluate(xpathValue.getProperty("fileidentifier.xpath"), metaDocument);
+                    sLogger.info("Ckan item found: " + ckanIdentifier);
+
+                    //get the ResourceType and put the valid one to the list
                     String resourceTypeXPath = xpathValue.getProperty("resourcetype.xpath");
                     List<String> resourceTypeList = new ArrayList<String>();
                     NodeList resourceTypeNodes = (NodeList)xPath.evaluate(resourceTypeXPath, metaDocument, XPathConstants.NODESET);
                     for(int j=0; j<resourceTypeNodes.getLength(); j++){
-                        String resourceType = resourceTypeNodes.item(j).getTextContent();
+                        String resourceType = resourceTypeNodes.item(j).getTextContent().toUpperCase();
                         if(supportedResourceTypes.contains(resourceType)){
                             if(!resourceTypeList.contains(resourceType)){
                                 resourceTypeList.add(resourceType);
                             }
 
+                        }else{
+                            sLogger.info("This/These resourceType(s) is/are not support by OpenData Bridge: " + resourceType);
                         }
                     }
 
@@ -93,24 +101,14 @@ public class CkanSearchResponse {
                         String conactedXPath = xpathValue.getProperty("resourceurl.prefix.xpath") + resourceTypeList.get(k) + xpathValue.getProperty("resourceurl.suffix.xpath");
                         String capabilitiesUrl = xPath.evaluate(conactedXPath, metaDocument);
 
-                        /*if(resourceUrl != null && resourceUrl.contains("?") && resourceTypeList.get(k).equalsIgnoreCase("WMS")){
-                           String baseUrl = resourceUrl.substring(0, resourceUrl.indexOf('?'));
-                           object.setResourceUrl(baseUrl);
-                       }else{
-                           object.setResourceUrl(resourceUrl);
-                       } */
-                        
-                        
-
-                        String fileIdentifier = xPath.evaluate(xpathValue.getProperty("fileidentifier.xpath"), metaDocument) + "-" + resourceTypeList.get(k);
+                        String fileIdentifier = ckanIdentifier + "-" + resourceTypeList.get(k);
                         object.setMetadataFileIdentifier(fileIdentifier);
 
-                        if(resourceTypeList.get(k).equalsIgnoreCase("WMS") || resourceTypeList.get(k).equalsIgnoreCase("KML")){
+                        if(resourceTypeList.get(k).toLowerCase().startsWith("wms") || resourceTypeList.get(k).toLowerCase().startsWith("kml")){
                             object.setCapabilitiesUrl(capabilitiesUrl);
                         }
                         
                         metadataObjectList.add(object);
-                        //Knoten ermitteln
                     }
 
                 }

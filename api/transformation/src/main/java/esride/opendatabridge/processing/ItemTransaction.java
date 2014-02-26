@@ -16,20 +16,32 @@ public class ItemTransaction {
      * 1=Insert, 2=Update, 3=Delete
      */
     private int transactionStatus;
-    
-    private AgolItem agolItem;
 
-    private TransformedItem transformedItem;
+    private String agolItentifier;
+
+
+    
+    //private AgolItem agolItem;
+
+    //private TransformedItem transformedItem;
 
     public int getTransactionStatus() {
         return transactionStatus;
+    }
+
+    public String getAgolItentifier() {
+        return agolItentifier;
+    }
+
+    public void setAgolItentifier(String pAgolItentifier) {
+        agolItentifier = pAgolItentifier;
     }
 
     public void setTransactionStatus(int transactionStatus) {
         this.transactionStatus = transactionStatus;
     }
 
-    public AgolItem getAgolItem() {
+    /*public AgolItem getAgolItem() {
         return agolItem;
     }
 
@@ -43,5 +55,5 @@ public class ItemTransaction {
 
     public void setTransformedItem(TransformedItem transformedItem) {
         this.transformedItem = transformedItem;
-    }
+    } */
 }

@@ -1,7 +1,9 @@
 package esride.opendatabridge.application;
 
 
+import esride.opendatabridge.agolreader.IAgolItemReader;
 import esride.opendatabridge.agolwriter.IAgolService;
+import esride.opendatabridge.pipeline.controller.PipelineController;
 import esride.opendatabridge.processing.Transformer;
 import esride.opendatabridge.processing.TransformerException;
 import esride.opendatabridge.reader.IReader;
@@ -49,16 +51,18 @@ public class AppStarter {
             System.exit(2);
         }
 
-
         IReader reader = initializer.getReader();
         IAgolService agolService = initializer.getAgolService();
+        IAgolItemReader agolReader = initializer.getAgolItemReader();
+        PipelineController pipelineController = initializer.getPipelineController();
 
         sLogger.info("Application Start: Start Harvesting, Transformation and Publishing the ArcGIS Online Items");
         Transformer transformer = new Transformer();
         try {
-            transformer.executeProcessTransformation(reader, agolService, startParam.isDeleteValue(),
-                    startParam.isOverwriteAccessTypeValue(), startParam.getSearchStringValue(),
-                    startParam.getAccessTypeValue(), startParam.getOwnerTypeValue());
+            transformer.executeProcessTransformation(reader, agolService,pipelineController,
+                    agolReader,startParam.isDeleteValue(),
+                    startParam.isOverwriteAccessTypeValue(),
+                    startParam.getAccessTypeValue());
         } catch (TransformerException e) {
             sLogger.error("Application Start: Terminate OpenDataBridge. Cause: " + e.getMessage());
             System.exit(2);
