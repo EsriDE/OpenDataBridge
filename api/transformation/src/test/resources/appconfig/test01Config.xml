@@ -87,7 +87,7 @@
           p:typeName="agol.type" p:allowedTypeNames="${itemtype.validator.value}"/>
 
     <bean class="esride.opendatabridge.pipeline.validator.UrlNotEmptyValidator" id="urlNotEmpty"
-          p:typeName="agol.type" p:typeList="WMS,KML,CSV" p:urlName="agol.url"/>
+          p:typeName="agol.type" p:typeList="WMS,KML,Document Link" p:urlName="agol.url"/>
 
     <!-- Reader bean components-->
     <bean class="esride.opendatabridge.reader.factory.CatalogReaderFactory"
